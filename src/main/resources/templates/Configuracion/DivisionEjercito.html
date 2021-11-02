@@ -117,7 +117,7 @@
                 } else if ($.trim($(opcion).text()) === "Activar") {
                     $.confirm({
                         title: 'AVISO DEL SISTEMA',
-                        content: 'Desea Activar esta Division de Ejercito!',
+                        content: 'Desea Activar esta División de Ejército!',
                         theme: 'material',
                         animation: 'zoom',
                         closeAnimation: 'zoom',
@@ -140,7 +140,7 @@
                 } else if ($.trim($(opcion).text()) === "Desactivar") {
                     $.confirm({
                         title: 'AVISO DEL SISTEMA',
-                        content: 'Desea Desactivar esta Division de Ejercito!',
+                        content: 'Desea Desactivar esta División de Ejército!',
                         theme: 'material',
                         animation: 'zoom',
                         closeAnimation: 'zoom',
@@ -194,7 +194,7 @@
                     cancelButton: $('#btn_Cancelar'),
                     initContent: function () {
                         $("#txt_Abreviatura").jqxInput({placeHolder: 'ABREVIATURA', width: 400, height: 20, minLength: 2, maxLength: 50});
-                        $("#txt_Descripcion").jqxInput({placeHolder: "DESCRIPCION", width: 490, height: 60, minLength: 2, maxLength: 200});
+                        $("#txt_Descripcion").jqxInput({placeHolder: "DESCRIPCIÓN", width: 490, height: 60, minLength: 2, maxLength: 200});
                         $('#btn_Cancelar').jqxButton({width: '65px', height: 30});
                         $('#btn_Guardar').jqxButton({width: '65px', height: 30});
                         $('#btn_Guardar').on('click', function () {
@@ -202,8 +202,8 @@
                         });
                         $('#frm_DivisionEjercito').jqxValidator({
                             rules: [
-                                {input: '#txt_Abreviatura', message: 'Ingrese la Abreviatura del Division de Ejercito!', action: 'keyup, blur', rule: 'required'},
-                                {input: '#txt_Descripcion', message: 'Ingrese la Descripcion del Division de Ejercito!', action: 'keyup, blur', rule: 'required'}
+                                {input: '#txt_Abreviatura', message: 'Ingrese la Abreviatura del División de Ejército!', action: 'keyup, blur', rule: 'required'},
+                                {input: '#txt_Descripcion', message: 'Ingrese la Descripción del División de Ejército!', action: 'keyup, blur', rule: 'required'}
                             ]
                         });
                         $('#frm_DivisionEjercito').jqxValidator({
@@ -306,7 +306,7 @@
 <div id="div_GrillaPrincipal"></div>
 <div id="div_VentanaPrincipal" style="display: none">
     <div>
-        <span style="float: left">DATOS DE LA DIVISION DE EJÉRCITO</span>
+        <span style="float: left">DATOS DE LA DIVISIÓN DE EJÉRCITO</span>
     </div>
     <div style="overflow: hidden">
         <form id="frm_DivisionEjercito" name="frm_DivisionEjercito" method="post" >
@@ -316,7 +316,7 @@
                     <td><input type="text" id="txt_Abreviatura" name="txt_Abreviatura" style='text-transform:uppercase;'/></td>
                 </tr>
                 <tr>
-                    <td class="inputlabel">Descripcion : </td>
+                    <td class="inputlabel">Descripción : </td>
                     <td><textarea id="txt_Descripcion" name="txt_Descripcion" style="text-transform: uppercase;"/></textarea></td>
                 </tr>
                 <tr>

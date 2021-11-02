@@ -1,7 +1,6 @@
 package mil.sinte.DataService.DAO;
 
 import java.util.List;
-import mil.sinte.BusinessServices.Beans.BeanCombos;
 import mil.sinte.BusinessServices.Beans.BeanMenu;
 import mil.sinte.BusinessServices.Beans.BeanUsuarioMenu;
 import org.springframework.data.jpa.repository.JpaRepository;

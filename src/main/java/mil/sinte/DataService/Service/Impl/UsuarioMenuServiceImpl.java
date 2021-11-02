@@ -1,7 +1,6 @@
 package mil.sinte.DataService.Service.Impl;
 
 import java.util.List;
-import mil.sinte.BusinessServices.Beans.BeanCombos;
 import mil.sinte.BusinessServices.Beans.BeanMenu;
 import mil.sinte.DataService.DAO.UsuarioMenuDAO;
 import mil.sinte.DataService.Service.UsuarioMenuService;

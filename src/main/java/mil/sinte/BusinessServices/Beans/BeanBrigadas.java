@@ -21,7 +21,7 @@ public class BeanBrigadas implements Serializable {
     @Id
     @Column(name = "NBRIGADA_CODIGO", nullable = false)
     private Integer codigo;
-    
+
     @Column(name = "CBRIGADA_CODIGO", nullable = false)
     private String brigadaCodigo;
 

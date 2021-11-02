@@ -120,7 +120,7 @@
                 } else if ($.trim($(opcion).text()) === "Activar") {
                     $.confirm({
                         title: 'AVISO DEL SISTEMA',
-                        content: 'Desea Activar este Periodo!',
+                        content: 'Desea Activar este Período!',
                         theme: 'material',
                         animation: 'zoom',
                         closeAnimation: 'zoom',
@@ -143,7 +143,7 @@
                 } else if ($.trim($(opcion).text()) === "Desactivar") {
                     $.confirm({
                         title: 'AVISO DEL SISTEMA',
-                        content: 'Desea Desactivar este Periodo!',
+                        content: 'Desea Desactivar este Período!',
                         theme: 'material',
                         animation: 'zoom',
                         closeAnimation: 'zoom',
@@ -199,7 +199,7 @@
                     initContent: function () {
                         $("#txt_Periodo").jqxInput({placeHolder: 'PERIODO', width: 400, height: 20, minLength: 4, maxLength: 4});
                         $("#txt_Abreviatura").jqxInput({placeHolder: 'ABREVIATURA', width: 400, height: 20, minLength: 2, maxLength: 50});
-                        $("#txt_Descripcion").jqxInput({placeHolder: "DESCRIPCION", width: 490, height: 60, minLength: 2, maxLength: 200});
+                        $("#txt_Descripcion").jqxInput({placeHolder: "DESCRIPCIÓN", width: 490, height: 60, minLength: 2, maxLength: 200});
                         $('#btn_Cancelar').jqxButton({width: '65px', height: 30});
                         $('#btn_Guardar').jqxButton({width: '65px', height: 30});
                         $('#btn_Guardar').on('click', function () {
@@ -209,8 +209,8 @@
                             rules: [
                                 {input: '#txt_Periodo', message: 'Ingrese el Periodo!', action: 'keyup, blur', rule: 'required'},
                                 {input: '#txt_Periodo', message: 'Ingrese Solo Numeros!', action: 'keyup, blur', rule: 'number'},
-                                {input: '#txt_Abreviatura', message: 'Ingrese la Abreviatura del Periodo!', action: 'keyup, blur', rule: 'required'},
-                                {input: '#txt_Descripcion', message: 'Ingrese la Descripcion del Periodo!', action: 'keyup, blur', rule: 'required'}
+                                {input: '#txt_Abreviatura', message: 'Ingrese la Abreviatura del Período!', action: 'keyup, blur', rule: 'required'},
+                                {input: '#txt_Descripcion', message: 'Ingrese la Descripción del Período!', action: 'keyup, blur', rule: 'required'}
                             ]
                         });
                         $('#frm_Periodos').jqxValidator({
@@ -307,7 +307,7 @@
     }
 </script>
 <div id='div_Titulo' style="border: none;">
-    <div class="jqx-hideborder">LISTADOS DE PERIODOS</div>
+    <div class="jqx-hideborder">LISTADOS DE PERÍODOS</div>
     <div>
         <div id="div_Detalle" class="maincen"></div>
     </div>
@@ -315,13 +315,13 @@
 <div id="div_GrillaPrincipal"></div>
 <div id="div_VentanaPrincipal" style="display: none">
     <div>
-        <span style="float: left">DATOS DEL PERIODO</span>
+        <span style="float: left">DATOS DEL PERÍODO</span>
     </div>
     <div style="overflow: hidden">
         <form id="frm_Periodos" name="frm_Periodos" method="post" >
             <table width="100%" border="0" cellspacing="0" cellpadding="0"> 
                 <tr>
-                    <td class="inputlabel">Periodo : </td>
+                    <td class="inputlabel">Período : </td>
                     <td><input type="text" id="txt_Periodo" name="txt_Periodo" /></td>
                 </tr>
                 <tr>
@@ -329,7 +329,7 @@
                     <td><input type="text" id="txt_Abreviatura" name="txt_Abreviatura" style='text-transform:uppercase;'/></td>
                 </tr>
                 <tr>
-                    <td class="inputlabel">Descripcion : </td>
+                    <td class="inputlabel">Descripción : </td>
                     <td><textarea id="txt_Descripcion" name="txt_Descripcion" style="text-transform: uppercase;"/></textarea></td>
                 </tr>
                 <tr>

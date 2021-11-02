@@ -101,7 +101,7 @@
             ]
         });
         // DEFINIMOS EL MENU CONTEXTUAL
-        var contextMenu = $("#div_ContextMenu").jqxMenu({width: 200, height: 215, autoOpenPopup: false, mode: 'popup'});
+        var contextMenu = $("#div_ContextMenu").jqxMenu({width: 200, height: 115, autoOpenPopup: false, mode: 'popup'});
         $("#div_GrillaPrincipal").on('contextmenu', function () {
             return false;
         });
@@ -135,7 +135,7 @@
                 } else if ($.trim($(opcion).text()) === "Activar") {
                     $.confirm({
                         title: 'AVISO DEL SISTEMA',
-                        content: 'Desea Activar esta Division de Ejercito!',
+                        content: 'Desea Activar esta DivisiÓn de Ejército!',
                         theme: 'material',
                         animation: 'zoom',
                         closeAnimation: 'zoom',
@@ -158,7 +158,7 @@
                 } else if ($.trim($(opcion).text()) === "Desactivar") {
                     $.confirm({
                         title: 'AVISO DEL SISTEMA',
-                        content: 'Desea Desactivar esta Division de Ejercito!',
+                        content: 'Desea Desactivar esta División de Ejército!',
                         theme: 'material',
                         animation: 'zoom',
                         closeAnimation: 'zoom',
@@ -326,7 +326,7 @@
                     initContent: function () {
                         $("#txt_Codigo").jqxInput({placeHolder: 'CÓDIGO', width: 400, height: 20, minLength: 4, maxLength: 4});
                         $("#txt_Abreviatura").jqxInput({placeHolder: 'ABREVIATURA', width: 400, height: 20, minLength: 2, maxLength: 50});
-                        $("#txt_Descripcion").jqxInput({placeHolder: "DESCRIPCION", width: 490, height: 60, minLength: 2, maxLength: 200});
+                        $("#txt_Descripcion").jqxInput({placeHolder: "DESCRIPCIÓN", width: 490, height: 60, minLength: 2, maxLength: 200});
                         $("#cbo_DivisionEjercito").jqxDropDownList({width: 250, height: 20, dropDownWidth: 300, promptText: "Seleccione"});
                         $("#cbo_Departamento").jqxDropDownList({width: 200, height: 20, dropDownWidth: 350, promptText: "Seleccione"});
                         $('#cbo_Departamento').on('select', function (event) {
@@ -350,7 +350,7 @@
                                 {input: '#txt_Codigo', message: 'Ingrese el Código de la Brigada!', action: 'keyup, blur', rule: 'required'},
                                 {input: '#txt_Codigo', message: 'Ingrese Solo Numeros!', action: 'keyup, blur', rule: 'number'},
                                 {input: '#txt_Abreviatura', message: 'Ingrese la Abreviatura de la Brigada!', action: 'keyup, blur', rule: 'required'},
-                                {input: '#txt_Descripcion', message: 'Ingrese la Descripcion de la Brigada!', action: 'keyup, blur', rule: 'required'}
+                                {input: '#txt_Descripcion', message: 'Ingrese la Descripción de la Brigada!', action: 'keyup, blur', rule: 'required'}
                             ]
                         });
                         $('#frm_Brigadas').jqxValidator({
@@ -385,7 +385,7 @@
                     cancelButton: $('#btn_CancelarRegistro'),
                     initContent: function () {
                         $("#txt_DependenciaAbreviatura").jqxInput({placeHolder: 'ABREVIATURA', width: 450, height: 20, minLength: 2, maxLength: 50});
-                        $("#txt_DependenciaDescripcion").jqxInput({placeHolder: "DESCRIPCION", width: 450, height: 40, minLength: 2, maxLength: 200});
+                        $("#txt_DependenciaDescripcion").jqxInput({placeHolder: "DESCRIPCIÓN", width: 450, height: 40, minLength: 2, maxLength: 200});
                         $("#cbo_TipoDependencia").jqxDropDownList({width: 250, height: 20, dropDownWidth: 300, promptText: "Seleccione"});
                         $('#btn_CancelarRegistro').jqxButton({width: '65px', height: 30});
                         $('#btn_GuardarRegistro').jqxButton({width: '65px', height: 30});
@@ -622,7 +622,7 @@
                     <td><input type="text" id="txt_Abreviatura" name="txt_Abreviatura" style='text-transform:uppercase;'/></td>
                 </tr>
                 <tr>
-                    <td class="inputlabel">Descripcion : </td>
+                    <td class="inputlabel">Descripción : </td>
                     <td><textarea id="txt_Descripcion" name="txt_Descripcion" style="text-transform: uppercase;"/></textarea></td>
                 </tr>
                 <tr>
@@ -701,7 +701,7 @@
                         <td><input type="text" id="txt_DependenciaAbreviatura" name="txt_DependenciaAbreviatura" style='text-transform:uppercase;'/></td>
                     </tr>
                     <tr>
-                        <td class="inputlabel">Descripcion : </td>
+                        <td class="inputlabel">Descripción : </td>
                         <td><textarea id="txt_DependenciaDescripcion" name="txt_DependenciaDescripcion" style="text-transform: uppercase;"/></textarea></td>
                     </tr>
                     <tr>
@@ -725,6 +725,5 @@
         <li style="color: brown; font-weight: bold;">Desactivar</li>
         <li type='separator'></li>
         <li style="font-weight: bold;">Dependencias</li>
-        <li style="font-weight: bold;">ASDFASDFADS</li>
     </ul>
 </div>

@@ -22,9 +22,9 @@ public class BeanUsuarioMenu implements Serializable {
     @Column(name = "VUSUARIO_CODIGO", nullable = false)
     private String usuario;
 
-   // @Column(name = "VMODULO_NOMBRE")
+    // @Column(name = "VMODULO_NOMBRE")
     private String moduloNombre;
-    
+
     private String menuNombre;
     private String menuOpcion;
     private String menuMode;
@@ -49,6 +49,5 @@ public class BeanUsuarioMenu implements Serializable {
         this.modulo = modulo;
         this.moduloNombre = moduloNombre;
     }
-    
-    
+
 }

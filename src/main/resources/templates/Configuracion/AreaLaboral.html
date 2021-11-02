@@ -78,8 +78,8 @@
             },
             columns: [
                 {text: 'ABREVIATURA', dataField: 'abreviatura', width: '40%', align: 'center', cellsAlign: 'left'},
-                {text: 'DESCRIPCIÓN', dataField: 'descripcion', width: '40%', align: 'center', cellsAlign: 'left'}
-                
+                {text: 'DESCRIPCIÓN', dataField: 'descripcion', width: '40%', align: 'center', cellsAlign: 'left'},
+                {text: 'ESTADO', dataField: 'estado', filtertype: 'list', width: '20%', align: 'center', cellsAlign: 'center'}
             ]
         });
         // DEFINIMOS EL MENU CONTEXTUAL
@@ -117,7 +117,7 @@
                 } else if ($.trim($(opcion).text()) === "Activar") {
                     $.confirm({
                         title: 'AVISO DEL SISTEMA',
-                        content: 'Desea Activar esta Area Laboral!',
+                        content: 'Desea Activar esta Área Laboral!',
                         theme: 'material',
                         animation: 'zoom',
                         closeAnimation: 'zoom',
@@ -140,7 +140,7 @@
                 } else if ($.trim($(opcion).text()) === "Desactivar") {
                     $.confirm({
                         title: 'AVISO DEL SISTEMA',
-                        content: 'Desea Desactivar esta Area Laboral!',
+                        content: 'Desea Desactivar esta Área Laboral!',
                         theme: 'material',
                         animation: 'zoom',
                         closeAnimation: 'zoom',
@@ -178,7 +178,7 @@
             var args = event.args;
             var row = $("#div_GrillaPrincipal").jqxGrid('getrowdata', args.rowindex);
             codigo = row['codigo'];
-            alert( row['estado']);
+            alert(row['estado']);
         });
         //CREA LOS ELEMENTOS DE LAS VENTANAS
         var customButtonsDemo = (function () {
@@ -195,7 +195,7 @@
                     cancelButton: $('#btn_Cancelar'),
                     initContent: function () {
                         $("#txt_Abreviatura").jqxInput({placeHolder: 'ABREVIATURA', width: 400, height: 20, minLength: 2, maxLength: 30});
-                        $("#txt_Descripcion").jqxInput({placeHolder: "DESCRIPCION", width: 490, height: 60, minLength: 2, maxLength: 50});
+                        $("#txt_Descripcion").jqxInput({placeHolder: "DESCRIPCIÓN", width: 490, height: 60, minLength: 2, maxLength: 50});
                         $('#btn_Cancelar').jqxButton({width: '65px', height: 30});
                         $('#btn_Guardar').jqxButton({width: '65px', height: 30});
                         $('#btn_Guardar').on('click', function () {
@@ -203,8 +203,8 @@
                         });
                         $('#frm_AreaLaboral').jqxValidator({
                             rules: [
-                                {input: '#txt_Abreviatura', message: 'Ingrese la Abreviatura del Area Laboral!', action: 'keyup, blur', rule: 'required'},
-                                {input: '#txt_Descripcion', message: 'Ingrese la Descripcion del Area Laboral!', action: 'keyup, blur', rule: 'required'}
+                                {input: '#txt_Abreviatura', message: 'Ingrese la Abreviatura del Área Laboral!', action: 'keyup, blur', rule: 'required'},
+                                {input: '#txt_Descripcion', message: 'Ingrese la Descripción del Área Laboral!', action: 'keyup, blur', rule: 'required'}
                             ]
                         });
                         $('#frm_AreaLaboral').jqxValidator({
@@ -299,7 +299,7 @@
     }
 </script>
 <div id='div_Titulo' style="border: none;">
-    <div class="jqx-hideborder">LISTADOS DE AREAS LABORALES</div>
+    <div class="jqx-hideborder">LISTADOS DE ÁREAS LABORALES</div>
     <div>
         <div id="div_Detalle" class="maincen"></div>
     </div>
@@ -307,7 +307,7 @@
 <div id="div_GrillaPrincipal"></div>
 <div id="div_VentanaPrincipal" style="display: none">
     <div>
-        <span style="float: left">DATOS DEL AREA LABORAL</span>
+        <span style="float: left">DATOS DEL ÁREA LABORAL</span>
     </div>
     <div style="overflow: hidden">
         <form id="frm_AreaLaboral" name="frm_AreaLaboral" method="post" >
@@ -317,7 +317,7 @@
                     <td><input type="text" id="txt_Abreviatura" name="txt_Abreviatura" style='text-transform:uppercase;'/></td>
                 </tr>
                 <tr>
-                    <td class="inputlabel">Descripcion : </td>
+                    <td class="inputlabel">Descripción : </td>
                     <td><textarea id="txt_Descripcion" name="txt_Descripcion" style="text-transform: uppercase;"/></textarea></td>
                 </tr>
                 <tr>
