@@ -52,4 +52,9 @@ public class CombosServiceImpl implements CombosService {
         return combosDAO.getTipoDependencia();
     }
 
+    @Override
+    public List<BeanCombos> getPeriodoTipoAsignacionPendiente(String periodo) {
+        return combosDAO.getPeriodoTipoAsignacionPendiente(periodo);
+    }
+
 }

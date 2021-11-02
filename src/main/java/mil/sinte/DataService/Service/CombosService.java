@@ -9,6 +9,7 @@ import mil.sinte.BusinessServices.Beans.BeanCombos;
  */
 public interface CombosService {
 
+    /*MODULO CONFIGURACION*/
     public List<BeanCombos> getPeriodos();
 
     public List<BeanCombos> getDivisionEjercito();
@@ -22,5 +23,8 @@ public interface CombosService {
     public List<BeanCombos> getUbigeo(String departamento, String provincia);
 
     public List<BeanCombos> getTipoDependencia();
+
+    /*MODULO PROGRAMACION*/
+    public List<BeanCombos> getPeriodoTipoAsignacionPendiente(String periodo);
 
 }

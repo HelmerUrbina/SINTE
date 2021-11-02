@@ -3,6 +3,7 @@ package mil.sinte.UserServices.Login;
 import javax.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import mil.sinte.BusinessServices.Beans.BeanUsuario;
+import mil.sinte.DataService.Service.CombosService;
 import mil.sinte.DataService.Service.UsuarioMenuService;
 import mil.sinte.DataService.Service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,9 @@ public class VerificaUsuario {
     @Autowired
     private UsuarioMenuService usuarioMenuService;
 
+    @Autowired
+    private CombosService combosService;
+
     @GetMapping("/")
     public String verificaUsuario(Model model, @AuthenticationPrincipal User user, HttpSession session) {
         BeanUsuario usuario = usuarioService.findByUsernameAndEstado(user.getUsername(), "AC");
@@ -36,6 +40,7 @@ public class VerificaUsuario {
             }
             session.setAttribute("objModulos", usuarioMenuService.getModuloUsuario(user.getUsername()));
             session.setAttribute("objMenus", usuarioMenuService.getMenuUsuario(user.getUsername()));
+            session.setAttribute("objPeriodos", combosService.getPeriodos());
             log.info("usuario que hizo login : " + user);
             return "Login/Principal";
         } else {

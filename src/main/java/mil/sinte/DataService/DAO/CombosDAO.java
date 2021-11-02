@@ -71,4 +71,14 @@ public interface CombosDAO extends CrudRepository<BeanCombos, String> {
             + "ORDER BY CODIGO")
     List<BeanCombos> getTipoDependencia();
 
+    @Query(nativeQuery = true, value = "SELECT "
+            + "NTIPO_ASIGNACION_CODIGO AS CODIGO, "
+            + "VTIPO_ASIGNACION_ABREVIATURA AS DESCRIPCION "
+            + "FROM SINTE_TIPO_ASIGNACION WHERE "
+            + "NTIPO_ASIGNACION_CODIGO NOT IN (SELECT NTIPO_ASIGNACION_CODIGO "
+            + "FROM SINTE_PERIODO_TIPO_ASIGNACION WHERE CPERIODO_CODIGO=?1) AND "
+            + "CESTADO_CODIGO='AC' "
+            + "ORDER BY CODIGO")
+    List<BeanCombos> getPeriodoTipoAsignacionPendiente(String periodo);
+
 }
