@@ -24,7 +24,11 @@ public interface CombosService {
 
     public List<BeanCombos> getTipoDependencia();
 
+    public List<BeanCombos> getBrigadas();
+
     /*MODULO PROGRAMACION*/
     public List<BeanCombos> getPeriodoTipoAsignacionPendiente(String periodo);
+
+    public List<BeanCombos> getTipoAsignacionByPeriodo(String periodo);
 
 }

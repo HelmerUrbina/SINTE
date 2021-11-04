@@ -66,24 +66,19 @@ function fn_validaCombos(obj, msg) {
 }
 //FUNCION PARA CARGAR UN COMBO CON AJAX
 function fn_cargarComboAjax(obj, datos) {
-    $.ajax({
-        type: "GET",
+    var source = {
+        datatype: "json",
+        datafields: [
+            {name: 'descripcion', type: 'string'},
+            {name: 'codigo', type: 'string'}
+        ],
+        id: 'codigo',
         url: "../CombosAjax",
         data: datos,
-        success: function (data) {
-            var source = {
-                localdata: data,
-                datatype: "json",
-                datafields: [
-                    {name: 'descripcion', type: 'string'},
-                    {name: 'codigo', type: 'string'}
-                ],
-                async: true
-            };
-            var dataAdapter = new $.jqx.dataAdapter(source);
-            $(obj).jqxDropDownList({source: dataAdapter, placeHolder: "Seleccione", displayMember: "descripcion", valueMember: "codigo"});
-        }
-    });
+        async: true
+    };
+    var dataAdapter = new $.jqx.dataAdapter(source);
+    $(obj).jqxDropDownList({source: dataAdapter, placeHolder: "Seleccione", displayMember: "descripcion", valueMember: "codigo"});
 }
 //FUNCION PARA CARGAR UN COMBO DE CABECERA CON AJAX
 function fn_cargarComboxCabecera(obj, datos) {

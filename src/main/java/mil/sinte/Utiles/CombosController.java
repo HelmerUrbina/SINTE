@@ -39,6 +39,10 @@ public class CombosController {
                 return new Gson().toJson(combosService.getTipoDependencia());
             case "periodoTipoAsignacionPendientes":
                 return new Gson().toJson(combosService.getPeriodoTipoAsignacionPendiente(codigo));
+            case "tipoAsignacionByPeriodo":
+                return new Gson().toJson(combosService.getTipoAsignacionByPeriodo(codigo));
+            case "brigadas":
+                return new Gson().toJson(combosService.getBrigadas());
             default:
                 return "ERROR";
         }
