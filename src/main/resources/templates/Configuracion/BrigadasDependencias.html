@@ -8,29 +8,10 @@
     $(document).ready(function () {
         var theme = getTheme();
         $("#div_Titulo").jqxExpander({theme: theme, width: '100%'});
-        //PARA CARGAR LOS ELEMENTOS DE LA GRILLA
-        var source = {
-            dataType: "json",
-            datafields: [
-                {name: 'codigo', type: "string"},
-                {name: 'brigadaCodigo', type: "string"},
-                {name: 'abreviatura', type: "string"},
-                {name: 'descripcion', type: "string"},
-                {name: 'divisionEjercito', type: "string"},
-                {name: 'departamento', type: "string"},
-                {name: 'provincia', type: "string"},
-                {name: 'ubigeo', type: "string"},
-                {name: 'estado', type: "string"}
-            ],
-            id: 'codigo',
-            url: "../BrigadasDetalle?mode=G"
-        };
-        var dataAdapter = new $.jqx.dataAdapter(source);
         //DEFINIMOS LOS CAMPOS Y DATOS DE LA GRILLA PRINCIPAL
         $("#div_GrillaPrincipal").jqxGrid({
             width: '99.8%',
             height: ($(window).height() - 65),
-            source: dataAdapter,
             autoheight: false,
             autorowheight: false,
             altrows: true,
@@ -402,6 +383,7 @@
         }());
         $(document).ready(function () {
             customButtonsDemo.init();
+            fn_Refrescar();
             fn_cargarComboAjax("#cbo_DivisionEjercito", {mode: 'divisionEjercito'});
             $("#cbo_Departamento").jqxDropDownList('clear');
             fn_cargarComboAjax("#cbo_Departamento", {mode: 'departamentos'});
@@ -423,7 +405,8 @@
                 {name: 'estado', type: "string"}
             ],
             id: 'codigo',
-            url: "../BrigadasDetalle?mode=G"
+            url: "../BrigadasDetalle",
+            data: {mode: 'G'}
         };
         var dataAdapter = new $.jqx.dataAdapter(source);
         $("#div_GrillaPrincipal").jqxGrid({source: dataAdapter});

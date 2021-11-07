@@ -124,3 +124,10 @@ function validarSiNumero(numero) {
     }
     return "";
 }
+//FUNCION PARA VALIDAR SOLO NUMEROS ENTEROS
+function validarBoolean(valor) {
+    if (valor === '1') {
+        return true;
+    }
+    return false;
+}

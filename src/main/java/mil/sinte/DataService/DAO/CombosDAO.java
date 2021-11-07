@@ -98,4 +98,23 @@ public interface CombosDAO extends CrudRepository<BeanCombos, String> {
             + "ORDER BY CODIGO")
     List<BeanCombos> getBrigadas();
 
+    @Query(nativeQuery = true, value = "SELECT "
+            + "NBRIGADA_CODIGO AS CODIGO, "
+            + "UTIL.FUN_BRIGADA_ABREVIATURA(NBRIGADA_CODIGO) AS DESCRIPCION "
+            + "FROM SINTE_PROG_CLASE_III_TECHOS WHERE "
+            + "CPERIODO_CODIGO=?1 AND "
+            + "NTIPO_ASIGNACION_CODIGO=?2 AND "
+            + "CESTADO_CODIGO='AC' "
+            + "ORDER BY CODIGO")
+    List<BeanCombos> getBrigadasByPeriodoTipoAsignacion(String periodo, Integer tipoAsignacion);
+
+    @Query(nativeQuery = true, value = "SELECT "
+            + "NBRIGADA_CODIGO AS CODIGO, "
+            + "UTIL.FUN_BRIGADA_ABREVIATURA(NBRIGADA_CODIGO) AS DESCRIPCION "
+            + "FROM SINTE_USUARIOS WHERE "
+            + "VUSUARIO_CODIGO=?1 AND "
+            + "CESTADO_CODIGO='AC' "
+            + "ORDER BY CODIGO")
+    List<BeanCombos> getBrigadasByUsuario(String usuario);
+
 }

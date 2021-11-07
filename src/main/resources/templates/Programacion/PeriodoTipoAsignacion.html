@@ -11,24 +11,10 @@
         $('#cbo_Periodo').on('change', function () {
             fn_CargarBusqueda();
         });
-        //PARA CARGAR LOS ELEMENTOS DE LA GRILLA
-        var source = {
-            dataType: "json",
-            datafields: [
-                {name: 'tipoAsignacion', type: "string"},
-                {name: 'tipoAsignacionAbreviatura', type: "string"},
-                {name: 'estado', type: "string"}
-            ],
-            id: 'codigo',
-            url: "../PeriodoTipoAsignacionDetalle",
-            data: {mode: 'G', periodo: $('#cbo_Periodo').val()}
-        };
-        var dataAdapter = new $.jqx.dataAdapter(source);
         //DEFINIMOS LOS CAMPOS Y DATOS DE LA GRILLA
         $("#div_GrillaPrincipal").jqxGrid({
             width: '99.8%',
             height: ($(window).height() - 95),
-            source: dataAdapter,
             autoheight: false,
             autorowheight: false,
             altrows: true,
@@ -195,6 +181,7 @@
         }());
         $(document).ready(function () {
             customButtonsDemo.init();
+            fn_CargarBusqueda();
         });
     });
     //FUNCION PARA ACTUALIZAR DATOS DE LA GRILLA
@@ -277,10 +264,9 @@
                 </tbody>
             </table>
         </div>
-        <div id="div_Detalle" class="maincen"></div>
+        <div id="div_GrillaPrincipal"></div>
     </div>
 </div>
-<div id="div_GrillaPrincipal"></div>
 <div id="div_VentanaPrincipal" style="display: none">
     <div>
         <span style="float: left">REGISTRO DE TIPO DE ASIGNACIÓN POR PERÍODO</span>

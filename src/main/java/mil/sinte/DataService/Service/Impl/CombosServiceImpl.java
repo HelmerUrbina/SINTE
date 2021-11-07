@@ -58,6 +58,11 @@ public class CombosServiceImpl implements CombosService {
         return combosDAO.getBrigadas();
     }
 
+    @Override
+    public List<BeanCombos> getBrigadasByUsuario(String usuario) {
+        return combosDAO.getBrigadasByUsuario(usuario);
+    }
+
     /*MODULO PROGRAMACION*/
     @Override
     public List<BeanCombos> getPeriodoTipoAsignacionPendiente(String periodo) {
@@ -67,6 +72,11 @@ public class CombosServiceImpl implements CombosService {
     @Override
     public List<BeanCombos> getTipoAsignacionByPeriodo(String periodo) {
         return combosDAO.getTipoAsignacionByPeriodo(periodo);
+    }
+
+    @Override
+    public List<BeanCombos> getBrigadasByPeriodoTipoAsignacion(String periodo, Integer tipoAsignacion) {
+        return combosDAO.getBrigadasByPeriodoTipoAsignacion(periodo, tipoAsignacion);
     }
 
 }

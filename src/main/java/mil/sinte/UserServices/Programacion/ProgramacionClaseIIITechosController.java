@@ -56,7 +56,6 @@ public class ProgramacionClaseIIITechosController {
         objBeanProgramacionClaseIII.setTipoAsignacion(tipoAsignacion);
         objBeanProgramacionClaseIII.setBrigada(brigada);
         objBeanProgramacionClaseIII.setImporte(importe);
-        System.out.println(tipoAsignacion+" "+brigada+" "+importe);
         return "" + programacionClaseIIIService.guardarProgramacionClaseIIITechos(objBeanProgramacionClaseIII, Utiles.getUsuario(), mode);
     }
 }

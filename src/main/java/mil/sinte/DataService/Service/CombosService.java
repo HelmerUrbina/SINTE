@@ -26,9 +26,13 @@ public interface CombosService {
 
     public List<BeanCombos> getBrigadas();
 
+    public List<BeanCombos> getBrigadasByUsuario(String usuario);
+
     /*MODULO PROGRAMACION*/
     public List<BeanCombos> getPeriodoTipoAsignacionPendiente(String periodo);
 
     public List<BeanCombos> getTipoAsignacionByPeriodo(String periodo);
+
+    public List<BeanCombos> getBrigadasByPeriodoTipoAsignacion(String periodo, Integer TipoAsignacion);
 
 }
