@@ -22,7 +22,7 @@ public class BeanUsuario implements Serializable {
     @Column(name = "VUSUARIO_CODIGO", nullable = false)
     private String usuario;
 
-    @Column(name = "VUSUARIO_PASSWORD", nullable = false)
+    @Column(name = "VUSUARIO_PASSWORD")
     private String password;
 
     @Column(name = "VUSUARIO_PATERNO", nullable = false)
@@ -40,22 +40,22 @@ public class BeanUsuario implements Serializable {
     @Column(name = "VUSUARIO_TELEFONO", nullable = false)
     private String telefono;
 
-    @Column(name = "VUSUARIO_CARGO", nullable = false)
+    @Column(name = "VUSUARIO_CARGO")
     private String cargo;
 
-    @Column(name = "NAREA_LABORAL_CODIGO", nullable = false)
+    @Column(name = "NAREA_LABORAL_CODIGO")
     private String areaLaboral;
 
     @Column(name = "CESTADO_CODIGO", nullable = false)
     private String estado;
 
-    @Column(name = "NBRIGADA_CODIGO", nullable = false)
-    private Integer brigada;
+    @Column(name = "NBRIGADA_CODIGO")
+    private String brigada;
 
-    @Column(name = "NUSUARIO_ROL_CODIGO", nullable = false)
-    private Integer Rol;
+    @Column(name = "NUSUARIO_ROL_CODIGO")
+    private String Rol;
 
-    @Column(name = "NUSUARIO_AUTORIZACION", nullable = false)
+    @Column(name = "NUSUARIO_AUTORIZACION")
     private Integer autorizacion;
 
 }

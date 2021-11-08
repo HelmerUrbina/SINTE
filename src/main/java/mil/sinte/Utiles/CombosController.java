@@ -37,6 +37,24 @@ public class CombosController {
                 return new Gson().toJson(combosService.getUbigeo(codigo, codigo2));
             case "tipoDependencia":
                 return new Gson().toJson(combosService.getTipoDependencia());
+            case "tipoVehiculo":
+                return new Gson().toJson(combosService.getTipoVehiculo());
+            case "claseVehiculo":
+                return new Gson().toJson(combosService.getClaseVehiculo());
+            case "marca":
+                return new Gson().toJson(combosService.getMarca());
+            case "modelo":
+                return new Gson().toJson(combosService.getModelo(codigo));
+            case "color":
+                return new Gson().toJson(combosService.getColor());                
+            case "soat":
+                return new Gson().toJson(combosService.getSoat());                    
+            case "brigada":
+                return new Gson().toJson(combosService.getBrigada());                    
+            case "areaLaboral":
+                return new Gson().toJson(combosService.getAreaLaboral());                    
+            case "rol":
+                return new Gson().toJson(combosService.getRol());                        
             default:
                 return "ERROR";
         }

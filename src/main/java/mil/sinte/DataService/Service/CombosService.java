@@ -22,5 +22,23 @@ public interface CombosService {
     public List<BeanCombos> getUbigeo(String departamento, String provincia);
 
     public List<BeanCombos> getTipoDependencia();
+    
+    public List<BeanCombos> getTipoVehiculo();
+    
+    public List<BeanCombos> getClaseVehiculo();
+    
+    public List<BeanCombos> getMarca();
+    
+    public List<BeanCombos> getModelo(String marca);
+    
+    public List<BeanCombos> getColor();
+    
+    public List<BeanCombos> getSoat();
+    
+    public List<BeanCombos> getAreaLaboral();
+    
+    public List<BeanCombos> getBrigada();
+    
+    public List<BeanCombos> getRol();
 
 }

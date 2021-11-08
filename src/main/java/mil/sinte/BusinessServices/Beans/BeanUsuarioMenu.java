@@ -21,7 +21,7 @@ public class BeanUsuarioMenu implements Serializable {
     @Id
     @Column(name = "VUSUARIO_CODIGO", nullable = false)
     private String usuario;
-
+    
     // @Column(name = "VMODULO_NOMBRE")
     private String moduloNombre;
 
