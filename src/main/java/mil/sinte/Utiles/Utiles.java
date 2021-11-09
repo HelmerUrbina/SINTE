@@ -121,7 +121,7 @@ public class Utiles {
 
     public static String getErrorSQL(Exception e) {
         String msj = null;
-        if(e !=null){
+        if (e != null) {
             msj = e.getCause().getCause().getLocalizedMessage();
         }
         return "<span style='color: white;'>" + msj + "</span>";

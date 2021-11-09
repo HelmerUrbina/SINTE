@@ -22,11 +22,7 @@ public class CombosController {
     @RequestMapping(value = "/CombosAjax")
     @ResponseBody
 
-
-    public String getAreaLaboralDetalle(String mode, String codigo, String codigo2, Integer codigo3) {
-
-
-
+    public String getCombos(String mode, String codigo, String codigo2, Integer codigo3) {
         switch (mode) {
             case "periodos":
                 return new Gson().toJson(combosService.getPeriodos());
@@ -42,7 +38,6 @@ public class CombosController {
                 return new Gson().toJson(combosService.getUbigeo(codigo, codigo2));
             case "tipoDependencia":
                 return new Gson().toJson(combosService.getTipoDependencia());
-
             case "periodoTipoAsignacionPendientes":
                 return new Gson().toJson(combosService.getPeriodoTipoAsignacionPendiente(codigo));
             case "tipoAsignacionByPeriodo":
@@ -51,7 +46,6 @@ public class CombosController {
                 return new Gson().toJson(combosService.getBrigadas());
             case "brigadasByPeriodoTipoAsignacion":
                 return new Gson().toJson(combosService.getBrigadasByPeriodoTipoAsignacion(codigo, codigo3));
-
             case "tipoVehiculo":
                 return new Gson().toJson(combosService.getTipoVehiculo());
             case "claseVehiculo":
@@ -61,30 +55,21 @@ public class CombosController {
             case "modelo":
                 return new Gson().toJson(combosService.getModelo(codigo));
             case "color":
-                return new Gson().toJson(combosService.getColor());                
+                return new Gson().toJson(combosService.getColor());
             case "soat":
-                return new Gson().toJson(combosService.getSoat());                    
-            case "brigada":
-                return new Gson().toJson(combosService.getBrigada());                    
+                return new Gson().toJson(combosService.getSoat());
             case "areaLaboral":
-                return new Gson().toJson(combosService.getAreaLaboral());                    
+                return new Gson().toJson(combosService.getAreaLaboral());
             case "rol":
-                return new Gson().toJson(combosService.getRol());                        
-
+                return new Gson().toJson(combosService.getRol());
             case "vehiculosByBrigada":
-                return new Gson().toJson(combosService.getVehiculosByBrigadaAndPeriodo(codigo, codigo2));                        
-            //case "vehiculosByBrigadaVehiculo":
-              //  return new Gson().toJson(combosService.getDependenciaByVehiAndBrigAndPeri(codigo, codigo2, codigo3));                        
-
-
+                return new Gson().toJson(combosService.getVehiculosByBrigadaAndPeriodo(codigo, codigo2));
             case "vehiculosByPeriodo":
-                return new Gson().toJson(combosService.getVehiculosByPeriodo(codigo));                        
+                return new Gson().toJson(combosService.getVehiculosByPeriodo(codigo));
             case "dependenciaByBrigada":
-                return new Gson().toJson(combosService.getDependenciaByBrigada(codigo));                        
-
+                return new Gson().toJson(combosService.getDependenciaByBrigada(codigo));
             default:
                 return "ERROR";
         }
     }
-
 }
