@@ -40,5 +40,9 @@ public interface CombosService {
     public List<BeanCombos> getBrigada();
     
     public List<BeanCombos> getRol();
+    
+    public List<BeanCombos> getVehiculosByBrigadaAndPeriodo(String periodo, String brigada);
+    
+    public List<BeanCombos> getDependenciaByVehiAndBrigAndPeri(String periodo, String brigada, String vehiculo);
 
 }

@@ -97,4 +97,21 @@ public class CombosServiceImpl implements CombosService {
         return combosDAO.getRol();
     }
 
+    @Override
+    public List<BeanCombos> getVehiculosByBrigadaAndPeriodo(String periodo, String brigada) {
+        return combosDAO.getVehiculosByBrigadaAndPeriodo(
+                periodo, 
+                Integer.parseInt(brigada)
+        );
+    }
+
+    @Override
+    public List<BeanCombos> getDependenciaByVehiAndBrigAndPeri(String periodo, String brigada, String vehiculo) {
+        return combosDAO.getDependenciaByVehiAndBrigAndPeri(
+                periodo, 
+                Integer.parseInt(brigada), 
+                Integer.parseInt(vehiculo)
+        );
+    }
+
 }
