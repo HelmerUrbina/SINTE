@@ -1,14 +1,25 @@
 <script type="text/javascript">
     var codigo = null;
+    var descVehiculo = null;
+    var codigo2 = null;
+    var descDependencia=null;
+    var fechaModal = null;
     var mode = null;
     var msg = "";
     $(document).ready(function () {
         var theme = getTheme();
         $("#div_Titulo").jqxExpander({theme: theme, width: '100%'});
+        $("#cbo_Periodo").jqxComboBox({theme: theme, autoOpen: true, promptText: "Seleccione", width: 150, dropDownWidth: 150, height: 20});
+        $("#cbo_Brigada").jqxComboBox({theme: theme, autoOpen: true, promptText: "Seleccione", width: 300, dropDownWidth: 350, height: 20});
+        var fecha = new Date();
+        $("#cbo_Periodo").jqxComboBox('selectItem', fecha.getFullYear());
+        $('#cbo_Brigada').on('change', function () {
+            fn_CargarBusqueda();
+        });
         //DEFINIMOS LOS CAMPOS Y DATOS DE LA GRILLA
         $("#div_GrillaPrincipal").jqxGrid({
             width: '99.8%',
-            height: ($(window).height() - 65),
+            height: ($(window).height() - 95),
             autoheight: false,
             autorowheight: false,
             altrows: true,
@@ -25,51 +36,41 @@
                 var container = $("<div style='overflow: hidden; position: relative; margin: 1px;'></div>");
                 var ButtonNuevo = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='/images/Botones/nuevo42.gif' th:src='@{/images/Botones/nuevo42.gif' width=18 height=18 /><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
                 var ButtonExportar = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='/images/Botones/pauf42.gif' th:src='@{/images/Botones/pauf42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
-                var ButtonRecargar = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='/images/Botones/refresh42.gif' th:src='@{/images/Botones/refresh42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
-                var ButtonSalir = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='/images/Botones/exit42.gif' th:src='@{/images/Botones/exit42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
                 container.append(ButtonNuevo);
                 container.append(ButtonExportar);
-                container.append(ButtonRecargar);
-                container.append(ButtonSalir);
                 toolbar.append(container);
                 ButtonNuevo.jqxButton({width: 30, height: 22});
                 ButtonNuevo.jqxTooltip({position: 'bottom', content: "Nuevo Registro"});
                 ButtonExportar.jqxButton({width: 30, height: 22});
                 ButtonExportar.jqxTooltip({position: 'bottom', content: "Exportar Datos"});
-                ButtonRecargar.jqxButton({width: 30, height: 22});
-                ButtonRecargar.jqxTooltip({position: 'bottom', content: "Recargar"});
-                ButtonSalir.jqxButton({width: 30, height: 22});
-                ButtonSalir.jqxTooltip({position: 'bottom', content: "Salir de la Pantalla"});
                 //ASIGNAMOS LAS FUNCIONES PARA EL BOTON NUEVO
                 ButtonNuevo.click(function (event) {
                     mode = 'I';
                     codigo = '0';
-                    $("#txt_Abreviatura").val('');
-                    $("#txt_Descripcion").val('');
+                    $("#cbo_vehiculo").jqxDropDownList('clear');
+                    fn_cargarComboAjax("#cbo_vehiculo", {mode: 'vehiculosByBrigada', codigo: $('#cbo_Periodo').val(), codigo2:$('#cbo_Brigada').val()});
+                    $("#cbo_vehiculo").jqxDropDownList('setContent', 'Seleccione');
+                    $("#cbo_dependencia").jqxDropDownList('setContent', 'Seleccione');
+//                    $("#txt_fecha").jqxDateTimeInput('setDate',new Date());
+                    $("#cbo_vehiculo").jqxDropDownList({disabled: false})
+                    $("#cbo_dependencia").jqxDropDownList({disabled: false})
                     $('#div_VentanaPrincipal').jqxWindow({isModal: true, modalOpacity: 0.8});
                     $('#div_VentanaPrincipal').jqxWindow('open');
                 });
                 //ASIGNAMOS LAS FUNCIONES PARA EL BOTON EXPORTAR
                 ButtonExportar.click(function (event) {
-                    $("#div_GrillaPrincipal").jqxGrid('exportdata', 'xlsx', 'AreaLaboral');
-                });
-                //ASIGNAMOS LAS FUNCIONES PARA EL BOTON RECARGAR
-                ButtonRecargar.click(function (event) {
-                    fn_Refrescar();
-                });
-                //ASIGNAMOS LAS FUNCIONES PARA EL BOTON SALIR
-                ButtonSalir.click(function (event) {
-                    fn_MenuPrincipal();
+                    $("#div_GrillaPrincipal").jqxGrid('exportdata', 'xlsx', 'VehiculosBrigada');
                 });
             },
             columns: [
-                {text: 'ABREVIATURA', dataField: 'abreviatura', width: '40%', align: 'center', cellsAlign: 'left'},
-                {text: 'DESCRIPCIÓN', dataField: 'descripcion', width: '40%', align: 'center', cellsAlign: 'left'},
-                {text: 'ESTADO', dataField: 'estado', filtertype: 'list', width: '20%', align: 'center', cellsAlign: 'center'}
+                {text: 'VEHICULO', dataField: 'vehiculo', width: '25%', align: 'center', cellsAlign: 'center'},
+                {text: 'DEPENDENCIA', dataField: 'dependencia', width: '25%', align: 'center', cellsAlign: 'center'},
+                {text: 'FECHA', dataField: 'fecha', width: '25%', align: 'center', cellsAlign: 'center'},
+                {text: 'ESTADO', dataField: 'estado', filtertype: 'list', width: '25%', align: 'center', cellsAlign: 'center'}
             ]
         });
         // DEFINIMOS EL MENU CONTEXTUAL
-        var contextMenu = $("#div_ContextMenu").jqxMenu({width: 200, height: 83, autoOpenPopup: false, mode: 'popup'});
+        var contextMenu = $("#div_ContextMenu").jqxMenu({width: 200, height: 87, autoOpenPopup: false, mode: 'popup'});
         $("#div_GrillaPrincipal").on('contextmenu', function () {
             return false;
         });
@@ -99,11 +100,17 @@
             } else {
                 if ($.trim($(opcion).text()) === "Editar") {
                     mode = 'U';
-                    fn_EditarRegistro();
+                    $("#cbo_vehiculo").jqxDropDownList('setContent', descVehiculo);
+                    $("#cbo_vehiculo").jqxDropDownList({disabled: true})
+                    $("#cbo_dependencia").jqxDropDownList('setContent', descDependencia);
+                    $("#cbo_dependencia").jqxDropDownList({disabled: true})
+                    $('#txt_fecha').jqxDateTimeInput('setDate', new Date(fechaModal));
+                    $('#div_VentanaPrincipal').jqxWindow({isModal: true});
+                    $('#div_VentanaPrincipal').jqxWindow('open');
                 } else if ($.trim($(opcion).text()) === "Activar") {
                     $.confirm({
                         title: 'AVISO DEL SISTEMA',
-                        content: 'Desea Activar esta Área Laboral!',
+                        content: 'Desea Activar esta asignación de vehiculo!',
                         theme: 'material',
                         animation: 'zoom',
                         closeAnimation: 'zoom',
@@ -126,7 +133,7 @@
                 } else if ($.trim($(opcion).text()) === "Desactivar") {
                     $.confirm({
                         title: 'AVISO DEL SISTEMA',
-                        content: 'Desea Desactivar esta Área Laboral!',
+                        content: 'Desea Desactivar esta asignación de vehiculo!',
                         theme: 'material',
                         animation: 'zoom',
                         closeAnimation: 'zoom',
@@ -163,15 +170,20 @@
         $("#div_GrillaPrincipal").on('rowselect', function (event) {
             var args = event.args;
             var row = $("#div_GrillaPrincipal").jqxGrid('getrowdata', args.rowindex);
-            codigo = row['codigo'];
+            codigo = row['brigada'];
+            codigo2 = row['periodo'];
+            fechaModal = row['fecha'];
+            descVehiculo = row['vehiculo'];
+            descDependencia = row['dependencia'];
+                    
         });
         //CREA LOS ELEMENTOS DE LAS VENTANAS
         var customButtonsDemo = (function () {
             function _createElements() {
                 //INICIA LOS VALORES DE LA VENTANA
                 var posicionX, posicionY;
-                var ancho = 600;
-                var alto = 175;
+                var ancho = 500;
+                var alto = 150;
                 posicionX = ($(window).width() / 2) - (ancho / 2);
                 posicionY = ($(window).height() / 2) - (alto / 2);
                 $('#div_VentanaPrincipal').jqxWindow({
@@ -179,23 +191,17 @@
                     width: ancho, height: alto, resizable: false,
                     cancelButton: $('#btn_Cancelar'),
                     initContent: function () {
-                        $("#txt_Abreviatura").jqxInput({placeHolder: 'ABREVIATURA', width: 400, height: 20, minLength: 2, maxLength: 30});
-                        $("#txt_Descripcion").jqxInput({placeHolder: "DESCRIPCIÓN", width: 490, height: 60, minLength: 2, maxLength: 50});
+                        $("#cbo_vehiculo").jqxDropDownList({width: 300, height: 20, dropDownWidth: 300, promptText: "Seleccione"});
+                        $('#cbo_vehiculo').on('select', function (event) {
+                            $("#cbo_dependencia").jqxDropDownList('clear');
+                            fn_cargarComboAjax("#cbo_dependencia", {mode: 'vehiculosByBrigadaVehiculo', codigo: $('#cbo_Periodo').val(), codigo2:$('#cbo_Brigada').val(), codigo3:$('#cbo_vehiculo').val()});
+                        });
+                        $("#cbo_dependencia").jqxDropDownList({width: 300, height: 20, dropDownWidth: 300, promptText: "Seleccione"});
+                        $("#txt_fecha").jqxDateTimeInput({culture:'es-PE', animationType:'fade', width: '300px', height: '25px' });
                         $('#btn_Cancelar').jqxButton({width: '65px', height: 30});
                         $('#btn_Guardar').jqxButton({width: '65px', height: 30});
                         $('#btn_Guardar').on('click', function () {
-                            $('#frm_AreaLaboral').jqxValidator('validate');
-                        });
-                        $('#frm_AreaLaboral').jqxValidator({
-                            rules: [
-                                {input: '#txt_Abreviatura', message: 'Ingrese la Abreviatura del Área Laboral!', action: 'keyup, blur', rule: 'required'},
-                                {input: '#txt_Descripcion', message: 'Ingrese la Descripción del Área Laboral!', action: 'keyup, blur', rule: 'required'}
-                            ]
-                        });
-                        $('#frm_AreaLaboral').jqxValidator({
-                            onSuccess: function () {
-                                fn_GrabarDatos();
-                            }
+                            fn_GrabarDatos();
                         });
                     }
                 });
@@ -207,50 +213,50 @@
         }());
         $(document).ready(function () {
             customButtonsDemo.init();
-            fn_Refrescar();
+            $("#cbo_Brigada").jqxDropDownList('clear');
+            $("#cbo_Brigada").jqxDropDownList('setContent', 'Seleccione');
         });
     });
     //FUNCION PARA ACTUALIZAR DATOS DE LA GRILLA
-    function fn_Refrescar() {
+    function fn_CargarBusqueda() {
         var source = {
             dataType: "json",
             datafields: [
-                {name: 'codigo', type: "string"},
-                {name: 'abreviatura', type: "string"},
-                {name: 'descripcion', type: "string"},
-                {name: 'estado', type: "string"}
+                {name: 'brigada', type: "String"},
+                {name: 'periodo', type: "String"},
+                {name: 'vehiculo', type: "String"},
+                {name: 'dependencia', type: "String"},
+                {name: 'fecha', type: "String"},
+                {name: 'estado', type: "String"}
             ],
             id: 'codigo',
-            url: "../AreaLaboralDetalle",
-            data: {mode: 'G'}
+            url: "../VehiculosBrigadaDetalle",
+            data: {mode: 'G', periodo: $('#cbo_Periodo').val(), brigada:$('#cbo_Brigada').val()}
         };
         var dataAdapter = new $.jqx.dataAdapter(source);
         $("#div_GrillaPrincipal").jqxGrid({source: dataAdapter});
     }
-    //FUNCION PARA CARGAR VENTANA PARA EDITAR REGISTRO
-    function fn_EditarRegistro() {
-        $.ajax({
-            type: "GET",
-            url: "../AreaLaboralDetalle",
-            data: {mode: mode, codigo: codigo},
-            success: function (data) {
-                var dato = JSON.parse(data);
-                $("#txt_Abreviatura").val(dato.abreviatura);
-                $("#txt_Descripcion").val(dato.descripcion);
-            }
-        });
-        $('#div_VentanaPrincipal').jqxWindow({isModal: true});
-        $('#div_VentanaPrincipal').jqxWindow('open');
-    }
+    
     //FUNCION PARA GRABAR LOS DATOS DE LA VENTANA PRINCIPAL
     function fn_GrabarDatos() {
-        var abreviatura = $("#txt_Abreviatura").val();
-        var descripcion = $("#txt_Descripcion").val();
+        var periodo = $("#cbo_Periodo").val();
+        var brigada = $("#cbo_Brigada").val();
+        var vehiculo = codigo;
+        var dependencia = codigo2;
+        if(mode==='I'){
+            vehiculo = $("#cbo_vehiculo").val();
+            dependencia = $("#cbo_dependencia").val();
+        }
+        var fecha = $("#txt_fecha").val();
+        var json = {mode: mode, periodo: periodo, brigada: brigada, dependencia: dependencia,
+                   vehiculo: vehiculo, fecha: fecha};
+        console.log(json);       
+               
         $.ajax({
             type: "GET",
-            url: "../IduAreaLaboral",
-            data: {mode: mode, codigo: codigo, abreviatura: abreviatura,
-                descripcion: descripcion},
+            url: "../IduVehiculosBrigada",
+            data: {mode: mode, periodo: periodo, brigada: brigada, dependencia: dependencia,
+                   vehiculo: vehiculo, fecha: fecha},
             success: function (data) {
                 msg = data;
                 if (msg === "GUARDO") {
@@ -265,7 +271,7 @@
                                 text: 'Cerrar',
                                 action: function () {
                                     $('#div_VentanaPrincipal').jqxWindow('close');
-                                    fn_Refrescar();
+                                    fn_CargarBusqueda();
                                 }
                             }
                         }
@@ -286,26 +292,65 @@
     }
 </script>
 <div id='div_Titulo' style="border: none;">
-    <div class="jqx-hideborder">LISTADOS DE ÁREAS LABORALES</div>
+    <div class="jqx-hideborder">LISTADOS DE VERHICULOS POR BRIGADA</div>
     <div>
-        <div id="div_Detalle" class="maincen"></div>
+        <div id="div_Cabecera">
+            <table class="navy">
+                <tbody>
+                    <tr> 
+                        <td class="Titulo">Período : </td>
+                        <td>
+                            <select id="cbo_Periodo" name="cbo_Periodo">
+                                <option value="0">Seleccione</option>
+                                <span th:each="periodo : ${session.objPeriodos}">
+                                    <option th:value="${periodo.codigo}"><span th:text="${periodo.codigo}"> </span></option>
+                                </span>
+                            </select>
+                        </td>
+                        <td class="Titulo">Brigada : </td>
+                        <td>
+                            <select id="cbo_Brigada" name="cbo_Brigada">
+                                <option value="0">Seleccione</option>
+                                <span th:each="brigada : ${session.objBrigadasAll}">
+                                    <option th:value="${brigada.codigo}"><span th:text="${brigada.descripcion}"> </span></option>
+                                </span>
+                            </select>
+                        </td>
+                        <td><a href="javascript: fn_CargarBusqueda();"><img src="../images/Botones/refresh42.gif" alt="Buscar Datos" name="imgrefresh" width="30" height="28" border="0" id="imgrefresh"></a></td>
+                        <td><a href="javascript: fn_MenuPrincipal();"><img src="../images/Botones/exit42.gif" alt="Salir de pantalla" name="imgexit" width="30" height="28"  border="0" id="imgexit" /></a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div id="div_GrillaPrincipal"></div>
     </div>
 </div>
-<div id="div_GrillaPrincipal"></div>
 <div id="div_VentanaPrincipal" style="display: none">
     <div>
-        <span style="float: left">DATOS DEL ÁREA LABORAL</span>
+        <span style="float: left">REGISTRO DE VEHICULOS BRIGADA</span>
     </div>
     <div style="overflow: hidden">
-        <form id="frm_AreaLaboral" name="frm_AreaLaboral" method="post" >
+        <form id="frm_vehiculos_brigada" name="frm_vehiculos_brigada" method="post" >
             <table width="100%" border="0" cellspacing="0" cellpadding="0"> 
                 <tr>
-                    <td class="inputlabel">Abreviatura : </td>
-                    <td><input type="text" id="txt_Abreviatura" name="txt_Abreviatura" style='text-transform:uppercase;'/></td>
+                    <td class="inputlabel">Vehiculo : </td>
+                    <td>
+                        <select id="cbo_vehiculo" name="cbo_vehiculo">
+                            <option value="0">Seleccione</option>
+                        </select>
+                    </td>
                 </tr>
                 <tr>
-                    <td class="inputlabel">Descripción : </td>
-                    <td><textarea id="txt_Descripcion" name="txt_Descripcion" style="text-transform: uppercase;"/></textarea></td>
+                    <td class="inputlabel">Dependencia : </td>
+                    <td>
+                        <select id="cbo_dependencia" name="cbo_dependencia">
+                            <option value="0">Seleccione</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="inputlabel">Fecha : </td>
+                    <td><div id="txt_fecha"></div></td>
                 </tr>
                 <tr>
                     <td class="Summit" colspan="4">

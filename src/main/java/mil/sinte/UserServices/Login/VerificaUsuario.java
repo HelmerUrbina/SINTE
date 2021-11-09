@@ -26,6 +26,9 @@ public class VerificaUsuario {
 
     @Autowired
     private UsuarioMenuService usuarioMenuService;
+    
+    @Autowired
+    private CombosService combosService;
 
     @Autowired
     private CombosService combosService;
@@ -38,6 +41,7 @@ public class VerificaUsuario {
                 usuario.setPassword(null);
                 session.setAttribute("usuario", usuario);
             }
+            session.setAttribute("objBrigadasAll", combosService.getBrigada());
             session.setAttribute("objModulos", usuarioMenuService.getModuloUsuario(user.getUsername()));
             session.setAttribute("objMenus", usuarioMenuService.getMenuUsuario(user.getUsername()));
             session.setAttribute("objAutorizacion", usuario.getAutorizacion());
