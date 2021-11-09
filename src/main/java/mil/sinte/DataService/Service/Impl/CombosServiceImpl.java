@@ -98,20 +98,13 @@ public class CombosServiceImpl implements CombosService {
     }
 
     @Override
-    public List<BeanCombos> getVehiculosByBrigadaAndPeriodo(String periodo, String brigada) {
-        return combosDAO.getVehiculosByBrigadaAndPeriodo(
-                periodo, 
-                Integer.parseInt(brigada)
-        );
+    public List<BeanCombos> getVehiculosByPeriodo(String periodo) {
+        return combosDAO.getVehiculosByPeriodo(periodo);
     }
 
     @Override
-    public List<BeanCombos> getDependenciaByVehiAndBrigAndPeri(String periodo, String brigada, String vehiculo) {
-        return combosDAO.getDependenciaByVehiAndBrigAndPeri(
-                periodo, 
-                Integer.parseInt(brigada), 
-                Integer.parseInt(vehiculo)
-        );
+    public List<BeanCombos> getDependenciaByBrigada(String brigada) {
+        return combosDAO.getDependenciaByBrigada(Integer.parseInt(brigada));
     }
 
 }

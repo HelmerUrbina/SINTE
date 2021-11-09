@@ -145,22 +145,16 @@ public interface CombosDAO extends CrudRepository<BeanCombos, String> {
                                         " FROM SINTE_VEHICULOS\n" +
                                         "WHERE NVEHICULO_CODIGO NOT IN (SELECT NVEHICULO_CODIGO\n" +
                                         "                                FROM SINTE_VEHICULOS_BRIGADAS\n" +
-                                        "                               WHERE NBRIGADA_CODIGO =?2 \n" +
-                                        "                                 AND CPERIODO_CODIGO =?1) \n" +
+                                        "                               WHERE CPERIODO_CODIGO =?1) \n" +
                                         "ORDER BY CODIGO")
-    List<BeanCombos> getVehiculosByBrigadaAndPeriodo(String periodo, Integer brigada);
+    List<BeanCombos> getVehiculosByPeriodo(String periodo);
     
     @Query(nativeQuery = true, value =  "SELECT NDEPENDENCIA_CODIGO CODIGO,\n" +
                                         "      VDEPENDENCIA_ABREVIATURA DESCRIPCION \n" +
                                         " FROM SINTE_DEPENDENCIAS\n" +
-                                        "WHERE NDEPENDENCIA_CODIGO NOT IN (SELECT NDEPENDENCIA_CODIGO\n" +
-                                        "                                    FROM SINTE_VEHICULOS_BRIGADAS\n" +
-                                        "                                   WHERE NBRIGADA_CODIGO =?2\n" +
-                                        "                                     AND CPERIODO_CODIGO = ?1\n" +
-                                        "                                     AND NVEHICULO_CODIGO = ?3) \n" +
-                                        "  AND NBRIGADA_CODIGO = ?2\n" +
+                                        "WHERE NBRIGADA_CODIGO = ?1\n" +
                                         "ORDER BY CODIGO")
-    List<BeanCombos> getDependenciaByVehiAndBrigAndPeri(String periodo, Integer brigada, Integer vehiculo);
+    List<BeanCombos> getDependenciaByBrigada(Integer brigada);
 
 
 }

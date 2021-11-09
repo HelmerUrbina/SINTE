@@ -21,7 +21,7 @@ public class CombosController {
 
     @RequestMapping(value = "/CombosAjax")
     @ResponseBody
-    public String getAreaLaboralDetalle(String mode, String codigo, String codigo2, String codigo3) {
+    public String getAreaLaboralDetalle(String mode, String codigo, String codigo2) {
         switch (mode) {
             case "periodos":
                 return new Gson().toJson(combosService.getPeriodos());
@@ -55,10 +55,10 @@ public class CombosController {
                 return new Gson().toJson(combosService.getAreaLaboral());                    
             case "rol":
                 return new Gson().toJson(combosService.getRol());                        
-            case "vehiculosByBrigada":
-                return new Gson().toJson(combosService.getVehiculosByBrigadaAndPeriodo(codigo, codigo2));                        
-            case "vehiculosByBrigadaVehiculo":
-                return new Gson().toJson(combosService.getDependenciaByVehiAndBrigAndPeri(codigo, codigo2, codigo3));                        
+            case "vehiculosByPeriodo":
+                return new Gson().toJson(combosService.getVehiculosByPeriodo(codigo));                        
+            case "dependenciaByBrigada":
+                return new Gson().toJson(combosService.getDependenciaByBrigada(codigo));                        
             default:
                 return "ERROR";
         }

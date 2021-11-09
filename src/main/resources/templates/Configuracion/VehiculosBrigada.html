@@ -48,10 +48,11 @@
                     mode = 'I';
                     codigo = '0';
                     $("#cbo_vehiculo").jqxDropDownList('clear');
-                    fn_cargarComboAjax("#cbo_vehiculo", {mode: 'vehiculosByBrigada', codigo: $('#cbo_Periodo').val(), codigo2:$('#cbo_Brigada').val()});
+                    fn_cargarComboAjax("#cbo_vehiculo", {mode: 'vehiculosByPeriodo', codigo: $('#cbo_Periodo').val()});
+                    $("#cbo_dependencia").jqxDropDownList('clear');
+                    fn_cargarComboAjax("#cbo_dependencia", {mode: 'dependenciaByBrigada', codigo: $('#cbo_Brigada').val()});
                     $("#cbo_vehiculo").jqxDropDownList('setContent', 'Seleccione');
                     $("#cbo_dependencia").jqxDropDownList('setContent', 'Seleccione');
-//                    $("#txt_fecha").jqxDateTimeInput('setDate',new Date());
                     $("#cbo_vehiculo").jqxDropDownList({disabled: false})
                     $("#cbo_dependencia").jqxDropDownList({disabled: false})
                     $('#div_VentanaPrincipal').jqxWindow({isModal: true, modalOpacity: 0.8});
@@ -102,8 +103,8 @@
                     mode = 'U';
                     $("#cbo_vehiculo").jqxDropDownList('setContent', descVehiculo);
                     $("#cbo_vehiculo").jqxDropDownList({disabled: true})
-                    $("#cbo_dependencia").jqxDropDownList('setContent', descDependencia);
-                    $("#cbo_dependencia").jqxDropDownList({disabled: true})
+                    $("#cbo_dependencia").jqxDropDownList('selectItem', codigo2);
+                    $("#cbo_dependencia").jqxDropDownList({disabled: false})
                     $('#txt_fecha').jqxDateTimeInput('setDate', new Date(fechaModal));
                     $('#div_VentanaPrincipal').jqxWindow({isModal: true});
                     $('#div_VentanaPrincipal').jqxWindow('open');
@@ -175,6 +176,10 @@
             fechaModal = row['fecha'];
             descVehiculo = row['vehiculo'];
             descDependencia = row['dependencia'];
+            $("#cbo_vehiculo").jqxDropDownList('clear');
+            fn_cargarComboAjax("#cbo_vehiculo", {mode: 'vehiculosByPeriodo', codigo: $('#cbo_Periodo').val()});
+            $("#cbo_dependencia").jqxDropDownList('clear');
+            fn_cargarComboAjax("#cbo_dependencia", {mode: 'dependenciaByBrigada', codigo: $('#cbo_Brigada').val()});
                     
         });
         //CREA LOS ELEMENTOS DE LAS VENTANAS
@@ -192,10 +197,6 @@
                     cancelButton: $('#btn_Cancelar'),
                     initContent: function () {
                         $("#cbo_vehiculo").jqxDropDownList({width: 300, height: 20, dropDownWidth: 300, promptText: "Seleccione"});
-                        $('#cbo_vehiculo').on('select', function (event) {
-                            $("#cbo_dependencia").jqxDropDownList('clear');
-                            fn_cargarComboAjax("#cbo_dependencia", {mode: 'vehiculosByBrigadaVehiculo', codigo: $('#cbo_Periodo').val(), codigo2:$('#cbo_Brigada').val(), codigo3:$('#cbo_vehiculo').val()});
-                        });
                         $("#cbo_dependencia").jqxDropDownList({width: 300, height: 20, dropDownWidth: 300, promptText: "Seleccione"});
                         $("#txt_fecha").jqxDateTimeInput({culture:'es-PE', animationType:'fade', width: '300px', height: '25px' });
                         $('#btn_Cancelar').jqxButton({width: '65px', height: 30});
@@ -242,10 +243,12 @@
         var periodo = $("#cbo_Periodo").val();
         var brigada = $("#cbo_Brigada").val();
         var vehiculo = codigo;
-        var dependencia = codigo2;
+        var dependencia = $("#cbo_dependencia").val();
         if(mode==='I'){
             vehiculo = $("#cbo_vehiculo").val();
-            dependencia = $("#cbo_dependencia").val();
+        }
+        if(mode!=='U'){
+            dependencia = codigo2;
         }
         var fecha = $("#txt_fecha").val();
         var json = {mode: mode, periodo: periodo, brigada: brigada, dependencia: dependencia,
