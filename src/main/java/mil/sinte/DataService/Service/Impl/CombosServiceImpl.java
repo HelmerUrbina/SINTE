@@ -78,8 +78,9 @@ public class CombosServiceImpl implements CombosService {
     @Override
     public List<BeanCombos> getBrigadasByPeriodoTipoAsignacion(String periodo, Integer tipoAsignacion) {
         return combosDAO.getBrigadasByPeriodoTipoAsignacion(periodo, tipoAsignacion);
+    }
 
-	@Override
+    @Override
     public List<BeanCombos> getTipoVehiculo() {
         return combosDAO.getTipoVehiculo();
     }
@@ -95,7 +96,8 @@ public class CombosServiceImpl implements CombosService {
     }
 
     @Override
-    public List<BeanCombos> getModelo(String marca) {
+    public List<BeanCombos> getModelo(String marca
+    ) {
         return combosDAO.getModelo(marca);
     }
 
@@ -125,18 +127,20 @@ public class CombosServiceImpl implements CombosService {
     }
 
     @Override
-    public List<BeanCombos> getVehiculosByBrigadaAndPeriodo(String periodo, String brigada) {
+    public List<BeanCombos> getVehiculosByBrigadaAndPeriodo(String periodo, String brigada
+    ) {
         return combosDAO.getVehiculosByBrigadaAndPeriodo(
-                periodo, 
+                periodo,
                 Integer.parseInt(brigada)
         );
     }
 
     @Override
-    public List<BeanCombos> getDependenciaByVehiAndBrigAndPeri(String periodo, String brigada, String vehiculo) {
+    public List<BeanCombos> getDependenciaByVehiAndBrigAndPeri(String periodo, String brigada,
+            String vehiculo) {
         return combosDAO.getDependenciaByVehiAndBrigAndPeri(
-                periodo, 
-                Integer.parseInt(brigada), 
+                periodo,
+                Integer.parseInt(brigada),
                 Integer.parseInt(vehiculo)
         );
 

@@ -26,9 +26,6 @@ public class VerificaUsuario {
 
     @Autowired
     private UsuarioMenuService usuarioMenuService;
-    
-    @Autowired
-    private CombosService combosService;
 
     @Autowired
     private CombosService combosService;
@@ -48,7 +45,8 @@ public class VerificaUsuario {
             session.setAttribute("objPeriodos", combosService.getPeriodos());
             session.setAttribute("objBrigadas", combosService.getBrigadasByUsuario(user.getUsername()));
             log.info("usuario que hizo login : " + user);
-            log.info("Autorizacion : "+usuario.getAutorizacion());
+            
+            log.info("Autorizacion : " + usuario.getAutorizacion());
             return "Login/Principal";
         } else {
             return "/login?logout";
