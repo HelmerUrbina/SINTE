@@ -49,12 +49,10 @@
                     codigo = '0';
                     $("#cbo_vehiculo").jqxDropDownList('clear');
                     fn_cargarComboAjax("#cbo_vehiculo", {mode: 'vehiculosByPeriodo', codigo: $('#cbo_Periodo').val()});
-                    $("#cbo_dependencia").jqxDropDownList('clear');
-                    fn_cargarComboAjax("#cbo_dependencia", {mode: 'dependenciaByBrigada', codigo: $('#cbo_Brigada').val()});
+                    
                     $("#cbo_vehiculo").jqxDropDownList('setContent', 'Seleccione');
                     $("#cbo_dependencia").jqxDropDownList('setContent', 'Seleccione');
-                    $("#cbo_vehiculo").jqxDropDownList({disabled: false})
-                    $("#cbo_dependencia").jqxDropDownList({disabled: false})
+                    $("#cbo_vehiculo").jqxDropDownList({disabled: false});
                     $('#div_VentanaPrincipal').jqxWindow({isModal: true, modalOpacity: 0.8});
                     $('#div_VentanaPrincipal').jqxWindow('open');
                 });
@@ -104,7 +102,6 @@
                     $("#cbo_vehiculo").jqxDropDownList('setContent', descVehiculo);
                     $("#cbo_vehiculo").jqxDropDownList({disabled: true})
                     $("#cbo_dependencia").jqxDropDownList('selectItem', codigo2);
-                    $("#cbo_dependencia").jqxDropDownList({disabled: false})
                     $('#txt_fecha').jqxDateTimeInput('setDate', new Date(fechaModal));
                     $('#div_VentanaPrincipal').jqxWindow({isModal: true});
                     $('#div_VentanaPrincipal').jqxWindow('open');
@@ -178,8 +175,7 @@
             descDependencia = row['dependencia'];
             $("#cbo_vehiculo").jqxDropDownList('clear');
             fn_cargarComboAjax("#cbo_vehiculo", {mode: 'vehiculosByPeriodo', codigo: $('#cbo_Periodo').val()});
-            $("#cbo_dependencia").jqxDropDownList('clear');
-            fn_cargarComboAjax("#cbo_dependencia", {mode: 'dependenciaByBrigada', codigo: $('#cbo_Brigada').val()});
+           
                     
         });
         //CREA LOS ELEMENTOS DE LAS VENTANAS
@@ -214,8 +210,6 @@
         }());
         $(document).ready(function () {
             customButtonsDemo.init();
-            $("#cbo_Brigada").jqxDropDownList('clear');
-            $("#cbo_Brigada").jqxDropDownList('setContent', 'Seleccione');
         });
     });
     //FUNCION PARA ACTUALIZAR DATOS DE LA GRILLA
@@ -236,6 +230,7 @@
         };
         var dataAdapter = new $.jqx.dataAdapter(source);
         $("#div_GrillaPrincipal").jqxGrid({source: dataAdapter});
+        fn_cargarComboAjax("#cbo_dependencia", {mode: 'dependenciaByBrigada', codigo: $('#cbo_Brigada').val()});
     }
     
     //FUNCION PARA GRABAR LOS DATOS DE LA VENTANA PRINCIPAL
@@ -247,13 +242,11 @@
         if(mode==='I'){
             vehiculo = $("#cbo_vehiculo").val();
         }
-        if(mode!=='U'){
-            dependencia = codigo2;
-        }
+        
         var fecha = $("#txt_fecha").val();
         var json = {mode: mode, periodo: periodo, brigada: brigada, dependencia: dependencia,
                    vehiculo: vehiculo, fecha: fecha};
-        console.log(json);       
+        console.log(json);
                
         $.ajax({
             type: "GET",

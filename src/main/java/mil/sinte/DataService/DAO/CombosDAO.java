@@ -150,7 +150,7 @@ public interface CombosDAO extends CrudRepository<BeanCombos, String> {
             + "NDEPENDENCIA_CODIGO CODIGO, "
             + "VDEPENDENCIA_ABREVIATURA DESCRIPCION "
             + "FROM SINTE_DEPENDENCIAS WHERE "
-            + "NBRIGADA_CODIGO=?1\n"
+            + "NBRIGADA_CODIGO=?1 "
             + "ORDER BY CODIGO")
     List<BeanCombos> getDependenciaByBrigada(Integer brigada);
 
@@ -219,8 +219,25 @@ public interface CombosDAO extends CrudRepository<BeanCombos, String> {
             + "FROM SINTE_VEHICULOS "
             + "WHERE NVEHICULO_CODIGO NOT IN (SELECT NVEHICULO_CODIGO "
             + "FROM SINTE_VEHICULOS_BRIGADAS WHERE "
-            + "NBRIGADA_CODIGO=?2 AND "
-            + "CPERIODO_CODIGO=?1) "
+            + "CPERIODO_CODIGO=?1 AND "
+            + "NBRIGADA_CODIGO=?2) "
             + "ORDER BY CODIGO")
     List<BeanCombos> getVehiculosByBrigadaAndPeriodo(String periodo, Integer brigada);
+
+    @Query(nativeQuery = true, value = "SELECT "
+            + "NVEHICULO_CODIGO AS CODIGO, "
+            + "UTIL.FUN_VEHICULO(NVEHICULO_CODIGO) DESCRIPCION "
+            + "FROM SINTE_VEHICULOS_BRIGADAS WHERE "
+            + "CPERIODO_CODIGO=?1 AND "
+            + "NBRIGADA_CODIGO=?2 "
+            + "ORDER BY CODIGO")
+    List<BeanCombos> getVehiculosByPeriodoAndBrigada(String periodo, Integer brigada);
+
+    @Query(nativeQuery = true, value = "SELECT "
+            + "NTIPO_COMBUSTIBLE_CODIGO AS CODIGO, "
+            + "UTIL.FUN_TIPO_COMBUSTIBLE_ABREVIATU(NTIPO_COMBUSTIBLE_CODIGO) DESCRIPCION "
+            + "FROM SINTE_VEHICULOS_TIPO_COMBUSTIB WHERE "
+            + "NVEHICULO_CODIGO=?1 "
+            + "ORDER BY CODIGO")
+    List<BeanCombos> getTipoCombustibleByVehiculo(Integer vehiculo);
 }

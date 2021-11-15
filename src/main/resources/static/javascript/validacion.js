@@ -25,7 +25,9 @@ function fn_CargarMenu(servlet, mode) {
     $("#div_VentanaDetalle").remove();
     $("#div_RegistroDetalle").remove();
     $("#div_ContextMenu").remove();
-
+    $("#div_VentanaAseguradora").remove();
+    $("#div_VentanaTipoCombustible").remove();
+    $("#div_ContextMenu").remove();
     /*/
      
      $("#div_ContextMenu").remove();

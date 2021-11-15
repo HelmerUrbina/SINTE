@@ -506,7 +506,6 @@ function getWidth(name) {
                     rangeSelector.style.marginLeft = 'auto';
                     rangeSelector.style.marginRight = 'auto';
                 }
-
                 return windowWidth;
             }
             return 750;

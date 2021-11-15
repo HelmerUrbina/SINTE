@@ -20,14 +20,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
  *
  * @author MERCANTIL GROUP SAC
  */
-
 @Controller
 @Slf4j
 public class VehiculosBrigadaController {
-    
+
     @Autowired
     private VehiculosBrigadasService vehiculosBrigadasService;
-    
+
     @RequestMapping(value = "/VehiculosBrigada")
     public String getVehiculosBrigada(String mode) {
         switch (mode) {
@@ -37,7 +36,7 @@ public class VehiculosBrigadaController {
                 return "redirect:/";
         }
     }
-    
+
     @RequestMapping(value = "/VehiculosBrigadaDetalle")
     @ResponseBody
     public String getVehiculosBrigadaDetalle(String mode, Integer brigada, String periodo) {
@@ -50,8 +49,7 @@ public class VehiculosBrigadaController {
                 return "ERROR";
         }
     }
-        
-    
+
     @RequestMapping(value = "/IduVehiculosBrigada")
     @ResponseBody
     public String setVehiculosBrigada(
@@ -61,7 +59,8 @@ public class VehiculosBrigadaController {
             @RequestParam("vehiculo") String vehiculo,
             @RequestParam("fecha") String fecha,
             @RequestParam("mode") String mode
-            ) {
+    ) {
+        System.out.println("depende : "+brigada);
         BeanVehiculosBrigada objBeanVehiculosBrigada = new BeanVehiculosBrigada();
         objBeanVehiculosBrigada.setPeriodo(periodo);
         objBeanVehiculosBrigada.setBrigada(brigada);
@@ -70,6 +69,5 @@ public class VehiculosBrigadaController {
         objBeanVehiculosBrigada.setFecha(fecha);
         return "" + vehiculosBrigadasService.guardarVehiculosBrigada(objBeanVehiculosBrigada, Utiles.getUsuario(), mode);
     }
-    
-    
+
 }

@@ -63,11 +63,15 @@ public class CombosController {
             case "rol":
                 return new Gson().toJson(combosService.getRol());
             case "vehiculosByBrigada":
-                return new Gson().toJson(combosService.getVehiculosByBrigadaAndPeriodo(codigo, codigo2));
+                return new Gson().toJson(combosService.getVehiculosByBrigadaAndPeriodo(codigo, Utiles.checkNum(codigo2)));
             case "vehiculosByPeriodo":
                 return new Gson().toJson(combosService.getVehiculosByPeriodo(codigo));
+            case "vehiculosByPeriodoBrigada":
+                return new Gson().toJson(combosService.getVehiculosByPeriodoBrigada(codigo, codigo3));
             case "dependenciaByBrigada":
                 return new Gson().toJson(combosService.getDependenciaByBrigada(codigo));
+            case "tipoCombustibleByVehiculo":
+                return new Gson().toJson(combosService.getTipoCombustibleByVehiculo(codigo3));
             default:
                 return "ERROR";
         }

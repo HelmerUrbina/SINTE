@@ -27,11 +27,11 @@ public interface DependenciaDAO extends JpaRepository<BeanDependencia, String> {
     List<BeanDependencia> findByBrigada(Integer brigada);
 
     @Query(nativeQuery = true, value = "SELECT "
-            + "a.NDEPENDENCIA_CODIGO, a.VDEPENDENCIA_DESCRIPCION, a.VDEPENDENCIA_ABREVIATURA, "
+            + "NDEPENDENCIA_CODIGO, VDEPENDENCIA_DESCRIPCION, a.VDEPENDENCIA_ABREVIATURA, "
             + "UTIL.FUN_ESTADO_DESCRIPCION(a.CESTADO_CODIGO) CESTADO_CODIGO "
             + "FROM SINTE_DEPENDENCIAS a WHERE "
-            + "a.NBRIGADA_CODIGO=?1 AND "
-            + "a.NDEPENDENCIA_CODIGO=?2 ")
+            + "NBRIGADA_CODIGO=?1 AND "
+            + "NDEPENDENCIA_CODIGO=?2 ")
     public BeanDependencia findByCodigo(Integer brigada, Integer codigo);
 
     @Transactional

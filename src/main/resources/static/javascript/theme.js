@@ -1,4 +1,4 @@
-var theme = "ui-redmond"; // ui-start  -- ui-redmond -- ui-lightness -- arctic -- darkblue -- fresh --boostrap
+var theme = "ui-redmond"; // ui-start  -- ui-redmond -- ui-lightness -- arctic -- darkblue -- fresh --bootstrap --material --energyblue
 function getTheme() {
     var url = "/css/styles/jqx." + theme + ".css";
     var hasStyle = false;
