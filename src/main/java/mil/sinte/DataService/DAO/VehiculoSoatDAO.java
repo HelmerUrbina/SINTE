@@ -1,10 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mil.sinte.DataService.DAO;
 
+import java.sql.Date;
 import java.util.List;
 import mil.sinte.BusinessServices.Beans.BeanVehiculoSoat;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -48,12 +44,12 @@ public interface VehiculoSoatDAO extends JpaRepository<BeanVehiculoSoat, Integer
     @Modifying
     @Query(value = "{CALL SP_IDU_VEHICULO_SOAT(:codigo, :vehiculo, :soat, :certificado, :inicio, :fin, :tipo, :usuario, :modo)}", nativeQuery = true)
     void sp_vehiculo_soat(
-            @Param("codigo") int codigo,
-            @Param("vehiculo") int vehiculo,
-            @Param("soat") int soat,
+            @Param("codigo") Integer codigo,
+            @Param("vehiculo") Integer vehiculo,
+            @Param("soat") Integer soat,
             @Param("certificado") String certificado,
-            @Param("inicio") String inicio,
-            @Param("fin") String fin,
+            @Param("inicio") Date inicio,
+            @Param("fin") Date fin,
             @Param("tipo") String tipo,
             @Param("usuario") String usuario,
             @Param("modo") String modo);

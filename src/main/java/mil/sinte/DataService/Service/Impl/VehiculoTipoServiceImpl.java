@@ -18,11 +18,11 @@ import org.springframework.stereotype.Service;
  * @author MERCANTIL GROUP SAC
  */
 @Service
-public class VehiculoTipoServiceImpl implements VehiculoTipoService{
+public class VehiculoTipoServiceImpl implements VehiculoTipoService {
 
     @Autowired
     private VehiculoTipoDAO VehiculoTipoDAO;
-    
+
     @Override
     public List<BeanVehiculoTipo> getVehiculoTipos() {
         return VehiculoTipoDAO.findAll();
@@ -47,7 +47,7 @@ public class VehiculoTipoServiceImpl implements VehiculoTipoService{
         } catch (Exception | Error e) {
             result = Utiles.getErrorSQL((Exception) e);
         }
-        return result;  
+        return result;
     }
-    
+
 }

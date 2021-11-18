@@ -20,7 +20,7 @@ public class BeanVehiculos implements Serializable {
 
     @Column(name = "NVEHICULO_CODIGO", nullable = false)
     private Integer codigo;
-    
+
     @Id
     @Column(name = "VVEHICULO_PLACA", nullable = false)
     private String placa;

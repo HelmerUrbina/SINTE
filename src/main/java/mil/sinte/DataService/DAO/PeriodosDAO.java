@@ -16,12 +16,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 public interface PeriodosDAO extends JpaRepository<BeanPeriodos, String> {
 
-    @Query(nativeQuery = true, value = "SELECT "
-            + "a.CPERIODO_CODIGO, a.VPERIODO_DESCRIPCION, "
-            + "a.VPERIODO_ABREVIATURA , "
-            + "UTIL.FUN_ESTADO_DESCRIPCION(a.CESTADO_CODIGO) CESTADO_CODIGO "
-            + "FROM SINTE_PERIODOS a "
-            + "ORDER BY a.CPERIODO_CODIGO")
+    @Query(nativeQuery = true, value = "SELECT CPERIODO_CODIGO, "
+            + "VPERIODO_DESCRIPCION, VPERIODO_ABREVIATURA, "
+            + "UTIL.FUN_ESTADO_DESCRIPCION(CESTADO_CODIGO) CESTADO_CODIGO "
+            + "FROM SINTE_PERIODOS  "
+            + "ORDER BY CPERIODO_CODIGO")
     @Override
     List<BeanPeriodos> findAll();
 

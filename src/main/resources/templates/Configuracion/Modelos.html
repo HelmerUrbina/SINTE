@@ -1,4 +1,4 @@
-<script type="text/javascript">
+<script >
     var codigo = null;
     var marca = null;
     var mode = null;
@@ -251,13 +251,13 @@
     function fn_GrabarDatos() {
         var marcaInterna = $("#cbo_Marca").val();
         var descripcion = $("#txt_Descripcion").val();
-        if(mode!=='I'){
+        if (mode !== 'I') {
             marcaInterna = marca;
         }
         $.ajax({
             type: "GET",
             url: "../IduModelos",
-            data: {mode: mode, modelo: codigo, marca:marcaInterna, descripcion: descripcion},
+            data: {mode: mode, modelo: codigo, marca: marcaInterna, descripcion: descripcion},
             success: function (data) {
                 msg = data;
                 if (msg === "GUARDO") {

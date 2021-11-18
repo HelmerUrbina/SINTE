@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mil.sinte.UserServices.Configuracion;
 
 import com.google.gson.Gson;
@@ -60,7 +55,6 @@ public class VehiculosBrigadaController {
             @RequestParam("fecha") String fecha,
             @RequestParam("mode") String mode
     ) {
-        System.out.println("depende : "+brigada);
         BeanVehiculosBrigada objBeanVehiculosBrigada = new BeanVehiculosBrigada();
         objBeanVehiculosBrigada.setPeriodo(periodo);
         objBeanVehiculosBrigada.setBrigada(brigada);

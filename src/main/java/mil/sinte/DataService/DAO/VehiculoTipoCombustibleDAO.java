@@ -31,16 +31,16 @@ public interface VehiculoTipoCombustibleDAO extends JpaRepository<BeanVehiculoTi
             + "UTIL.FUN_ESTADO_DESCRIPCION(CESTADO_CODIGO) CESTADO_CODIGO FROM "
             + "SINTE_VEHICULOS_TIPO_COMBUSTIB WHERE "
             + "NVEHICULO_CODIGO=?1 AND "
-            + "NTIPO_COMBUSTIBLE_CODIGO =?2")
+            + "NTIPO_COMBUSTIBLE_CODIGO=?2")
     public BeanVehiculoTipoCombustible findByCodigo(Integer vehiculo, Integer codigo);
 
     @Transactional
     @Modifying
     @Query(value = "{CALL SP_IDU_VEHICULO_TIPO_COMBUSTIB(:vehiculo, :tipoCombustible, :capacidad,:usuario,:modo)}", nativeQuery = true)
     void sp_vehiculo_tipo_combustible(
-            @Param("vehiculo") int vehiculo,
-            @Param("tipoCombustible") int tipoCombustible,
-            @Param("capacidad") double capacidad,
+            @Param("vehiculo") Integer vehiculo,
+            @Param("tipoCombustible") Integer tipoCombustible,
+            @Param("capacidad") Double capacidad,
             @Param("usuario") String usuario,
             @Param("modo") String modo);
 }

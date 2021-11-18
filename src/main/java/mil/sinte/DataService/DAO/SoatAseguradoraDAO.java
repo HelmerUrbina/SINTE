@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mil.sinte.DataService.DAO;
 
 import java.util.List;
@@ -19,33 +14,28 @@ import org.springframework.transaction.annotation.Transactional;
  * @author MERCANTIL GROUP SAC
  */
 @Repository
-public interface SoatAseguradoraDAO extends JpaRepository<BeanSoatAseguradora, String>{
-    
-    @Query(nativeQuery = true, value =  "SELECT NSOAT_ASEGURADORA_CODIGO,\n" +
-                                        "       VSOAT_ASEGURADORA_NOMBRE,\n" +
-                                        "       VSOAT_ASEGURADORA_TELEFONO,\n" +
-                                        "       VSOAT_ASEGURADORA_DIRECCION,\n" +
-                                        "       UTIL.FUN_ESTADO_DESCRIPCION(CESTADO_CODIGO) CESTADO_CODIGO\n" +
-                                        "  FROM SINTE_SOAT_ASEGURADORA\n" +
-                                        " ORDER BY NSOAT_ASEGURADORA_CODIGO")
+public interface SoatAseguradoraDAO extends JpaRepository<BeanSoatAseguradora, String> {
+
+    @Query(nativeQuery = true, value = "SELECT NSOAT_ASEGURADORA_CODIGO, "
+            + "VSOAT_ASEGURADORA_NOMBRE, VSOAT_ASEGURADORA_TELEFONO, VSOAT_ASEGURADORA_DIRECCION, "
+            + "UTIL.FUN_ESTADO_DESCRIPCION(CESTADO_CODIGO) CESTADO_CODIGO "
+            + "FROM SINTE_SOAT_ASEGURADORA "
+            + "ORDER BY NSOAT_ASEGURADORA_CODIGO")
     @Override
     List<BeanSoatAseguradora> findAll();
-    
-    @Query(nativeQuery = true, value =  "SELECT NSOAT_ASEGURADORA_CODIGO,\n" +
-                                        "       VSOAT_ASEGURADORA_NOMBRE,\n" +
-                                        "       VSOAT_ASEGURADORA_TELEFONO,\n" +
-                                        "       VSOAT_ASEGURADORA_DIRECCION,\n" +
-                                        "       UTIL.FUN_ESTADO_DESCRIPCION(CESTADO_CODIGO) CESTADO_CODIGO\n" +
-                                        "  FROM SINTE_SOAT_ASEGURADORA\n" +
-                                        " WHERE NSOAT_ASEGURADORA_CODIGO =?1")
+
+    @Query(nativeQuery = true, value = "SELECT NSOAT_ASEGURADORA_CODIGO, "
+            + "VSOAT_ASEGURADORA_NOMBRE, VSOAT_ASEGURADORA_TELEFONO, "
+            + "VSOAT_ASEGURADORA_DIRECCION, CESTADO_CODIGO "
+            + "FROM SINTE_SOAT_ASEGURADORA WHERE "
+            + "NSOAT_ASEGURADORA_CODIGO=?1")
     BeanSoatAseguradora findByCodigo(Integer codigo);
-    
-    
+
     @Transactional
     @Modifying
     @Query(value = "{CALL SP_IDU_SOAT_ASEGURADORA(:codigo, :nombre, :telefono, :direccion, :usuario, :modo)}", nativeQuery = true)
     void sp_soat_aseguradora(
-            @Param("codigo") int codigo,
+            @Param("codigo") Integer codigo,
             @Param("nombre") String nombre,
             @Param("telefono") String telefono,
             @Param("direccion") String direccion,

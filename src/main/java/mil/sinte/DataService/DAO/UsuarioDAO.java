@@ -38,7 +38,7 @@ public interface UsuarioDAO extends JpaRepository<BeanUsuario, String> {
             + "VUSUARIO_TELEFONO, VUSUARIO_CARGO, NUSUARIO_AUTORIZACION, "
             + "UTIL.FUN_ESTADO_DESCRIPCION(CESTADO_CODIGO) CESTADO_CODIGO "
             + "FROM SINTE_USUARIOS WHERE "
-            + "VUSUARIO_CODIGO =?1")
+            + "VUSUARIO_CODIGO=?1")
     public BeanUsuario findByCodigo(String codigo);
 
     @Transactional
@@ -47,16 +47,16 @@ public interface UsuarioDAO extends JpaRepository<BeanUsuario, String> {
     void sp_usuario(
             @Param("codigo") String codigo,
             @Param("password") String password,
-            @Param("areaLaboral") int areaLaboral,
-            @Param("rol") int rol,
-            @Param("brigada") int brigada,
+            @Param("areaLaboral") Integer areaLaboral,
+            @Param("rol") Integer rol,
+            @Param("brigada") Integer brigada,
             @Param("paterno") String paterno,
             @Param("materno") String materno,
             @Param("nombres") String nombres,
             @Param("correo") String correo,
             @Param("telf") String telf,
             @Param("cargo") String cargo,
-            @Param("autorizacion") int autorizacion,
+            @Param("autorizacion") Integer autorizacion,
             @Param("opciones") String opciones,
             @Param("usuario") String usuario,
             @Param("modo") String modo);

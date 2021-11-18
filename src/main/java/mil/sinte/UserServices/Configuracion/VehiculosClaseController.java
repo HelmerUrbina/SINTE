@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mil.sinte.UserServices.Configuracion;
 
 import com.google.gson.Gson;
@@ -23,10 +18,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @Slf4j
 public class VehiculosClaseController {
-    
+
     @Autowired
     private VehiculosClaseService vehiculosClaseService;
-    
+
     @RequestMapping(value = "/VehiculosClase")
     public String getVehiculosClase(String mode) {
         switch (mode) {
@@ -36,7 +31,7 @@ public class VehiculosClaseController {
                 return "redirect:/";
         }
     }
-    
+
     @RequestMapping(value = "/VehiculosClaseDetalle")
     @ResponseBody
     public String getVehiculosClaseDetalle(String mode, String codigo) {
@@ -49,7 +44,7 @@ public class VehiculosClaseController {
                 return "ERROR";
         }
     }
-    
+
     @RequestMapping(value = "/IduVehiculosClase")
     @ResponseBody
     public String setVehiculosClase(
@@ -61,8 +56,7 @@ public class VehiculosClaseController {
         objBeanVehiculosClase.setCodigo(codigo);
         objBeanVehiculosClase.setDescripcion(descripcion);
         objBeanVehiculosClase.setAbreviatura(abreviatura);
-        
         return "" + vehiculosClaseService.guardarVehiculosClase(objBeanVehiculosClase, Utiles.getUsuario(), mode);
     }
-    
+
 }

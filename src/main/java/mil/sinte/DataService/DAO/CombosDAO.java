@@ -206,10 +206,10 @@ public interface CombosDAO extends CrudRepository<BeanCombos, String> {
             + "SINTE_DEPENDENCIAS WHERE "
             + "NDEPENDENCIA_CODIGO NOT IN (SELECT NDEPENDENCIA_CODIGO "
             + "FROM SINTE_VEHICULOS_BRIGADAS WHERE "
-            + "NBRIGADA_CODIGO =?2 AND "
-            + "CPERIODO_CODIGO = ?1 AND "
-            + "NVEHICULO_CODIGO = ?3) AND "
-            + "NBRIGADA_CODIGO = ?2 "
+            + "NBRIGADA_CODIGO=?2 AND "
+            + "CPERIODO_CODIGO=?1 AND "
+            + "NVEHICULO_CODIGO=?3) AND "
+            + "NBRIGADA_CODIGO=?2 "
             + "ORDER BY CODIGO")
     List<BeanCombos> getDependenciaByVehiAndBrigAndPeri(String periodo, Integer brigada, Integer vehiculo);
 

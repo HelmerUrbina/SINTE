@@ -16,12 +16,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 public interface TipoAsignacionDAO extends JpaRepository<BeanTipoAsignacion, String> {
 
-    @Query(nativeQuery = true, value = "SELECT "
-            + "a.NTIPO_ASIGNACION_CODIGO, a.VTIPO_ASIGNACION_DESCRIPCION, "
-            + "a.VTIPO_ASIGNACION_ABREVIATURA , "
-            + "UTIL.FUN_ESTADO_DESCRIPCION(a.CESTADO_CODIGO) CESTADO_CODIGO "
-            + "FROM SINTE_TIPO_ASIGNACION a "
-            + "ORDER BY a.NTIPO_ASIGNACION_CODIGO")
+    @Query(nativeQuery = true, value = "SELECT NTIPO_ASIGNACION_CODIGO, "
+            + "VTIPO_ASIGNACION_DESCRIPCION, VTIPO_ASIGNACION_ABREVIATURA, "
+            + "UTIL.FUN_ESTADO_DESCRIPCION(CESTADO_CODIGO) CESTADO_CODIGO "
+            + "FROM SINTE_TIPO_ASIGNACION "
+            + "ORDER BY NTIPO_ASIGNACION_CODIGO")
     @Override
     List<BeanTipoAsignacion> findAll();
 

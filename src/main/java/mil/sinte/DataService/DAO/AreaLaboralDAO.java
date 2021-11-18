@@ -16,12 +16,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 public interface AreaLaboralDAO extends JpaRepository<BeanAreaLaboral, String> {
 
-    @Query(nativeQuery = true, value = "SELECT "
-            + "a.NAREA_LABORAL_CODIGO, a.VAREA_LABORAL_DESCRIPCION, "
-            + "a.VAREA_LABORAL_ABREVIATURA , "
-            + "UTIL.FUN_ESTADO_DESCRIPCION(a.CESTADO_CODIGO) CESTADO_CODIGO "
-            + "FROM SINTE_AREA_LABORAL a "
-            + "ORDER BY a.NAREA_LABORAL_CODIGO")
+    @Query(nativeQuery = true, value = "SELECT NAREA_LABORAL_CODIGO, "
+            + "VAREA_LABORAL_DESCRIPCION, VAREA_LABORAL_ABREVIATURA, "
+            + "UTIL.FUN_ESTADO_DESCRIPCION(CESTADO_CODIGO) CESTADO_CODIGO "
+            + "FROM SINTE_AREA_LABORAL  "
+            + "ORDER BY NAREA_LABORAL_CODIGO")
     @Override
     List<BeanAreaLaboral> findAll();
 

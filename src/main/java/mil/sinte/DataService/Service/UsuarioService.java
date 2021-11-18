@@ -17,8 +17,6 @@ public interface UsuarioService {
 
     public BeanUsuario findByCodigo(String usuario);
 
-    public String guardarUsuario(BeanUsuario objBeanUsuario, String usuario, String modo);
-    
-    public String guardarUsuario(BeanUsuario objBeanUsuario,String opciones, String usuario, String modo);
+    public String guardarUsuario(BeanUsuario objBeanUsuario, String opciones, String usuario, String modo);
 
 }

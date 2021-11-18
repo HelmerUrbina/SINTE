@@ -1,7 +1,7 @@
 package mil.sinte.UserServices.Configuracion;
 
-
 import com.google.gson.Gson;
+import java.sql.Date;
 import lombok.extern.slf4j.Slf4j;
 import mil.sinte.BusinessServices.Beans.BeanVehiculoSoat;
 import mil.sinte.BusinessServices.Beans.BeanVehiculoTipoCombustible;
@@ -13,7 +13,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 
 /**
  *
@@ -101,7 +100,7 @@ public class VehiculosController {
             @RequestParam("mode") String mode,
             @RequestParam("vehiculo") String vehiculo,
             @RequestParam("tipoCombustible") String tipoCombustible,
-            @RequestParam("capacidad") double capacidad
+            @RequestParam("capacidad") Double capacidad
     ) {
         BeanVehiculoTipoCombustible objBeanVehiculoTipoCombustible = new BeanVehiculoTipoCombustible();
         objBeanVehiculoTipoCombustible.setVehiculo(vehiculo);
@@ -132,8 +131,8 @@ public class VehiculosController {
             @RequestParam("vehiculo") String vehiculo,
             @RequestParam("soat") String soat,
             @RequestParam("certificado") String certificado,
-            @RequestParam("inicio") String inicio,
-            @RequestParam("fin") String fin,
+            @RequestParam("inicio") Date inicio,
+            @RequestParam("fin") Date fin,
             @RequestParam("tipo") String tipo
     ) {
         BeanVehiculoSoat objBeanVehiculoSoat = new BeanVehiculoSoat();
@@ -144,7 +143,6 @@ public class VehiculosController {
         objBeanVehiculoSoat.setInicio(inicio);
         objBeanVehiculoSoat.setFin(fin);
         objBeanVehiculoSoat.setTipo(tipo);
-
         return "" + vehiculoService.guardarVehiculoSoat(objBeanVehiculoSoat, Utiles.getUsuario(), mode);
     }
 }

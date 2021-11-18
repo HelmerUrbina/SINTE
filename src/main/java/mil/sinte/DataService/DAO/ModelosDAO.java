@@ -19,25 +19,22 @@ import org.springframework.transaction.annotation.Transactional;
  * @author MERCANTIL GROUP SAC
  */
 @Repository
-public interface ModelosDAO extends JpaRepository<BeanModelos, String>{
+public interface ModelosDAO extends JpaRepository<BeanModelos, String> {
 
-    @Query(nativeQuery = true, value =  "SELECT NMARCA_MODELO_CODIGO||','||NMARCA_CODIGO NMARCA_MODELO_CODIGO,\n" +
-                                        "       UTIL.FUN_MARCAS(NMARCA_CODIGO) NMARCA_CODIGO,\n" +
-                                        "       VMARCA_MODELO_DESCRIPCION,\n" +
-                                        "       UTIL.FUN_ESTADO_DESCRIPCION(CESTADO_CODIGO) CESTADO_CODIGO\n" +
-                                        "  FROM SINTE_MARCAS_MODELOS\n" +
-                                        " ORDER BY NMARCA_CODIGO")
+    @Query(nativeQuery = true, value = "SELECT NMARCA_MODELO_CODIGO||','||NMARCA_CODIGO NMARCA_MODELO_CODIGO, "
+            + "UTIL.FUN_MARCAS(NMARCA_CODIGO) NMARCA_CODIGO, VMARCA_MODELO_DESCRIPCION, "
+            + "UTIL.FUN_ESTADO_DESCRIPCION(CESTADO_CODIGO) CESTADO_CODIGO "
+            + "FROM SINTE_MARCAS_MODELOS "
+            + "ORDER BY NMARCA_CODIGO")
     @Override
     List<BeanModelos> findAll();
-    
-    @Query(nativeQuery = true, value =  "SELECT NMARCA_MODELO_CODIGO,\n" +
-                                        "       NMARCA_CODIGO NMARCA_CODIGO,\n" +
-                                        "       VMARCA_MODELO_DESCRIPCION,\n" +
-                                        "       '' CESTADO_CODIGO\n" +
-                                        "  FROM SINTE_MARCAS_MODELOS\n" +
-                                        " WHERE NMARCA_MODELO_CODIGO||','||NMARCA_CODIGO =?1")
+
+    @Query(nativeQuery = true, value = "SELECT NMARCA_MODELO_CODIGO, "
+            + "NMARCA_CODIGO NMARCA_CODIGO, VMARCA_MODELO_DESCRIPCION, CESTADO_CODIGO "
+            + "FROM SINTE_MARCAS_MODELOS WHERE "
+            + "NMARCA_MODELO_CODIGO||','||NMARCA_CODIGO=?1")
     BeanModelos findByCodigo(String codigo);
-    
+
     @Transactional
     @Modifying
     @Query(value = "{CALL SP_IDU_MODELOS(:codigo, :marca, :nombre, :usuario, :modo)}", nativeQuery = true)
@@ -47,5 +44,5 @@ public interface ModelosDAO extends JpaRepository<BeanModelos, String>{
             @Param("nombre") String nombre,
             @Param("usuario") String usuario,
             @Param("modo") String modo);
-    
+
 }

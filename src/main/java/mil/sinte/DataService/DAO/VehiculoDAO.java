@@ -33,8 +33,7 @@ public interface VehiculoDAO extends JpaRepository<BeanVehiculos, String> {
             + "VVEHICULO_SERIE_MOTOR, ''||NVEHICULO_TIPO_CODIGO VEHICULO_TIPO, "
             + "''||NVEHICULO_CLASE_CODIGO VEHICULO_CLASE, ''||NMARCA_CODIGO MARCA, "
             + "''||NMARCA_CODIGO,NMARCA_MODELO_CODIGO MODELO, CVEHICULO_TRANSMISION, "
-            + "CVEHICULO_FABRICACION, NVEHICULO_PUERTAS, ''||NCOLOR_CODIGO COLOR, "
-            + "UTIL.FUN_ESTADO_DESCRIPCION(CESTADO_CODIGO) CESTADO_CODIGO "
+            + "CVEHICULO_FABRICACION, NVEHICULO_PUERTAS, ''||NCOLOR_CODIGO COLOR, CESTADO_CODIGO "
             + "FROM SINTE_VEHICULOS WHERE "
             + "NVEHICULO_CODIGO=?1")
     public BeanVehiculos findByCodigo(Integer codigo);
@@ -44,18 +43,18 @@ public interface VehiculoDAO extends JpaRepository<BeanVehiculos, String> {
     @Query(value = "{CALL SP_IDU_VEHICULO(:codigo, :placa, :serieChasis, :serieMotor, :tipoVehiculo,"
             + ":claseVehiculo,:marca,:modelo,:transmision,:fabricacion,:puertas,:color,:usuario,:modo)}", nativeQuery = true)
     void sp_vehiculo(
-            @Param("codigo") int codigo,
+            @Param("codigo") Integer codigo,
             @Param("placa") String placa,
             @Param("serieChasis") String abreviatura,
             @Param("serieMotor") String serieMotor,
-            @Param("tipoVehiculo") int tipoVehiculo,
-            @Param("claseVehiculo") int claseVehiculo,
-            @Param("marca") int marca,
-            @Param("modelo") int modelo,
+            @Param("tipoVehiculo") Integer tipoVehiculo,
+            @Param("claseVehiculo") Integer claseVehiculo,
+            @Param("marca") Integer marca,
+            @Param("modelo") Integer modelo,
             @Param("transmision") String transmision,
             @Param("fabricacion") String fabricacion,
-            @Param("puertas") int puertas,
-            @Param("color") int color,
+            @Param("puertas") Integer puertas,
+            @Param("color") Integer color,
             @Param("usuario") String usuario,
             @Param("modo") String modo);
 

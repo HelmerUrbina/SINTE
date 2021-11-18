@@ -1,4 +1,4 @@
-<script type="text/javascript">
+<script>
     var codigo = null;
     var mode = null;
     var msg = "";
@@ -183,8 +183,8 @@
             var row = $("#div_GrillaPrincipal").jqxGrid('getrowdata', args.rowindex);
             codigo = row['codigo'];
             $("#txt_nombre").val(row['descripcion']);
-            $("#txt_telefono").val(row['telefono']===null?'':row['telefono']);
-            $("#txt_direccion").val(row['direccion']===null?'':row['direccion']);
+            $("#txt_telefono").val(row['telefono'] === null ? '' : row['telefono']);
+            $("#txt_direccion").val(row['direccion'] === null ? '' : row['direccion']);
         });
         //CREA LOS ELEMENTOS DE LAS VENTANAS
         var customButtonsDemo = (function () {
@@ -260,7 +260,7 @@
             type: "GET",
             url: "../IduAseguradora",
             data: {mode: mode, codigo: codigo, descripcion: nombre,
-                   telefono: telefono, direccion: direccion},
+                telefono: telefono, direccion: direccion},
             success: function (data) {
                 msg = data;
                 if (msg === "GUARDO") {

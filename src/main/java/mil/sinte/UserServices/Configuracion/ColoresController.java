@@ -8,7 +8,6 @@ package mil.sinte.UserServices.Configuracion;
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import mil.sinte.BusinessServices.Beans.BeanColores;
-import mil.sinte.BusinessServices.Beans.BeanMarcas;
 import mil.sinte.DataService.Service.ColoresService;
 import mil.sinte.Utiles.Utiles;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,10 +23,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @Slf4j
 public class ColoresController {
-    
+
     @Autowired
     private ColoresService coloresService;
-    
+
     @RequestMapping(value = "/Colores")
     public String getColores(String mode) {
         switch (mode) {
@@ -37,7 +36,7 @@ public class ColoresController {
                 return "redirect:/";
         }
     }
-    
+
     @RequestMapping(value = "/ColoresDetalle")
     @ResponseBody
     public String getColoresDetalle(String mode, String codigo) {
@@ -50,7 +49,7 @@ public class ColoresController {
                 return "ERROR";
         }
     }
-    
+
     @RequestMapping(value = "/IduColores")
     @ResponseBody
     public String setColores(
@@ -60,8 +59,7 @@ public class ColoresController {
         BeanColores objBeanColores = new BeanColores();
         objBeanColores.setCodigo(codigo);
         objBeanColores.setDescripcion(descripcion);
-        
         return "" + coloresService.guardarColores(objBeanColores, Utiles.getUsuario(), mode);
     }
-    
+
 }
