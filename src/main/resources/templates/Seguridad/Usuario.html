@@ -1,14 +1,35 @@
-<script type="text/javascript">
+<script>
     var codigo = null;
     var mode = null;
-    var msg = null;
+    var msg = "";
     $(document).ready(function () {
         var theme = getTheme();
         $("#div_Titulo").jqxExpander({theme: theme, width: '100%'});
+        //PARA CARGAR LOS ELEMENTOS DE LA GRILLA
+        var source = {
+            dataType: "json",
+            datafields: [
+                {name: 'usuario', type: "string"},
+                {name: 'areaLaboral', type: "string"},
+                {name: 'Rol', type: "string"},
+                {name: 'brigada', type: "string"},
+                {name: 'paterno', type: "string"},
+                {name: 'materno', type: "string"},
+                {name: 'nombres', type: "string"},
+                {name: 'correo', type: "string"},
+                {name: 'telefono', type: "string"},
+                {name: 'cargo', type: "string"},
+                {name: 'estado', type: "string"}
+            ],
+            id: 'usuario',
+            url: "../UsuariosDetalle?mode=G"
+        };
+        var dataAdapter = new $.jqx.dataAdapter(source);
         //DEFINIMOS LOS CAMPOS Y DATOS DE LA GRILLA
-        $("#div_GrillaPrincipal").jqxGrid({
+        $("#div_GrillaUsuario").jqxGrid({
             width: '99.8%',
             height: ($(window).height() - 65),
+            source: dataAdapter,
             autoheight: false,
             autorowheight: false,
             altrows: true,
@@ -44,6 +65,8 @@
                 ButtonNuevo.click(function (event) {
                     mode = 'I';
                     codigo = '0';
+                    $("#txt_CIP").val('');
+                    $("#txt_CIP").jqxInput({disabled: false});
                     $("#cbo_Area_Laboral").jqxDropDownList('setContent', 'Seleccione');
                     $("#cbo_rol").jqxDropDownList('setContent', 'Seleccione');
                     $("#cbo_brigada").jqxDropDownList('setContent', 'Seleccione');
@@ -51,14 +74,15 @@
                     $("#txt_materno").val('');
                     $("#txt_nombres").val('');
                     $("#txt_correo").val('');
-                    $("#txt_telefono").val('');
+                    $("#txt_telf").val('');
                     $("#txt_cargo").val('');
-                    $('#div_VentanaPrincipal').jqxWindow({isModal: true, modalOpacity: 0.8});
-                    $('#div_VentanaPrincipal').jqxWindow('open');
+                    $("#jqxcheckbox").jqxCheckBox({ checked: false });
+                    $('#div_UsuarioPrincipal').jqxWindow({isModal: true, modalOpacity: 0.8});
+                    $('#div_UsuarioPrincipal').jqxWindow('open');
                 });
                 //ASIGNAMOS LAS FUNCIONES PARA EL BOTON EXPORTAR
                 ButtonExportar.click(function (event) {
-                    $("#div_GrillaPrincipal").jqxGrid('exportdata', 'xlsx', 'Usuario');
+                    $("#div_GrillaUsuario").jqxGrid('exportdata', 'xlsx', 'Usuario');
                 });
                 //ASIGNAMOS LAS FUNCIONES PARA EL BOTON RECARGAR
                 ButtonRecargar.click(function (event) {
@@ -71,27 +95,27 @@
             },
             columns: [
                 {text: 'USUARIO', dataField: 'usuario', width: '10%', align: 'center', cellsAlign: 'center'},
-                {text: 'AP. PATERNO', dataField: 'paterno', width: '10%', align: 'center', cellsAlign: 'center'},
-                {text: 'AP. MATERNO', dataField: 'materno', width: '10%', align: 'center', cellsAlign: 'center'},
+                {text: 'ÁREA LABORAL', dataField: 'areaLaboral', width: '10%', align: 'center', cellsAlign: 'center'},
+                {text: 'ROL', dataField: 'Rol', width: '10%', align: 'center', cellsAlign: 'center'},
+                {text: 'BRIGADA', dataField: 'brigada', width: '10%', align: 'center', cellsAlign: 'center'},
+                {text: 'APELLIDO PATERNO', dataField: 'paterno', width: '10%', align: 'center', cellsAlign: 'center'},
+                {text: 'APELLIDO MATERNO', dataField: 'materno', width: '10%', align: 'center', cellsAlign: 'center'},
                 {text: 'NOMBRES', dataField: 'nombres', width: '10%', align: 'center', cellsAlign: 'center'},
-                {text: 'BRIGADA', dataField: 'brigada', filtertype: 'list', width: '10%', align: 'center', cellsAlign: 'center'},
                 {text: 'CORREO', dataField: 'correo', width: '10%', align: 'center', cellsAlign: 'center'},
                 {text: 'TELEFONO', dataField: 'telefono', width: '10%', align: 'center', cellsAlign: 'center'},
                 {text: 'CARGO', dataField: 'cargo', width: '5%', align: 'center', cellsAlign: 'center'},
-                {text: 'ÁREA LABORAL', dataField: 'areaLaboral', filtertype: 'list', width: '10%', align: 'center', cellsAlign: 'center'},
-                {text: 'ROL', dataField: 'Rol', width: '10%', align: 'center', cellsAlign: 'center'},
                 {text: 'ESTADO', dataField: 'estado', filtertype: 'list', width: '5%', align: 'center', cellsAlign: 'center'}
             ]
         });
         // DEFINIMOS EL MENU CONTEXTUAL
-        var contextMenu = $("#div_ContextMenu").jqxMenu({width: 200, height: 115, autoOpenPopup: false, mode: 'popup'});
-        $("#div_GrillaPrincipal").on('contextmenu', function () {
+        var contextMenu = $("#div_ContextMenu").jqxMenu({width: 180, height: 140, autoOpenPopup: false, mode: 'popup'});
+        $("#div_GrillaUsuario").on('contextmenu', function () {
             return false;
         });
         // HABILITAMOS LA OPCION DE CLICK DEL MENU CONTEXTUAL.
-        $("#div_GrillaPrincipal").on('rowclick', function (event) {
+        $("#div_GrillaUsuario").on('rowclick', function (event) {
             if (event.args.rightclick) {
-                $("#div_GrillaPrincipal").jqxGrid('selectrow', event.args.rowindex);
+                $("#div_GrillaUsuario").jqxGrid('selectrow', event.args.rowindex);
                 var scrollTop = $(window).scrollTop();
                 var scrollLeft = $(window).scrollLeft();
                 contextMenu.jqxMenu('open', parseInt(event.args.originalEvent.clientX) + 5 + scrollLeft, parseInt(event.args.originalEvent.clientY) + 5 + scrollTop);
@@ -115,6 +139,7 @@
                 if ($.trim($(opcion).text()) === "Editar") {
                     mode = 'U';
                     fn_EditarRegistro();
+                    $("#txt_CIP").jqxInput({disabled: true});
                 } else if ($.trim($(opcion).text()) === "Activar") {
                     $.confirm({
                         title: 'AVISO DEL SISTEMA',
@@ -163,7 +188,30 @@
                     });
                 } else if ($.trim($(opcion).text()) === "Opciones") {
                     fn_UsuarioOpciones();
-                } else {
+                } else if ($.trim($(opcion).text()) === "Resetear Contraseña") {
+                    $.confirm({
+                        title: 'AVISO DEL SISTEMA',
+                        content: 'Desea resetear la Contraseña!',
+                        theme: 'material',
+                        animation: 'zoom',
+                        closeAnimation: 'zoom',
+                        type: 'blue',
+                        typeAnimated: true,
+                        buttons: {
+                            aceptar: {
+                                text: 'Aceptar',
+                                btnClass: 'btn-primary',
+                                keys: ['enter', 'shift'],
+                                action: function () {
+                                    mode = 'R';
+                                    fn_GrabarDatos();
+                                }
+                            },
+                            cancelar: function () {
+                            }
+                        }
+                    });
+                }else {
                     $.alert({
                         theme: 'material',
                         title: 'AVISO DEL SISTEMA',
@@ -177,9 +225,9 @@
             }
         });
         //SELECCIONAMOS UN REGISTRO DE LA GRILLA
-        $("#div_GrillaPrincipal").on('rowselect', function (event) {
+        $("#div_GrillaUsuario").on('rowselect', function (event) {
             var args = event.args;
-            var row = $("#div_GrillaPrincipal").jqxGrid('getrowdata', args.rowindex);
+            var row = $("#div_GrillaUsuario").jqxGrid('getrowdata', args.rowindex);
             codigo = row['usuario'];
         });
         //CREA LOS ELEMENTOS DE LAS VENTANAS
@@ -188,23 +236,25 @@
                 //INICIA LOS VALORES DE LA VENTANA
                 var posicionX, posicionY;
                 var ancho = 580;
-                var alto = 260;
+                var alto = 315;
                 posicionX = ($(window).width() / 2) - (ancho / 2);
                 posicionY = ($(window).height() / 2) - (alto / 2);
-                $('#div_VentanaPrincipal').jqxWindow({
+                $('#div_UsuarioPrincipal').jqxWindow({
                     position: {x: posicionX, y: posicionY},
                     width: ancho, height: alto, resizable: false,
                     cancelButton: $('#btn_Cancelar'),
                     initContent: function () {
+                        $("#txt_CIP").jqxInput({placeHolder: "CIP", width: 300, height: 20, minLength: 2, maxLength: 20});
+                        $("#cbo_Area_Laboral").jqxDropDownList({width: 300, height: 20, dropDownWidth: 300, promptText: "Seleccione"});
+                        $("#cbo_rol").jqxDropDownList({width: 300, height: 20, dropDownWidth: 300, promptText: "Seleccione"});
                         $("#cbo_brigada").jqxDropDownList({width: 300, height: 20, dropDownWidth: 300, promptText: "Seleccione"});
                         $("#txt_paterno").jqxInput({placeHolder: "APELLIDO PATERNO", width: 300, height: 20, minLength: 2, maxLength: 200});
                         $("#txt_materno").jqxInput({placeHolder: "APELLIDO MATERNO", width: 300, height: 20, minLength: 2, maxLength: 200});
                         $("#txt_nombres").jqxInput({placeHolder: "NOMBRES", width: 300, height: 20, minLength: 2, maxLength: 200});
-                        $("#cbo_Area_Laboral").jqxDropDownList({width: 300, height: 20, dropDownWidth: 300, promptText: "Seleccione"});
-                        $("#txt_cargo").jqxInput({placeHolder: "CARGO", width: 300, height: 20, minLength: 2, maxLength: 200});
                         $("#txt_correo").jqxInput({placeHolder: "CORREO", width: 300, height: 20, minLength: 2, maxLength: 200});
-                        $("#txt_telefono").jqxInput({placeHolder: "TELEFONO", width: 300, height: 20, minLength: 2, maxLength: 200});
-                        $("#cbo_rol").jqxDropDownList({width: 300, height: 20, dropDownWidth: 300, promptText: "Seleccione"});
+                        $("#txt_telf").jqxInput({placeHolder: "TELEFONO", width: 300, height: 20, minLength: 2, maxLength: 200});
+                        $("#txt_cargo").jqxInput({placeHolder: "CARGO", width: 300, height: 20, minLength: 2, maxLength: 200});
+                        $("#jqxcheckbox").jqxCheckBox({ width: 120, height: 25 });
                         $('#btn_Cancelar').jqxButton({width: '65px', height: 30});
                         $('#btn_Guardar').jqxButton({width: '65px', height: 30});
                         $('#btn_Guardar').on('click', function () {
@@ -212,12 +262,13 @@
                         });
                         $('#frm_Usuario').jqxValidator({
                             rules: [
+                                {input: '#txt_CIP', message: 'Ingrese el CIP!', action: 'keyup, blur', rule: 'required'},
                                 {input: '#txt_paterno', message: 'Ingrese el Apellido Paterno!', action: 'keyup, blur', rule: 'required'},
                                 {input: '#txt_materno', message: 'Ingrese el Apellido Materno!', action: 'keyup, blur', rule: 'required'},
                                 {input: '#txt_nombres', message: 'Ingrese el Nombre Completo!', action: 'keyup, blur', rule: 'required'},
-                                {input: '#txt_cargo', message: 'Ingrese el Cargo!', action: 'keyup, blur', rule: 'required'},
                                 {input: '#txt_correo', message: 'Ingrese el Correo!', action: 'keyup, blur', rule: 'required'},
-                                {input: '#txt_telefono', message: 'Ingrese el Telefono!', action: 'keyup, blur', rule: 'required'}
+                                {input: '#txt_telf', message: 'Ingrese el Telefono!', action: 'keyup, blur', rule: 'required'},
+                                {input: '#txt_cargo', message: 'Ingrese el Cargo!', action: 'keyup, blur', rule: 'required'}
                             ]
                         });
                         $('#frm_Usuario').jqxValidator({
@@ -227,21 +278,22 @@
                         });
                     }
                 });
+                
                 ancho = 400;
                 alto = 490;
                 posicionX = ($(window).width() / 2) - (ancho / 2);
                 posicionY = ($(window).height() / 2) - (alto / 2);
-                $('#div_VentanaDetalle').jqxWindow({
+                $('#div_ModuloMenuPrincipal').jqxWindow({
                     position: {x: posicionX, y: posicionY},
                     width: ancho, height: alto, resizable: false,
                     cancelButton: $('#btn_Permisos_Cancelar'),
                     initContent: function () {
-                        $('#div_Opciones').div_Opciones({width: 390, height: 400, hasThreeStates: true, checkboxes: true});
-                        $('#div_Opciones').css('visibility', 'visible');
+                        $('#jqxTree').jqxTree({width: 390, height: 400, hasThreeStates: true, checkboxes: true});
+                        $('#jqxTree').css('visibility', 'visible');
                         $('#btn_Permisos_Cancelar').jqxButton({width: '65px', height: 25});
                         $('#btn_Permisos_Guardar').jqxButton({width: '65px', height: 25});
                         $('#btn_Permisos_Guardar').on('click', function () {
-//                            fn_GrabarOpciones();
+                            fn_GrabarOpciones();
                         });
                     }
                 });
@@ -253,10 +305,12 @@
         }());
         $(document).ready(function () {
             customButtonsDemo.init();
-            fn_Refrescar();
+            $("#cbo_Area_Laboral").jqxDropDownList('clear');
+            $("#cbo_rol").jqxDropDownList('clear');
+            $("#cbo_brigada").jqxDropDownList('clear');
             fn_cargarComboAjax("#cbo_Area_Laboral", {mode: 'areaLaboral'});
             fn_cargarComboAjax("#cbo_rol", {mode: 'rol'});
-            fn_cargarComboAjax("#cbo_brigada", {mode: 'brigadas'});
+            fn_cargarComboAjax("#cbo_brigada", {mode: 'brigada'});
         });
     });
     //FUNCION PARA ACTUALIZAR DATOS DE LA GRILLA
@@ -277,11 +331,11 @@
                 {name: 'estado', type: "string"}
             ],
             id: 'usuario',
-            url: "../UsuariosDetalle",
-            data: {mode: 'G'}
+            url: "../UsuariosDetalle?mode=G"
         };
         var dataAdapter = new $.jqx.dataAdapter(source);
-        $("#div_GrillaPrincipal").jqxGrid({source: dataAdapter});
+        $("#div_GrillaUsuario").jqxGrid({source: dataAdapter});     
+        $("#div_GrillaUsuario").jqxGrid('clearselection');
     }
     //FUNCION PARA CARGAR VENTANA PARA EDITAR REGISTRO
     function fn_EditarRegistro() {
@@ -293,16 +347,19 @@
             data: {mode: mode, codigo: codigo},
             success: function (data) {
                 var dato = JSON.parse(data);
-//                console.log(dato);
+                $("#txt_CIP").val(dato.usuario);
                 $("#cbo_Area_Laboral").jqxDropDownList('selectItem', dato.areaLaboral);
                 $("#cbo_rol").jqxDropDownList('selectItem', dato.Rol);
                 $("#cbo_brigada").jqxDropDownList('selectItem', dato.brigada);
-                $("#txt_paterno").val(dato.paterno);
-                $("#txt_materno").val(dato.materno);
-                $("#txt_nombres").val(dato.nombres);
-                $("#txt_correo").val(dato.correo);
-                $("#txt_telefono").val(dato.telefono);
-                $("#txt_cargo").val(dato.cargo);
+                $("#txt_paterno").val( dato.paterno);
+                $("#txt_materno").val( dato.materno);
+                $("#txt_nombres").val( dato.nombres);
+                $("#txt_correo").val( dato.correo);
+                $("#txt_telf").val( dato.telefono);
+                $("#txt_cargo").val( dato.cargo);
+                if(dato.autorizacion === 1){
+                    $("#jqxcheckbox").jqxCheckBox({ checked: true });
+                }
             }
         });
         $('#div_UsuarioPrincipal').jqxWindow({isModal: true});
@@ -310,6 +367,7 @@
     }
     //FUNCION PARA GRABAR LOS DATOS DE LA VENTANA PRINCIPAL
     function fn_GrabarDatos() {
+        var cip = $("#txt_CIP").val();
         var areaLaboral = $("#cbo_Area_Laboral").val();
         var rol = $("#cbo_rol").val();
         var brigada = $("#cbo_brigada").val();
@@ -317,20 +375,30 @@
         var materno = $("#txt_materno").val();
         var nombres = $("#txt_nombres").val();
         var correo = $("#txt_correo").val();
-        var telf = $("#txt_telefono").val();
+        var telf = $("#txt_telf").val();
         var cargo = $("#txt_cargo").val();
-//        var json = {
-//                    mode: mode, codigo: codigo, areaLaboral: areaLaboral,
-//                    rol: rol, brigada: brigada, paterno: paterno, materno: materno,
-//                    nombres: nombres, correo: correo, telf: telf, cargo: cargo
-//                };
-//        console.log(json);
+        var autor = 0;
+        if($("#jqxcheckbox").jqxCheckBox('checked') === true){
+            autor = 1;
+        }
+        if(mode === 'D' || mode === 'A' || mode === 'R'){
+           cip = codigo;
+           areaLaboral = 0;
+           rol=0;
+           brigada=0;
+        }
+        var json = {
+                    mode: mode, codigo: cip, areaLaboral: areaLaboral,
+                    rol: rol, brigada: brigada, paterno: paterno, materno: materno,
+                    nombres: nombres, correo: correo, telf: telf, cargo: cargo, auto: autor
+                };
+        console.log(json);
         $.ajax({
             type: "GET",
             url: "../IduUsuarios",
-            data: {mode: mode, codigo: codigo, areaLaboral: areaLaboral,
-                rol: rol, brigada: brigada, paterno: paterno, materno: materno,
-                nombres: nombres, correo: correo, telf: telf, cargo: cargo},
+            data: {mode: mode, codigo: cip, areaLaboral: areaLaboral,
+                    rol: rol, brigada: brigada, paterno: paterno, materno: materno,
+                    nombres: nombres, correo: correo, telf: telf, cargo: cargo, auto: autor, lista:''},
             success: function (data) {
                 msg = data;
                 if (msg === "GUARDO") {
@@ -344,7 +412,7 @@
                             cerrarAction: {
                                 text: 'Cerrar',
                                 action: function () {
-                                    $('#div_VentanaPrincipal').jqxWindow('close');
+                                    $('#div_UsuarioPrincipal').jqxWindow('close');
                                     fn_Refrescar();
                                 }
                             }
@@ -364,78 +432,136 @@
             }
         });
     }
-
+    
     function fn_UsuarioOpciones() {
         $.ajax({
-            type: "GET",
-            url: "../UsuariosDetalle",
-            data: {mode: 'M'},
-            success: function (data) {
-                data = data.replace("[", "");
-                var fila = data.split("[");
-                var data = new Array();
-                for (i = 1; i < fila.length; i++) {
-                    var columna = fila[i];
-                    var datos = columna.split("+++");
-                    while (datos[3].indexOf(']') > 0) {
-                        datos[3] = datos[3].replace("]", "");
-                    }
-                    while (datos[3].indexOf(',') > 0) {
-                        datos[3] = datos[3].replace(",", "");
-                    }
-                    while (datos[3].indexOf('"') > 0) {
-                        datos[3] = datos[3].replace('"', '');
-                    }
-                    var row = {id: datos[0],
-                        parentid: datos[1],
-                        text: datos[3],
-                        value: datos[0]};
-                    data.push(row);
-                    var mod = {id: datos[1],
-                        parentid: -1,
-                        text: datos[2],
-                        value: datos[1]};
-                    data.push(mod);
-                }
-                var source = {
-                    datatype: "json",
-                    datafields: [
-                        {name: 'id'},
-                        {name: 'parentid'},
-                        {name: 'text'},
-                        {name: 'value'}
-                    ],
-                    id: 'id',
-                    localdata: data
-                };
-                var dataAdapter = new $.jqx.dataAdapter(source);
-                dataAdapter.dataBind();
-                var records = dataAdapter.getRecordsHierarchy('id', 'parentid', 'items', [{name: 'text', map: 'label'}]);
-                $('#div_Opciones').div_Opciones({source: records});
-                $('#div_Opciones').div_Opciones('expandAll');
-                $.ajax({
-                    type: "GET",
-                    url: "../UsuariosDetalle",
-                    data: {mode: 'MU', codigo: codigo},
-                    success: function (data) {
-                        if (data.length > 2) {
-                            data = data.replace("[", "");
-                            data = data.replace("]", "");
-                            data = data.replaceAll('"', '');
-                            var fila = data.split(",");
-                            for (i = 0; i < fila.length; i++) {
-                                var dato = "#" + fila[i].trim();
-                                $("#div_Opciones").div_Opciones('checkItem', $(dato)[0], true);
-                            }
+                type: "GET",
+                url: "../UsuariosDetalle",
+                data: {mode: 'M'},
+                success: function (data) {
+                        data = data.replace("[", "");
+                        var fila = data.split("[");
+                        var data = new Array();
+                        for (i = 1; i < fila.length; i++) {
+                                var columna = fila[i];
+                                var datos = columna.split("+++");
+                                while (datos[3].indexOf(']') > 0) {
+                                        datos[3] = datos[3].replace("]", "");
+                                }
+                                while (datos[3].indexOf(',') > 0) {
+                                        datos[3] = datos[3].replace(",", "");
+                                }
+                                while (datos[3].indexOf('"') > 0) {
+                                        datos[3] = datos[3].replace('"', '');
+                                }
+                                var row = {id: datos[0],
+                                        parentid: datos[1],
+                                        text: datos[3],
+                                        value: datos[0]};
+                                data.push(row);
+                                var mod = {id: datos[1],
+                                        parentid: -1,
+                                        text: datos[2],
+                                        value: datos[1]};
+                                data.push(mod);
                         }
-
-                    }
-                });
-            }
+                        var source = {
+                                datatype: "json",
+                                datafields: [
+                                        {name: 'id'},
+                                        {name: 'parentid'},
+                                        {name: 'text'},
+                                        {name: 'value'}
+                                ],
+                                id: 'id',
+                                localdata: data
+                        };
+                        var dataAdapter = new $.jqx.dataAdapter(source);
+                        dataAdapter.dataBind();
+                        var records = dataAdapter.getRecordsHierarchy('id', 'parentid', 'items', [{name: 'text', map: 'label'}]);
+                        $('#jqxTree').jqxTree({source: records});
+                        $('#jqxTree').jqxTree('expandAll');
+                        $.ajax({
+                                type: "GET",
+                                url: "../UsuariosDetalle",
+                                data: {mode: 'MU', codigo: codigo},
+                                success: function (data) {
+                                    if(data.length > 2){
+                                        data = data.replace("[", "");
+                                        data = data.replace("]", "");
+                                        data = data.replaceAll('"', '');
+                                        var fila = data.split(",");
+                                        for (i = 0; i < fila.length; i++) {
+                                                var dato = "#" + fila[i].trim();
+                                                $("#jqxTree").jqxTree('checkItem', $(dato)[0], true);
+                                        }
+                                    }
+                                        
+                                }
+                        });
+                }
         });
-        $('#div_VentanaDetalle').jqxWindow({isModal: true, modalOpacity: 0.8});
-        $('#div_VentanaDetalle').jqxWindow('open');
+        $('#div_ModuloMenuPrincipal').jqxWindow({isModal: true, modalOpacity: 0.8});
+        $('#div_ModuloMenuPrincipal').jqxWindow('open');
     }
+    
+    function fn_GrabarOpciones() {
+            var lista = new Array();
+            var items = $('#jqxTree').jqxTree('getCheckedItems');
+            for (var i = 0; i < items.length; i++) {
+                var item = items[i];
+                lista.push(item.id);
+            }
+            var areaLaboral = 0;
+            var rol=0;
+            var brigada=0;
+            
+//            var json = {mode: 'O', codigo: codigo,areaLaboral: areaLaboral,rol: rol, brigada: brigada,
+//                       lista: JSON.stringify(lista).replaceAll('"','').replaceAll('[','').replaceAll(']',''),
+//                       paterno: null, materno: null, nombres: null, correo: null, telf: null, cargo:null,
+//                       auto: 0};
+//            console.log(json);
+            
+            $.ajax({
+                type: "GET",
+                url: "../IduUsuarios",
+                data: {mode: 'O', codigo: codigo,areaLaboral: areaLaboral,rol: rol, brigada: brigada,
+                       lista: JSON.stringify(lista).replaceAll('"','').replaceAll('[','').replaceAll(']',''),
+                       paterno: null, materno: null, nombres: null, correo: null, telf: null, cargo:null,
+                       auto: 0},
+                success: function (data) {
+                    msg = data;
+                    if (msg === "GUARDO") {
+                        $.confirm({
+                            title: 'AVISO DEL SISTEMA',
+                            content: 'Datos procesados correctamente!!',
+                            type: 'green',
+                            typeAnimated: true,
+                            autoClose: 'cerrarAction|1000',
+                            buttons: {
+                                cerrarAction: {
+                                    text: 'Cerrar',
+                                    action: function () {
+                                        $('#div_ModuloMenuPrincipal').jqxWindow('close');
+                                    }
+                                }
+                            }
+                        });
+                    } else {
+                        $.alert({
+                            theme: 'material',
+                            title: 'AVISO DEL SISTEMA',
+                            content: msg,
+                            animation: 'zoom',
+                            closeAnimation: 'zoom',
+                            type: 'red',
+                            typeAnimated: true
+                        });
+                    }
+                }
+            });
+        }
+    
 </script>
 <div id='div_Titulo' style="border: none;">
     <div class="jqx-hideborder">LISTADOS DE USUARIOS</div>
@@ -443,14 +569,18 @@
         <div id="div_Detalle" class="maincen"></div>
     </div>
 </div>
-<div id="div_GrillaPrincipal"></div>
-<div id="div_VentanaPrincipal" style="display: none">
+<div id="div_GrillaUsuario"></div>
+<div id="div_UsuarioPrincipal" style="display: none">
     <div>
         <span style="float: left">DATOS DEL USUARIO</span>
     </div>
     <div style="overflow: hidden">
         <form id="frm_Usuario" name="frm_Usuario" method="post" >
             <table width="100%" border="0" cellspacing="0" cellpadding="0"> 
+                <tr>
+                    <td class="inputlabel">CIP : </td>
+                    <td><input id="txt_CIP" name="txt_CIP" style="text-transform: uppercase;"/></td> 
+                </tr>
                 <tr>
                     <td class="inputlabel">Área Laboral : </td>
                     <td>
@@ -466,7 +596,7 @@
                             <option value="0">Seleccione</option>
                         </select>
                     </td> 
-                </tr>
+                </tr>                
                 <tr>
                     <td class="inputlabel">Brigada : </td>
                     <td>
@@ -493,11 +623,15 @@
                 </tr>
                 <tr>
                     <td class="inputlabel">Telefono : </td>
-                    <td><input id="txt_telefono" name="txt_telefono" style="text-transform: uppercase;"/></td>
+                    <td><input id="txt_telf" name="txt_telf" style="text-transform: uppercase;"/></td>
                 </tr>
                 <tr>
                     <td class="inputlabel">Cargo : </td>
                     <td><input id="txt_cargo" name="txt_cargo" style="text-transform: uppercase;"/></td>
+                </tr>
+                <tr>
+                    <td class="inputlabel">Autorización : </td>
+                    <td><div id='jqxcheckbox'></div></td>     
                 </tr>
                 <tr>
                     <td class="Summit" colspan="4">
@@ -511,17 +645,17 @@
         </form>
     </div>
 </div>
-<div id="div_VentanaDetalle" style="display: none">
-    <div>
-        <span style="float: left">SELECCIONE LAS OPCIONES DEL USUARIO</span>
-    </div>
-    <div style="overflow: hidden">
-        <div id='div_Opciones'></div>
-        <div class="Summit">
-            <input type="button" id="btn_Permisos_Guardar"  value="Guardar" style="margin-right: 20px"/>
-            <input type="button" id="btn_Permisos_Cancelar" value="Cancelar" style="margin-right: 20px"/>
+<div id="div_ModuloMenuPrincipal" style="display: none">
+        <div>
+            <span style="float: left">SELECCIONE LAS OPCIONES DEL USUARIO</span>
         </div>
-    </div>
+        <div style="overflow: hidden">
+            <div id='jqxTree'></div>
+            <div class="Summit">
+                <input type="button" id="btn_Permisos_Guardar"  value="Guardar" style="margin-right: 20px"/>
+                <input type="button" id="btn_Permisos_Cancelar" value="Cancelar" style="margin-right: 20px"/>
+            </div>
+        </div>
 </div>
 <div id='div_ContextMenu' style='display: none;'>
     <ul>
@@ -531,5 +665,6 @@
         <li style="color: brown; font-weight: bold;">Desactivar</li>
         <li type='separator'></li>
         <li style="font-weight: bold;">Opciones</li>
+        <li style="font-weight: bold;">Resetear Contraseña</li>
     </ul>
 </div>
