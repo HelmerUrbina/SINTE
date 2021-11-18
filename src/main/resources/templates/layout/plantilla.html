@@ -112,7 +112,7 @@
                     <li><a th:onclick="fn_MenuPrincipal();">Home</a> </li>
                     <li th:each="modulo : ${session.objModulos}">
                         <span th:text="${modulo.nombre}"> </span>
-                        <ul style='width: 200px;'>
+                        <ul style='width: 200px'>
                             <li  th:each="menu : ${session.objMenus}" th:if="${modulo.modulo == menu.modulo}">
                                 <a th:onclick="javascript: fn_CargarMenu([[${menu.servlet}]],[[${menu.modo}]])">
                                     <span  th:text="${menu.nombre}">Opcion</span>

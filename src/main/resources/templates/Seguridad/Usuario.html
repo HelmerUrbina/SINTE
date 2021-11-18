@@ -65,6 +65,8 @@
                 ButtonNuevo.click(function (event) {
                     mode = 'I';
                     codigo = '0';
+                    $("#txt_CIP").val('');
+                    $("#txt_CIP").jqxInput({disabled: false});
                     $("#cbo_Area_Laboral").jqxDropDownList('setContent', 'Seleccione');
                     $("#cbo_rol").jqxDropDownList('setContent', 'Seleccione');
                     $("#cbo_brigada").jqxDropDownList('setContent', 'Seleccione');
@@ -74,6 +76,7 @@
                     $("#txt_correo").val('');
                     $("#txt_telf").val('');
                     $("#txt_cargo").val('');
+                    $("#jqxcheckbox").jqxCheckBox({ checked: false });
                     $('#div_UsuarioPrincipal').jqxWindow({isModal: true, modalOpacity: 0.8});
                     $('#div_UsuarioPrincipal').jqxWindow('open');
                 });
@@ -105,7 +108,7 @@
             ]
         });
         // DEFINIMOS EL MENU CONTEXTUAL
-        var contextMenu = $("#div_ContextMenu").jqxMenu({width: 200, height: 115, autoOpenPopup: false, mode: 'popup'});
+        var contextMenu = $("#div_ContextMenu").jqxMenu({width: 180, height: 140, autoOpenPopup: false, mode: 'popup'});
         $("#div_GrillaUsuario").on('contextmenu', function () {
             return false;
         });
@@ -136,6 +139,7 @@
                 if ($.trim($(opcion).text()) === "Editar") {
                     mode = 'U';
                     fn_EditarRegistro();
+                    $("#txt_CIP").jqxInput({disabled: true});
                 } else if ($.trim($(opcion).text()) === "Activar") {
                     $.confirm({
                         title: 'AVISO DEL SISTEMA',
@@ -184,6 +188,29 @@
                     });
                 } else if ($.trim($(opcion).text()) === "Opciones") {
                     fn_UsuarioOpciones();
+                } else if ($.trim($(opcion).text()) === "Resetear Contraseña") {
+                    $.confirm({
+                        title: 'AVISO DEL SISTEMA',
+                        content: 'Desea resetear la Contraseña!',
+                        theme: 'material',
+                        animation: 'zoom',
+                        closeAnimation: 'zoom',
+                        type: 'blue',
+                        typeAnimated: true,
+                        buttons: {
+                            aceptar: {
+                                text: 'Aceptar',
+                                btnClass: 'btn-primary',
+                                keys: ['enter', 'shift'],
+                                action: function () {
+                                    mode = 'R';
+                                    fn_GrabarDatos();
+                                }
+                            },
+                            cancelar: function () {
+                            }
+                        }
+                    });
                 }else {
                     $.alert({
                         theme: 'material',
@@ -209,7 +236,7 @@
                 //INICIA LOS VALORES DE LA VENTANA
                 var posicionX, posicionY;
                 var ancho = 580;
-                var alto = 260;
+                var alto = 315;
                 posicionX = ($(window).width() / 2) - (ancho / 2);
                 posicionY = ($(window).height() / 2) - (alto / 2);
                 $('#div_UsuarioPrincipal').jqxWindow({
@@ -217,6 +244,7 @@
                     width: ancho, height: alto, resizable: false,
                     cancelButton: $('#btn_Cancelar'),
                     initContent: function () {
+                        $("#txt_CIP").jqxInput({placeHolder: "CIP", width: 300, height: 20, minLength: 2, maxLength: 20});
                         $("#cbo_Area_Laboral").jqxDropDownList({width: 300, height: 20, dropDownWidth: 300, promptText: "Seleccione"});
                         $("#cbo_rol").jqxDropDownList({width: 300, height: 20, dropDownWidth: 300, promptText: "Seleccione"});
                         $("#cbo_brigada").jqxDropDownList({width: 300, height: 20, dropDownWidth: 300, promptText: "Seleccione"});
@@ -226,6 +254,7 @@
                         $("#txt_correo").jqxInput({placeHolder: "CORREO", width: 300, height: 20, minLength: 2, maxLength: 200});
                         $("#txt_telf").jqxInput({placeHolder: "TELEFONO", width: 300, height: 20, minLength: 2, maxLength: 200});
                         $("#txt_cargo").jqxInput({placeHolder: "CARGO", width: 300, height: 20, minLength: 2, maxLength: 200});
+                        $("#jqxcheckbox").jqxCheckBox({ width: 120, height: 25 });
                         $('#btn_Cancelar').jqxButton({width: '65px', height: 30});
                         $('#btn_Guardar').jqxButton({width: '65px', height: 30});
                         $('#btn_Guardar').on('click', function () {
@@ -233,6 +262,7 @@
                         });
                         $('#frm_Usuario').jqxValidator({
                             rules: [
+                                {input: '#txt_CIP', message: 'Ingrese el CIP!', action: 'keyup, blur', rule: 'required'},
                                 {input: '#txt_paterno', message: 'Ingrese el Apellido Paterno!', action: 'keyup, blur', rule: 'required'},
                                 {input: '#txt_materno', message: 'Ingrese el Apellido Materno!', action: 'keyup, blur', rule: 'required'},
                                 {input: '#txt_nombres', message: 'Ingrese el Nombre Completo!', action: 'keyup, blur', rule: 'required'},
@@ -263,7 +293,7 @@
                         $('#btn_Permisos_Cancelar').jqxButton({width: '65px', height: 25});
                         $('#btn_Permisos_Guardar').jqxButton({width: '65px', height: 25});
                         $('#btn_Permisos_Guardar').on('click', function () {
-//                            fn_GrabarOpciones();
+                            fn_GrabarOpciones();
                         });
                     }
                 });
@@ -304,7 +334,8 @@
             url: "../UsuariosDetalle?mode=G"
         };
         var dataAdapter = new $.jqx.dataAdapter(source);
-        $("#div_GrillaUsuario").jqxGrid({source: dataAdapter});
+        $("#div_GrillaUsuario").jqxGrid({source: dataAdapter});     
+        $("#div_GrillaUsuario").jqxGrid('clearselection');
     }
     //FUNCION PARA CARGAR VENTANA PARA EDITAR REGISTRO
     function fn_EditarRegistro() {
@@ -316,7 +347,7 @@
             data: {mode: mode, codigo: codigo},
             success: function (data) {
                 var dato = JSON.parse(data);
-//                console.log(dato);
+                $("#txt_CIP").val(dato.usuario);
                 $("#cbo_Area_Laboral").jqxDropDownList('selectItem', dato.areaLaboral);
                 $("#cbo_rol").jqxDropDownList('selectItem', dato.Rol);
                 $("#cbo_brigada").jqxDropDownList('selectItem', dato.brigada);
@@ -326,6 +357,9 @@
                 $("#txt_correo").val( dato.correo);
                 $("#txt_telf").val( dato.telefono);
                 $("#txt_cargo").val( dato.cargo);
+                if(dato.autorizacion === 1){
+                    $("#jqxcheckbox").jqxCheckBox({ checked: true });
+                }
             }
         });
         $('#div_UsuarioPrincipal').jqxWindow({isModal: true});
@@ -333,6 +367,7 @@
     }
     //FUNCION PARA GRABAR LOS DATOS DE LA VENTANA PRINCIPAL
     function fn_GrabarDatos() {
+        var cip = $("#txt_CIP").val();
         var areaLaboral = $("#cbo_Area_Laboral").val();
         var rol = $("#cbo_rol").val();
         var brigada = $("#cbo_brigada").val();
@@ -342,18 +377,28 @@
         var correo = $("#txt_correo").val();
         var telf = $("#txt_telf").val();
         var cargo = $("#txt_cargo").val();
-//        var json = {
-//                    mode: mode, codigo: codigo, areaLaboral: areaLaboral,
-//                    rol: rol, brigada: brigada, paterno: paterno, materno: materno,
-//                    nombres: nombres, correo: correo, telf: telf, cargo: cargo
-//                };
-//        console.log(json);
+        var autor = 0;
+        if($("#jqxcheckbox").jqxCheckBox('checked') === true){
+            autor = 1;
+        }
+        if(mode === 'D' || mode === 'A' || mode === 'R'){
+           cip = codigo;
+           areaLaboral = 0;
+           rol=0;
+           brigada=0;
+        }
+        var json = {
+                    mode: mode, codigo: cip, areaLaboral: areaLaboral,
+                    rol: rol, brigada: brigada, paterno: paterno, materno: materno,
+                    nombres: nombres, correo: correo, telf: telf, cargo: cargo, auto: autor
+                };
+        console.log(json);
         $.ajax({
             type: "GET",
             url: "../IduUsuarios",
-            data: {mode: mode, codigo: codigo, areaLaboral: areaLaboral,
+            data: {mode: mode, codigo: cip, areaLaboral: areaLaboral,
                     rol: rol, brigada: brigada, paterno: paterno, materno: materno,
-                    nombres: nombres, correo: correo, telf: telf, cargo: cargo},
+                    nombres: nombres, correo: correo, telf: telf, cargo: cargo, auto: autor, lista:''},
             success: function (data) {
                 msg = data;
                 if (msg === "GUARDO") {
@@ -459,6 +504,64 @@
         $('#div_ModuloMenuPrincipal').jqxWindow({isModal: true, modalOpacity: 0.8});
         $('#div_ModuloMenuPrincipal').jqxWindow('open');
     }
+    
+    function fn_GrabarOpciones() {
+            var lista = new Array();
+            var items = $('#jqxTree').jqxTree('getCheckedItems');
+            for (var i = 0; i < items.length; i++) {
+                var item = items[i];
+                lista.push(item.id);
+            }
+            var areaLaboral = 0;
+            var rol=0;
+            var brigada=0;
+            
+//            var json = {mode: 'O', codigo: codigo,areaLaboral: areaLaboral,rol: rol, brigada: brigada,
+//                       lista: JSON.stringify(lista).replaceAll('"','').replaceAll('[','').replaceAll(']',''),
+//                       paterno: null, materno: null, nombres: null, correo: null, telf: null, cargo:null,
+//                       auto: 0};
+//            console.log(json);
+            
+            $.ajax({
+                type: "GET",
+                url: "../IduUsuarios",
+                data: {mode: 'O', codigo: codigo,areaLaboral: areaLaboral,rol: rol, brigada: brigada,
+                       lista: JSON.stringify(lista).replaceAll('"','').replaceAll('[','').replaceAll(']',''),
+                       paterno: null, materno: null, nombres: null, correo: null, telf: null, cargo:null,
+                       auto: 0},
+                success: function (data) {
+                    msg = data;
+                    if (msg === "GUARDO") {
+                        $.confirm({
+                            title: 'AVISO DEL SISTEMA',
+                            content: 'Datos procesados correctamente!!',
+                            type: 'green',
+                            typeAnimated: true,
+                            autoClose: 'cerrarAction|1000',
+                            buttons: {
+                                cerrarAction: {
+                                    text: 'Cerrar',
+                                    action: function () {
+                                        $('#div_ModuloMenuPrincipal').jqxWindow('close');
+                                    }
+                                }
+                            }
+                        });
+                    } else {
+                        $.alert({
+                            theme: 'material',
+                            title: 'AVISO DEL SISTEMA',
+                            content: msg,
+                            animation: 'zoom',
+                            closeAnimation: 'zoom',
+                            type: 'red',
+                            typeAnimated: true
+                        });
+                    }
+                }
+            });
+        }
+    
 </script>
 <div id='div_Titulo' style="border: none;">
     <div class="jqx-hideborder">LISTADOS DE USUARIOS</div>
@@ -474,6 +577,10 @@
     <div style="overflow: hidden">
         <form id="frm_Usuario" name="frm_Usuario" method="post" >
             <table width="100%" border="0" cellspacing="0" cellpadding="0"> 
+                <tr>
+                    <td class="inputlabel">CIP : </td>
+                    <td><input id="txt_CIP" name="txt_CIP" style="text-transform: uppercase;"/></td> 
+                </tr>
                 <tr>
                     <td class="inputlabel">Área Laboral : </td>
                     <td>
@@ -523,6 +630,10 @@
                     <td><input id="txt_cargo" name="txt_cargo" style="text-transform: uppercase;"/></td>
                 </tr>
                 <tr>
+                    <td class="inputlabel">Autorización : </td>
+                    <td><div id='jqxcheckbox'></div></td>     
+                </tr>
+                <tr>
                     <td class="Summit" colspan="4">
                         <div>
                             <input type="button" id="btn_Guardar"  value="Guardar" style="margin-right: 20px"/>
@@ -554,5 +665,6 @@
         <li style="color: brown; font-weight: bold;">Desactivar</li>
         <li type='separator'></li>
         <li style="font-weight: bold;">Opciones</li>
+        <li style="font-weight: bold;">Resetear Contraseña</li>
     </ul>
 </div>

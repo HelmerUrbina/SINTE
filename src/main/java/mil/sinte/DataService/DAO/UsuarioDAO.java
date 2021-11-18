@@ -55,9 +55,10 @@ public interface UsuarioDAO extends JpaRepository<BeanUsuario, String> {
     
     @Transactional
     @Modifying
-    @Query(value = "{CALL SP_IDU_USUARIO(:codigo, :areaLaboral, :rol, :brigada, :paterno, :materno, :nombres, :correo, :telf, :cargo, :autorizacion, :usuario, :modo)}", nativeQuery = true)
+    @Query(value = "{CALL SP_IDU_USUARIO(:codigo, :password, :areaLaboral, :rol, :brigada, :paterno, :materno, :nombres, :correo, :telf, :cargo, :autorizacion, :opciones, :usuario, :modo)}", nativeQuery = true)
     void sp_usuario(
             @Param("codigo") String codigo,
+            @Param("password") String password,
             @Param("areaLaboral") int areaLaboral,
             @Param("rol") int rol,
             @Param("brigada") int brigada,
@@ -68,6 +69,7 @@ public interface UsuarioDAO extends JpaRepository<BeanUsuario, String> {
             @Param("telf") String telf,
             @Param("cargo") String cargo,
             @Param("autorizacion") int autorizacion,
+            @Param("opciones") String opciones,
             @Param("usuario") String usuario,
             @Param("modo") String modo);
 

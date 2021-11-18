@@ -73,7 +73,9 @@ public class UsuarioController {
             @RequestParam("nombres") String nombres,
             @RequestParam("correo") String correo,
             @RequestParam("telf") String telf,
-            @RequestParam("cargo") String cargo
+            @RequestParam("cargo") String cargo,
+            @RequestParam("auto") Integer auto,
+            @RequestParam("lista") String lista
             ) {
         BeanUsuario objBeanUsuario = new BeanUsuario();
         objBeanUsuario.setUsuario(codigo);
@@ -86,7 +88,7 @@ public class UsuarioController {
         objBeanUsuario.setCorreo(correo);
         objBeanUsuario.setTelefono(telf);
         objBeanUsuario.setCargo(cargo);
-        
-        return "" + usuarioService.guardarUsuario(objBeanUsuario, Utiles.getUsuario(), mode);
+        objBeanUsuario.setAutorizacion(auto);
+        return "" + usuarioService.guardarUsuario(objBeanUsuario, lista, Utiles.getUsuario(), mode);
     }
 }

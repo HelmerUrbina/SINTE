@@ -39,12 +39,13 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
-    public String guardarUsuario(BeanUsuario objBeanUsuario, String usuario, String modo) {
+    public String guardarUsuario(BeanUsuario objBeanUsuario,String opciones, String usuario, String modo) {
         String result = "GUARDO";
         try {
 
             usuarioDAO.sp_usuario(
                     objBeanUsuario.getUsuario(),
+                    Utiles.encriptarPassword(objBeanUsuario.getUsuario()),
                     objBeanUsuario.getAreaLaboral()!=null?Integer.parseInt(objBeanUsuario.getAreaLaboral()):null, 
                     objBeanUsuario.getRol()!=null?Integer.parseInt(objBeanUsuario.getRol()):null, 
                     objBeanUsuario.getBrigada()!=null?Integer.parseInt(objBeanUsuario.getBrigada()):null, 
@@ -54,7 +55,8 @@ public class UsuarioServiceImpl implements UsuarioService {
                     objBeanUsuario.getCorreo(),
                     objBeanUsuario.getTelefono(),
                     objBeanUsuario.getCargo(),
-                    0,
+                    objBeanUsuario.getAutorizacion(),
+                    opciones,
                     usuario, 
                     modo
             );
