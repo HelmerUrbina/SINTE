@@ -1,13 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mil.sinte.UserServices.Configuracion;
 
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
-import mil.sinte.BusinessServices.Beans.BeanBrigadas;
 import mil.sinte.BusinessServices.Beans.BeanMarcas;
 import mil.sinte.DataService.Service.MarcasService;
 import mil.sinte.Utiles.Utiles;
@@ -24,10 +18,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @Slf4j
 public class MarcasController {
-    
+
     @Autowired
     private MarcasService marcasService;
-    
+
     @RequestMapping(value = "/Marcas")
     public String getMarcas(String mode) {
         switch (mode) {
@@ -37,7 +31,7 @@ public class MarcasController {
                 return "redirect:/";
         }
     }
-    
+
     @RequestMapping(value = "/MarcasDetalle")
     @ResponseBody
     public String getMarcasDetalle(String mode, String codigo) {
@@ -50,7 +44,7 @@ public class MarcasController {
                 return "ERROR";
         }
     }
-    
+
     @RequestMapping(value = "/IduMarcas")
     @ResponseBody
     public String setMarcas(
@@ -60,7 +54,6 @@ public class MarcasController {
         BeanMarcas objBeanMarcas = new BeanMarcas();
         objBeanMarcas.setCodigo(codigo);
         objBeanMarcas.setDescripcion(descripcion);
-        
         return "" + marcasService.guardarMarcas(objBeanMarcas, Utiles.getUsuario(), mode);
     }
 }

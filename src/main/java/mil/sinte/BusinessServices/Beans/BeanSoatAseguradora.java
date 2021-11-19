@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mil.sinte.BusinessServices.Beans;
 
 import java.io.Serializable;
@@ -19,8 +14,8 @@ import lombok.Data;
 @Entity
 @Table(name = "SINTE_SOAT_ASEGURADORA")
 @Data
-public class BeanSoatAseguradora implements  Serializable{
-    
+public class BeanSoatAseguradora implements Serializable {
+
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -29,14 +24,14 @@ public class BeanSoatAseguradora implements  Serializable{
 
     @Column(name = "VSOAT_ASEGURADORA_NOMBRE")
     private String descripcion;
-    
+
     @Column(name = "VSOAT_ASEGURADORA_TELEFONO")
     private String telefono;
-    
+
     @Column(name = "VSOAT_ASEGURADORA_DIRECCION")
     private String direccion;
-    
+
     @Column(name = "CESTADO_CODIGO")
     private String estado;
-    
+
 }

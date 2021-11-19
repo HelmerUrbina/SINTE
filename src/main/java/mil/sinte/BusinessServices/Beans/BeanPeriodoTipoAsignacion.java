@@ -18,15 +18,15 @@ public class BeanPeriodoTipoAsignacion implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    @Column(name = "CPERIODO_CODIGO", nullable = false)
+    private String periodo;
+
     @Id
     @Column(name = "NTIPO_ASIGNACION_CODIGO", nullable = false)
-    private Integer codigo;
-
-    @Column(name = "VTIPO_ASIGNACION_DESCRIPCION", nullable = false)
-    private String descripcion;
-
+    private String tipoAsignacion;
+    
     @Column(name = "VTIPO_ASIGNACION_ABREVIATURA", nullable = false)
-    private String abreviatura;
+    private String tipoAsignacionAbreviatura;
 
     @Column(name = "CESTADO_CODIGO")
     private String estado;

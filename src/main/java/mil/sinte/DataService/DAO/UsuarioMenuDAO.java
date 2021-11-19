@@ -1,10 +1,8 @@
 package mil.sinte.DataService.DAO;
 
-import java.util.ArrayList;
 import java.util.List;
 import mil.sinte.BusinessServices.Beans.BeanMenu;
 import mil.sinte.BusinessServices.Beans.BeanUsuarioMenu;
-import mil.sinte.BusinessServices.Beans.BeanUsuarioOpciones;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -33,7 +31,5 @@ public interface UsuarioMenuDAO extends JpaRepository<BeanUsuarioMenu, String> {
             + "MENU.VUSUARIO_CODIGO=?1 "
             + "ORDER BY MODULO")
     List<BeanMenu> getModuloUsuario(String usuario);
-    
 
-    
 }

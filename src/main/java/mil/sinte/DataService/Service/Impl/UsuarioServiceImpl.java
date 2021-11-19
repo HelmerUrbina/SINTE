@@ -39,30 +39,28 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
-    public String guardarUsuario(BeanUsuario objBeanUsuario,String opciones, String usuario, String modo) {
+    public String guardarUsuario(BeanUsuario objBeanUsuario, String opciones, String usuario, String modo) {
         String result = "GUARDO";
         try {
-
             usuarioDAO.sp_usuario(
                     objBeanUsuario.getUsuario(),
                     Utiles.encriptarPassword(objBeanUsuario.getUsuario()),
-                    objBeanUsuario.getAreaLaboral()!=null?Integer.parseInt(objBeanUsuario.getAreaLaboral()):null, 
-                    objBeanUsuario.getRol()!=null?Integer.parseInt(objBeanUsuario.getRol()):null, 
-                    objBeanUsuario.getBrigada()!=null?Integer.parseInt(objBeanUsuario.getBrigada()):null, 
-                    objBeanUsuario.getPaterno(), 
-                    objBeanUsuario.getMaterno(), 
-                    objBeanUsuario.getNombres(), 
+                    objBeanUsuario.getAreaLaboral() != null ? Integer.parseInt(objBeanUsuario.getAreaLaboral()) : null,
+                    objBeanUsuario.getRol() != null ? Integer.parseInt(objBeanUsuario.getRol()) : null,
+                    objBeanUsuario.getBrigada() != null ? Integer.parseInt(objBeanUsuario.getBrigada()) : null,
+                    objBeanUsuario.getPaterno(),
+                    objBeanUsuario.getMaterno(),
+                    objBeanUsuario.getNombres(),
                     objBeanUsuario.getCorreo(),
                     objBeanUsuario.getTelefono(),
                     objBeanUsuario.getCargo(),
                     objBeanUsuario.getAutorizacion(),
                     opciones,
-                    usuario, 
+                    usuario,
                     modo
             );
         } catch (Exception e) {
-            result = e.getCause().getMessage();
-//            result = Utiles.getErrorSQL(e);
+           result = Utiles.getErrorSQL((Exception) e);
         }
         return result;
     }

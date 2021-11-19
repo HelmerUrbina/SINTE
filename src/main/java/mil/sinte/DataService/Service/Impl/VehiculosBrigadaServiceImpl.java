@@ -1,12 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mil.sinte.DataService.Service.Impl;
 
 import java.util.List;
-import mil.sinte.BusinessServices.Beans.BeanVehiculoTipoCombustible;
 import mil.sinte.BusinessServices.Beans.BeanVehiculosBrigada;
 import mil.sinte.DataService.DAO.VehiculosBrigadaDAO;
 import mil.sinte.DataService.Service.VehiculosBrigadasService;
@@ -19,11 +13,11 @@ import org.springframework.stereotype.Service;
  * @author MERCANTIL GROUP SAC
  */
 @Service
-public class VehiculosBrigadaServiceImpl implements VehiculosBrigadasService{
+public class VehiculosBrigadaServiceImpl implements VehiculosBrigadasService {
 
     @Autowired
     private VehiculosBrigadaDAO vehiculosBrigadaDAO;
-    
+
     @Override
     public List<BeanVehiculosBrigada> getVehiculosBrigadas(Integer brigada, String periodo) {
         return vehiculosBrigadaDAO.findAll(brigada, periodo);
@@ -44,7 +38,7 @@ public class VehiculosBrigadaServiceImpl implements VehiculosBrigadasService{
                     Integer.parseInt(objBeanVehiculosBrigada.getDependencia()),
                     Integer.parseInt(objBeanVehiculosBrigada.getVehiculo()),
                     objBeanVehiculosBrigada.getFecha(),
-                    usuario, 
+                    usuario,
                     modo
             );
         } catch (Exception e) {
@@ -52,5 +46,5 @@ public class VehiculosBrigadaServiceImpl implements VehiculosBrigadasService{
         }
         return result;
     }
-    
+
 }

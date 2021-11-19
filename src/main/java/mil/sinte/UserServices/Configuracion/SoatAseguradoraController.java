@@ -7,7 +7,6 @@ package mil.sinte.UserServices.Configuracion;
 
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
-import mil.sinte.BusinessServices.Beans.BeanMarcas;
 import mil.sinte.BusinessServices.Beans.BeanSoatAseguradora;
 import mil.sinte.DataService.Service.SoatAseguradoService;
 import mil.sinte.Utiles.Utiles;
@@ -24,10 +23,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @Slf4j
 public class SoatAseguradoraController {
-    
+
     @Autowired
     private SoatAseguradoService soatAseguradoService;
-    
+
     @RequestMapping(value = "/Aseguradora")
     public String getAseguradora(String mode) {
         switch (mode) {
@@ -37,7 +36,7 @@ public class SoatAseguradoraController {
                 return "redirect:/";
         }
     }
-    
+
     @RequestMapping(value = "/AseguradoraDetalle")
     @ResponseBody
     public String getAseguradoraDetalle(String mode, String codigo) {
@@ -50,7 +49,7 @@ public class SoatAseguradoraController {
                 return "ERROR";
         }
     }
-    
+
     @RequestMapping(value = "/IduAseguradora")
     @ResponseBody
     public String setAseguradora(
@@ -64,8 +63,7 @@ public class SoatAseguradoraController {
         objAseguradora.setDescripcion(descripcion);
         objAseguradora.setTelefono(telefono);
         objAseguradora.setDireccion(direccion);
-        
         return "" + soatAseguradoService.guardarSoatAseguradora(objAseguradora, Utiles.getUsuario(), mode);
     }
-    
+
 }

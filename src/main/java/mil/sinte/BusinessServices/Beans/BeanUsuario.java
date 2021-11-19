@@ -46,7 +46,7 @@ public class BeanUsuario implements Serializable {
     @Column(name = "NAREA_LABORAL_CODIGO")
     private String areaLaboral;
 
-    @Column(name = "CESTADO_CODIGO", nullable = false)
+    @Column(name = "CESTADO_CODIGO")
     private String estado;
 
     @Column(name = "NBRIGADA_CODIGO")

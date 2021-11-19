@@ -7,9 +7,7 @@ package mil.sinte.UserServices.Configuracion;
 
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
-import mil.sinte.BusinessServices.Beans.BeanMarcas;
 import mil.sinte.BusinessServices.Beans.BeanModelos;
-import mil.sinte.DataService.Service.MarcasService;
 import mil.sinte.DataService.Service.ModelosService;
 import mil.sinte.Utiles.Utiles;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,10 +23,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @Slf4j
 public class ModelosController {
-    
+
     @Autowired
     private ModelosService modelosService;
-    
+
     @RequestMapping(value = "/Modelos")
     public String getModelos(String mode) {
         switch (mode) {
@@ -38,7 +36,7 @@ public class ModelosController {
                 return "redirect:/";
         }
     }
-    
+
     @RequestMapping(value = "/ModelosDetalle")
     @ResponseBody
     public String getModelosDetalle(String mode, String codigo) {
@@ -51,7 +49,7 @@ public class ModelosController {
                 return "ERROR";
         }
     }
-    
+
     @RequestMapping(value = "/IduModelos")
     @ResponseBody
     public String setModelos(
@@ -63,7 +61,6 @@ public class ModelosController {
         objBeanModelos.setModelo(modelo);
         objBeanModelos.setMarca(marca);
         objBeanModelos.setDescripcion(descripcion);
-        
         return "" + modelosService.guardarModelos(objBeanModelos, Utiles.getUsuario(), mode);
     }
 }

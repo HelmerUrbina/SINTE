@@ -1,4 +1,4 @@
-<script type="text/javascript">
+<script>
     var codigo = null;
     var mode = null;
     var msg = "";
@@ -76,7 +76,7 @@
                     $("#txt_correo").val('');
                     $("#txt_telf").val('');
                     $("#txt_cargo").val('');
-                    $("#jqxcheckbox").jqxCheckBox({ checked: false });
+                    $("#jqxcheckbox").jqxCheckBox({checked: false});
                     $('#div_UsuarioPrincipal').jqxWindow({isModal: true, modalOpacity: 0.8});
                     $('#div_UsuarioPrincipal').jqxWindow('open');
                 });
@@ -211,7 +211,7 @@
                             }
                         }
                     });
-                }else {
+                } else {
                     $.alert({
                         theme: 'material',
                         title: 'AVISO DEL SISTEMA',
@@ -254,7 +254,7 @@
                         $("#txt_correo").jqxInput({placeHolder: "CORREO", width: 300, height: 20, minLength: 2, maxLength: 200});
                         $("#txt_telf").jqxInput({placeHolder: "TELEFONO", width: 300, height: 20, minLength: 2, maxLength: 200});
                         $("#txt_cargo").jqxInput({placeHolder: "CARGO", width: 300, height: 20, minLength: 2, maxLength: 200});
-                        $("#jqxcheckbox").jqxCheckBox({ width: 120, height: 25 });
+                        $("#jqxcheckbox").jqxCheckBox({width: 120, height: 25});
                         $('#btn_Cancelar').jqxButton({width: '65px', height: 30});
                         $('#btn_Guardar').jqxButton({width: '65px', height: 30});
                         $('#btn_Guardar').on('click', function () {
@@ -278,7 +278,7 @@
                         });
                     }
                 });
-                
+
                 ancho = 400;
                 alto = 490;
                 posicionX = ($(window).width() / 2) - (ancho / 2);
@@ -334,7 +334,7 @@
             url: "../UsuariosDetalle?mode=G"
         };
         var dataAdapter = new $.jqx.dataAdapter(source);
-        $("#div_GrillaUsuario").jqxGrid({source: dataAdapter});     
+        $("#div_GrillaUsuario").jqxGrid({source: dataAdapter});
         $("#div_GrillaUsuario").jqxGrid('clearselection');
     }
     //FUNCION PARA CARGAR VENTANA PARA EDITAR REGISTRO
@@ -351,14 +351,14 @@
                 $("#cbo_Area_Laboral").jqxDropDownList('selectItem', dato.areaLaboral);
                 $("#cbo_rol").jqxDropDownList('selectItem', dato.Rol);
                 $("#cbo_brigada").jqxDropDownList('selectItem', dato.brigada);
-                $("#txt_paterno").val( dato.paterno);
-                $("#txt_materno").val( dato.materno);
-                $("#txt_nombres").val( dato.nombres);
-                $("#txt_correo").val( dato.correo);
-                $("#txt_telf").val( dato.telefono);
-                $("#txt_cargo").val( dato.cargo);
-                if(dato.autorizacion === 1){
-                    $("#jqxcheckbox").jqxCheckBox({ checked: true });
+                $("#txt_paterno").val(dato.paterno);
+                $("#txt_materno").val(dato.materno);
+                $("#txt_nombres").val(dato.nombres);
+                $("#txt_correo").val(dato.correo);
+                $("#txt_telf").val(dato.telefono);
+                $("#txt_cargo").val(dato.cargo);
+                if (dato.autorizacion === 1) {
+                    $("#jqxcheckbox").jqxCheckBox({checked: true});
                 }
             }
         });
@@ -378,27 +378,27 @@
         var telf = $("#txt_telf").val();
         var cargo = $("#txt_cargo").val();
         var autor = 0;
-        if($("#jqxcheckbox").jqxCheckBox('checked') === true){
+        if ($("#jqxcheckbox").jqxCheckBox('checked') === true) {
             autor = 1;
         }
-        if(mode === 'D' || mode === 'A' || mode === 'R'){
-           cip = codigo;
-           areaLaboral = 0;
-           rol=0;
-           brigada=0;
+        if (mode === 'D' || mode === 'A' || mode === 'R') {
+            cip = codigo;
+            areaLaboral = 0;
+            rol = 0;
+            brigada = 0;
         }
         var json = {
-                    mode: mode, codigo: cip, areaLaboral: areaLaboral,
-                    rol: rol, brigada: brigada, paterno: paterno, materno: materno,
-                    nombres: nombres, correo: correo, telf: telf, cargo: cargo, auto: autor
-                };
+            mode: mode, codigo: cip, areaLaboral: areaLaboral,
+            rol: rol, brigada: brigada, paterno: paterno, materno: materno,
+            nombres: nombres, correo: correo, telf: telf, cargo: cargo, auto: autor
+        };
         console.log(json);
         $.ajax({
             type: "GET",
             url: "../IduUsuarios",
             data: {mode: mode, codigo: cip, areaLaboral: areaLaboral,
-                    rol: rol, brigada: brigada, paterno: paterno, materno: materno,
-                    nombres: nombres, correo: correo, telf: telf, cargo: cargo, auto: autor, lista:''},
+                rol: rol, brigada: brigada, paterno: paterno, materno: materno,
+                nombres: nombres, correo: correo, telf: telf, cargo: cargo, auto: autor, lista: ''},
             success: function (data) {
                 msg = data;
                 if (msg === "GUARDO") {
@@ -432,136 +432,136 @@
             }
         });
     }
-    
+
     function fn_UsuarioOpciones() {
         $.ajax({
-                type: "GET",
-                url: "../UsuariosDetalle",
-                data: {mode: 'M'},
-                success: function (data) {
-                        data = data.replace("[", "");
-                        var fila = data.split("[");
-                        var data = new Array();
-                        for (i = 1; i < fila.length; i++) {
-                                var columna = fila[i];
-                                var datos = columna.split("+++");
-                                while (datos[3].indexOf(']') > 0) {
-                                        datos[3] = datos[3].replace("]", "");
-                                }
-                                while (datos[3].indexOf(',') > 0) {
-                                        datos[3] = datos[3].replace(",", "");
-                                }
-                                while (datos[3].indexOf('"') > 0) {
-                                        datos[3] = datos[3].replace('"', '');
-                                }
-                                var row = {id: datos[0],
-                                        parentid: datos[1],
-                                        text: datos[3],
-                                        value: datos[0]};
-                                data.push(row);
-                                var mod = {id: datos[1],
-                                        parentid: -1,
-                                        text: datos[2],
-                                        value: datos[1]};
-                                data.push(mod);
-                        }
-                        var source = {
-                                datatype: "json",
-                                datafields: [
-                                        {name: 'id'},
-                                        {name: 'parentid'},
-                                        {name: 'text'},
-                                        {name: 'value'}
-                                ],
-                                id: 'id',
-                                localdata: data
-                        };
-                        var dataAdapter = new $.jqx.dataAdapter(source);
-                        dataAdapter.dataBind();
-                        var records = dataAdapter.getRecordsHierarchy('id', 'parentid', 'items', [{name: 'text', map: 'label'}]);
-                        $('#jqxTree').jqxTree({source: records});
-                        $('#jqxTree').jqxTree('expandAll');
-                        $.ajax({
-                                type: "GET",
-                                url: "../UsuariosDetalle",
-                                data: {mode: 'MU', codigo: codigo},
-                                success: function (data) {
-                                    if(data.length > 2){
-                                        data = data.replace("[", "");
-                                        data = data.replace("]", "");
-                                        data = data.replaceAll('"', '');
-                                        var fila = data.split(",");
-                                        for (i = 0; i < fila.length; i++) {
-                                                var dato = "#" + fila[i].trim();
-                                                $("#jqxTree").jqxTree('checkItem', $(dato)[0], true);
-                                        }
-                                    }
-                                        
-                                }
-                        });
+            type: "GET",
+            url: "../UsuariosDetalle",
+            data: {mode: 'M'},
+            success: function (data) {
+                data = data.replace("[", "");
+                var fila = data.split("[");
+                var data = new Array();
+                for (i = 1; i < fila.length; i++) {
+                    var columna = fila[i];
+                    var datos = columna.split("+++");
+                    while (datos[3].indexOf(']') > 0) {
+                        datos[3] = datos[3].replace("]", "");
+                    }
+                    while (datos[3].indexOf(',') > 0) {
+                        datos[3] = datos[3].replace(",", "");
+                    }
+                    while (datos[3].indexOf('"') > 0) {
+                        datos[3] = datos[3].replace('"', '');
+                    }
+                    var row = {id: datos[0],
+                        parentid: datos[1],
+                        text: datos[3],
+                        value: datos[0]};
+                    data.push(row);
+                    var mod = {id: datos[1],
+                        parentid: -1,
+                        text: datos[2],
+                        value: datos[1]};
+                    data.push(mod);
                 }
+                var source = {
+                    datatype: "json",
+                    datafields: [
+                        {name: 'id'},
+                        {name: 'parentid'},
+                        {name: 'text'},
+                        {name: 'value'}
+                    ],
+                    id: 'id',
+                    localdata: data
+                };
+                var dataAdapter = new $.jqx.dataAdapter(source);
+                dataAdapter.dataBind();
+                var records = dataAdapter.getRecordsHierarchy('id', 'parentid', 'items', [{name: 'text', map: 'label'}]);
+                $('#jqxTree').jqxTree({source: records});
+                $('#jqxTree').jqxTree('expandAll');
+                $.ajax({
+                    type: "GET",
+                    url: "../UsuariosDetalle",
+                    data: {mode: 'MU', codigo: codigo},
+                    success: function (data) {
+                        if (data.length > 2) {
+                            data = data.replace("[", "");
+                            data = data.replace("]", "");
+                            data = data.replaceAll('"', '');
+                            var fila = data.split(",");
+                            for (i = 0; i < fila.length; i++) {
+                                var dato = "#" + fila[i].trim();
+                                $("#jqxTree").jqxTree('checkItem', $(dato)[0], true);
+                            }
+                        }
+
+                    }
+                });
+            }
         });
         $('#div_ModuloMenuPrincipal').jqxWindow({isModal: true, modalOpacity: 0.8});
         $('#div_ModuloMenuPrincipal').jqxWindow('open');
     }
-    
+
     function fn_GrabarOpciones() {
-            var lista = new Array();
-            var items = $('#jqxTree').jqxTree('getCheckedItems');
-            for (var i = 0; i < items.length; i++) {
-                var item = items[i];
-                lista.push(item.id);
-            }
-            var areaLaboral = 0;
-            var rol=0;
-            var brigada=0;
-            
+        var lista = new Array();
+        var items = $('#jqxTree').jqxTree('getCheckedItems');
+        for (var i = 0; i < items.length; i++) {
+            var item = items[i];
+            lista.push(item.id);
+        }
+        var areaLaboral = 0;
+        var rol = 0;
+        var brigada = 0;
+
 //            var json = {mode: 'O', codigo: codigo,areaLaboral: areaLaboral,rol: rol, brigada: brigada,
 //                       lista: JSON.stringify(lista).replaceAll('"','').replaceAll('[','').replaceAll(']',''),
 //                       paterno: null, materno: null, nombres: null, correo: null, telf: null, cargo:null,
 //                       auto: 0};
 //            console.log(json);
-            
-            $.ajax({
-                type: "GET",
-                url: "../IduUsuarios",
-                data: {mode: 'O', codigo: codigo,areaLaboral: areaLaboral,rol: rol, brigada: brigada,
-                       lista: JSON.stringify(lista).replaceAll('"','').replaceAll('[','').replaceAll(']',''),
-                       paterno: null, materno: null, nombres: null, correo: null, telf: null, cargo:null,
-                       auto: 0},
-                success: function (data) {
-                    msg = data;
-                    if (msg === "GUARDO") {
-                        $.confirm({
-                            title: 'AVISO DEL SISTEMA',
-                            content: 'Datos procesados correctamente!!',
-                            type: 'green',
-                            typeAnimated: true,
-                            autoClose: 'cerrarAction|1000',
-                            buttons: {
-                                cerrarAction: {
-                                    text: 'Cerrar',
-                                    action: function () {
-                                        $('#div_ModuloMenuPrincipal').jqxWindow('close');
-                                    }
+
+        $.ajax({
+            type: "GET",
+            url: "../IduUsuarios",
+            data: {mode: 'O', codigo: codigo, areaLaboral: areaLaboral, rol: rol, brigada: brigada,
+                lista: JSON.stringify(lista).replaceAll('"', '').replaceAll('[', '').replaceAll(']', ''),
+                paterno: null, materno: null, nombres: null, correo: null, telf: null, cargo: null,
+                auto: 0},
+            success: function (data) {
+                msg = data;
+                if (msg === "GUARDO") {
+                    $.confirm({
+                        title: 'AVISO DEL SISTEMA',
+                        content: 'Datos procesados correctamente!!',
+                        type: 'green',
+                        typeAnimated: true,
+                        autoClose: 'cerrarAction|1000',
+                        buttons: {
+                            cerrarAction: {
+                                text: 'Cerrar',
+                                action: function () {
+                                    $('#div_ModuloMenuPrincipal').jqxWindow('close');
                                 }
                             }
-                        });
-                    } else {
-                        $.alert({
-                            theme: 'material',
-                            title: 'AVISO DEL SISTEMA',
-                            content: msg,
-                            animation: 'zoom',
-                            closeAnimation: 'zoom',
-                            type: 'red',
-                            typeAnimated: true
-                        });
-                    }
+                        }
+                    });
+                } else {
+                    $.alert({
+                        theme: 'material',
+                        title: 'AVISO DEL SISTEMA',
+                        content: msg,
+                        animation: 'zoom',
+                        closeAnimation: 'zoom',
+                        type: 'red',
+                        typeAnimated: true
+                    });
                 }
-            });
-        }
-    
+            }
+        });
+    }
+
 </script>
 <div id='div_Titulo' style="border: none;">
     <div class="jqx-hideborder">LISTADOS DE USUARIOS</div>
@@ -646,16 +646,16 @@
     </div>
 </div>
 <div id="div_ModuloMenuPrincipal" style="display: none">
-        <div>
-            <span style="float: left">SELECCIONE LAS OPCIONES DEL USUARIO</span>
+    <div>
+        <span style="float: left">SELECCIONE LAS OPCIONES DEL USUARIO</span>
+    </div>
+    <div style="overflow: hidden">
+        <div id='jqxTree'></div>
+        <div class="Summit">
+            <input type="button" id="btn_Permisos_Guardar"  value="Guardar" style="margin-right: 20px"/>
+            <input type="button" id="btn_Permisos_Cancelar" value="Cancelar" style="margin-right: 20px"/>
         </div>
-        <div style="overflow: hidden">
-            <div id='jqxTree'></div>
-            <div class="Summit">
-                <input type="button" id="btn_Permisos_Guardar"  value="Guardar" style="margin-right: 20px"/>
-                <input type="button" id="btn_Permisos_Cancelar" value="Cancelar" style="margin-right: 20px"/>
-            </div>
-        </div>
+    </div>
 </div>
 <div id='div_ContextMenu' style='display: none;'>
     <ul>

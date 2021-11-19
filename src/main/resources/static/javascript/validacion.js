@@ -25,7 +25,9 @@ function fn_CargarMenu(servlet, mode) {
     $("#div_VentanaDetalle").remove();
     $("#div_RegistroDetalle").remove();
     $("#div_ContextMenu").remove();
-
+    $("#div_VentanaAseguradora").remove();
+    $("#div_VentanaTipoCombustible").remove();
+    $("#div_ContextMenu").remove();
     /*/
      
      $("#div_ContextMenu").remove();
@@ -66,24 +68,19 @@ function fn_validaCombos(obj, msg) {
 }
 //FUNCION PARA CARGAR UN COMBO CON AJAX
 function fn_cargarComboAjax(obj, datos) {
-    $.ajax({
-        type: "GET",
+    var source = {
+        datatype: "json",
+        datafields: [
+            {name: 'descripcion', type: 'string'},
+            {name: 'codigo', type: 'string'}
+        ],
+        id: 'codigo',
         url: "../CombosAjax",
         data: datos,
-        success: function (data) {
-            var source = {
-                localdata: data,
-                datatype: "json",
-                datafields: [
-                    {name: 'descripcion', type: 'string'},
-                    {name: 'codigo', type: 'string'}
-                ],
-                async: true
-            };
-            var dataAdapter = new $.jqx.dataAdapter(source);
-            $(obj).jqxDropDownList({source: dataAdapter, placeHolder: "Seleccione", displayMember: "descripcion", valueMember: "codigo"});
-        }
-    });
+        async: true
+    };
+    var dataAdapter = new $.jqx.dataAdapter(source);
+    $(obj).jqxDropDownList({source: dataAdapter, placeHolder: "Seleccione", displayMember: "descripcion", valueMember: "codigo"});
 }
 //FUNCION PARA CARGAR UN COMBO DE CABECERA CON AJAX
 function fn_cargarComboxCabecera(obj, datos) {
@@ -128,4 +125,11 @@ function validarSiNumero(numero) {
         return "El valor " + numero + " no es un número valido.";
     }
     return "";
+}
+//FUNCION PARA VALIDAR SOLO NUMEROS ENTEROS
+function validarBoolean(valor) {
+    if (valor === '1') {
+        return true;
+    }
+    return false;
 }

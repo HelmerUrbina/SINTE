@@ -3,12 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package mil.sinte.UserServices.Seguriidad;
+package mil.sinte.UserServices.Seguridad;
 
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import mil.sinte.BusinessServices.Beans.BeanUsuario;
-import mil.sinte.BusinessServices.Beans.BeanVehiculoSoat;
 import mil.sinte.DataService.Service.UsuarioMenuService;
 import mil.sinte.DataService.Service.UsuarioService;
 import mil.sinte.Utiles.Utiles;
@@ -22,17 +21,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
  *
  * @author MERCANTIL GROUP SAC
  */
-
 @Controller
 @Slf4j
 public class UsuarioController {
-    
+
     @Autowired
     private UsuarioService usuarioService;
-    
+
     @Autowired
     private UsuarioMenuService usuarioMenuService;
-    
+
     @RequestMapping(value = "/Usuarios")
     public String getUsuario(String mode) {
         switch (mode) {
@@ -42,7 +40,7 @@ public class UsuarioController {
                 return "redirect:/";
         }
     }
-    
+
     @RequestMapping(value = "/UsuariosDetalle")
     @ResponseBody
     public String getUsuarioDetalle(String mode, String codigo) {
@@ -54,12 +52,12 @@ public class UsuarioController {
             case "M":
                 return new Gson().toJson(usuarioMenuService.getOpcionesUsuario());
             case "MU":
-                return new Gson().toJson(usuarioMenuService.getOpcionesOfUsuario(codigo));    
+                return new Gson().toJson(usuarioMenuService.getOpcionesOfUsuario(codigo));
             default:
                 return "ERROR";
         }
     }
-    
+
     @RequestMapping(value = "/IduUsuarios")
     @ResponseBody
     public String setUsuario(
@@ -76,7 +74,7 @@ public class UsuarioController {
             @RequestParam("cargo") String cargo,
             @RequestParam("auto") Integer auto,
             @RequestParam("lista") String lista
-            ) {
+    ) {
         BeanUsuario objBeanUsuario = new BeanUsuario();
         objBeanUsuario.setUsuario(codigo);
         objBeanUsuario.setAreaLaboral(areaLaboral);

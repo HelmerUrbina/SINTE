@@ -6,13 +6,13 @@
         <meta charset="UTF-8"/>
         <title>.:: Sistema de Gestión y Control de Abastecimiento de Combustible ::.</title>
         <link rel="shortcut icon" th:href="@{/images/Logos/logo.ico}" type="image/x-icon"/>
-        <link rel="stylesheet" th:href="@{/css/main.css}"/>
-        <link rel="stylesheet" th:href="@{/css/scaf.css}"/>
-        <link rel="stylesheet" th:href="@{/css/grid.css}"/>
         <link rel="stylesheet" th:href="@{/css/styles/jqx.base.css}"/>
         <link rel="stylesheet" th:href="@{/css/jquery-ui.css}"/>
         <link rel="stylesheet" th:href="@{/css/jquery-confirm.min.css}"/>
         <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}"/>
+        <link rel="stylesheet" th:href="@{/css/main.css}"/>
+        <link rel="stylesheet" th:href="@{/css/scaf.css}"/>
+        <link rel="stylesheet" th:href="@{/css/grid.css}"/>
         <script th:src="@{/javascript/validacion.js}"></script>
         <script th:src="@{/javascript/theme.js}"></script>
         <script th:src="@{/javascript/jquery.min.js}"></script>
@@ -62,6 +62,7 @@
         <script th:src="@{/javascript/jqwidgets/jqxexport.js}"></script>
         <script th:src="@{/javascript/jqwidgets/globalization/globalize.js}"></script>
         <script th:src="@{/javascript/jqwidgets/globalization/globalize.culture.es-PE.js}"></script>
+        <script th:src="@{/javascript/demos.js}"></script>
         <script th:src="@{/javascript/pdfobject.min.js}"></script>
         <script th:src="@{/javascript/jszip.min.js}"></script>
         <script type="text/javascript">
@@ -112,7 +113,7 @@
                     <li><a th:onclick="fn_MenuPrincipal();">Home</a> </li>
                     <li th:each="modulo : ${session.objModulos}">
                         <span th:text="${modulo.nombre}"> </span>
-                        <ul style='width: 200px'>
+                        <ul style='width: 250px;'>
                             <li  th:each="menu : ${session.objMenus}" th:if="${modulo.modulo == menu.modulo}">
                                 <a th:onclick="javascript: fn_CargarMenu([[${menu.servlet}]],[[${menu.modo}]])">
                                     <span  th:text="${menu.nombre}">Opcion</span>

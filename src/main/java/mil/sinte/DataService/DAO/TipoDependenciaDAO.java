@@ -16,12 +16,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 public interface TipoDependenciaDAO extends JpaRepository<BeanTipoDependencia, String> {
 
-    @Query(nativeQuery = true, value = "SELECT "
-            + "a.NTIPO_DEPENDENCIA_CODIGO, a.VTIPO_DEPENDENCIA_DESCRIPCION, "
-            + "a.VTIPO_DEPENDENCIA_ABREVIATURA , "
-            + "UTIL.FUN_ESTADO_DESCRIPCION(a.CESTADO_CODIGO) CESTADO_CODIGO "
-            + "FROM SINTE_TIPO_DEPENDENCIA a "
-            + "ORDER BY a.NTIPO_DEPENDENCIA_CODIGO")
+    @Query(nativeQuery = true, value = "SELECT NTIPO_DEPENDENCIA_CODIGO, "
+            + "VTIPO_DEPENDENCIA_DESCRIPCION, VTIPO_DEPENDENCIA_ABREVIATURA, "
+            + "UTIL.FUN_ESTADO_DESCRIPCION(CESTADO_CODIGO) CESTADO_CODIGO "
+            + "FROM SINTE_TIPO_DEPENDENCIA "
+            + "ORDER BY NTIPO_DEPENDENCIA_CODIGO")
     @Override
     List<BeanTipoDependencia> findAll();
 
@@ -31,7 +30,7 @@ public interface TipoDependenciaDAO extends JpaRepository<BeanTipoDependencia, S
     @Modifying
     @Query(value = "{CALL SP_IDU_TIPO_DEPENDENCIA(:codigo, :descripcion, :abreviatura, :usuario, :modo)}", nativeQuery = true)
     void sp_tipoDependencia(
-            @Param("codigo") int codigo,
+            @Param("codigo") Integer codigo,
             @Param("descripcion") String descripcion,
             @Param("abreviatura") String abreviatura,
             @Param("usuario") String usuario,

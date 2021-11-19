@@ -1,0 +1,426 @@
+<script>
+    var eventoPrincipal = null;
+    var autorizacion = validarBoolean('[[${session.objAutorizacion}]]');
+    var eventoPrincipalNombre = "";
+    var mode = null;
+    var nivel = 0;
+    var niveles = 0;
+    var msg = "";
+    $(document).ready(function () {
+        var theme = getTheme();
+        $("#div_Titulo").jqxExpander({theme: theme, width: '100%'});
+        $("#cbo_Periodo").jqxComboBox({theme: theme, autoOpen: true, promptText: "Seleccione", width: 150, height: 20, dropDownWidth: 250});
+        $("#cbo_TipoAsignacion").jqxComboBox({theme: theme, autoOpen: true, promptText: "Seleccione", width: 250, height: 20, dropDownWidth: 350});
+        $("#cbo_Brigadas").jqxComboBox({theme: theme, autoOpen: true, promptText: "Seleccione", width: 250, height: 20, dropDownWidth: 350});
+        var fecha = new Date();
+        $("#cbo_Periodo").jqxComboBox('selectItem', fecha.getFullYear());
+        $('#cbo_Periodo').on('change', function () {
+            fn_cargarComboxCabecera("#cbo_TipoAsignacion", {mode: 'tipoAsignacionByPeriodo', codigo: $('#cbo_Periodo').val()});
+        });
+        $('#cbo_TipoAsignacion').on('change', function () {
+            if (autorizacion === true)
+                fn_cargarComboxCabecera("#cbo_Brigadas", {mode: 'brigadasByPeriodoTipoAsignacion', codigo: $('#cbo_Periodo').val(), codigo3: $('#cbo_TipoAsignacion').val()});
+            fn_CargarBusqueda();
+        });
+        $('#cbo_Brigadas').on('change', function () {
+            fn_CargarBusqueda();
+        });
+        fn_cargarComboxCabecera("#cbo_TipoAsignacion", {mode: 'tipoAsignacionByPeriodo', codigo: $('#cbo_Periodo').val()});
+        //DEFINIMOS LOS CAMPOS Y DATOS DE LA GRILLA
+        $("#div_GrillaPrincipal").jqxGrid({
+            width: '99.8%',
+            height: ($(window).height() - 95),
+            autoheight: false,
+            autorowheight: false,
+            altrows: true,
+            sortable: true,
+            pageable: true,
+            filterable: true,
+            autoshowfiltericon: true,
+            columnsresize: true,
+            showfilterrow: true,
+            showtoolbar: true,
+            editable: false,
+            rendertoolbar: function (toolbar) {
+                // ADICIONAMOS BOTONES A LA BARRA DE ESTADOS
+                var container = $("<div style='overflow: hidden; position: relative; margin: 1px;'></div>");
+                var ButtonNuevo = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='/images/Botones/nuevo42.gif' th:src='@{/images/Botones/nuevo42.gif' width=18 height=18 /><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
+                var ButtonExportar = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='/images/Botones/pauf42.gif' th:src='@{/images/Botones/pauf42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
+                container.append(ButtonNuevo);
+                container.append(ButtonExportar);
+                toolbar.append(container);
+                ButtonNuevo.jqxButton({width: 30, height: 22});
+                ButtonNuevo.jqxTooltip({position: 'bottom', content: "Nuevo Registro"});
+                ButtonExportar.jqxButton({width: 30, height: 22});
+                ButtonExportar.jqxTooltip({position: 'bottom', content: "Exportar Datos"});
+                //ASIGNAMOS LAS FUNCIONES PARA EL BOTON NUEVO
+                ButtonNuevo.click(function (event) {
+                    mode = 'I';
+                    eventoPrincipal = '0';
+                    msg = '';
+                    msg += fn_validaCombos('#cbo_TipoAsignacion', "Seleccione el Tipo de Calendario");
+                    msg += fn_validaCombos('#cbo_Brigadas', "Seleccione una Brigada");
+                    if (msg.trim() === '') {
+                        $("#txt_EventoPrincipal").val("");
+                        $("#div_Niveles").val(0);
+                        $('#div_VentanaPrincipal').jqxWindow({isModal: true, modalOpacity: 0.8});
+                        $('#div_VentanaPrincipal').jqxWindow('open');
+                    } else {
+                        $.alert({
+                            theme: 'material',
+                            title: 'AVISO DEL SISTEMA',
+                            content: msg,
+                            animation: 'zoom',
+                            closeAnimation: 'zoom',
+                            type: 'red',
+                            typeAnimated: true
+                        });
+                    }
+                });
+                //ASIGNAMOS LAS FUNCIONES PARA EL BOTON EXPORTAR
+                ButtonExportar.click(function (event) {
+                    $("#div_GrillaPrincipal").jqxGrid('exportdata', 'xlsx', 'EventoPrincipal');
+                });
+            },
+            columns: [
+                {text: 'CODIGO', dataField: 'eventoPrincipal', width: '10%', align: 'center', cellsAlign: 'center'},
+                {text: 'EVENTO PRINCIPAL', dataField: 'eventoPrincipalNombre', width: '65%', align: 'center', cellsAlign: 'left'},
+                {text: 'NIVELES', dataField: 'niveles', width: '15%', align: 'center', cellsAlign: 'center'},
+                {text: 'ESTADO', dataField: 'estado', filtertype: 'list', width: '10%', align: 'center', cellsAlign: 'center'}
+            ]
+        });
+        // DEFINIMOS EL MENU CONTEXTUAL
+        var contextMenu = $("#div_ContextMenu").jqxMenu({width: 200, height: 115, autoOpenPopup: false, mode: 'popup'});
+        $("#div_GrillaPrincipal").on('contextmenu', function () {
+            return false;
+        });
+        // HABILITAMOS LA OPCION DE CLICK DEL MENU CONTEXTUAL.
+        $("#div_GrillaPrincipal").on('rowclick', function (event) {
+            if (event.args.rightclick) {
+                $("#div_GrillaPrincipal").jqxGrid('selectrow', event.args.rowindex);
+                var scrollTop = $(window).scrollTop();
+                var scrollLeft = $(window).scrollLeft();
+                contextMenu.jqxMenu('open', parseInt(event.args.originalEvent.clientX) + 5 + scrollLeft, parseInt(event.args.originalEvent.clientY) + 5 + scrollTop);
+                return false;
+            }
+        });
+        //DEFINIMOS LOS EVENTOS SEGUN LA OPCION DEL MENU CONTEXTUAL
+        $("#div_ContextMenu").on('itemclick', function (event) {
+            var opcion = event.args;
+            if (eventoPrincipal === null || eventoPrincipal === '') {
+                $.alert({
+                    theme: 'material',
+                    title: 'AVISO DEL SISTEMA',
+                    content: 'Debe Seleccionar un Registro',
+                    animation: 'zoom',
+                    closeAnimation: 'zoom',
+                    type: 'orange',
+                    typeAnimated: true
+                });
+            } else {
+                if ($.trim($(opcion).text()) === "Editar") {
+                    mode = 'U';
+                    fn_EditarRegistro();
+                } else if ($.trim($(opcion).text()) === "Activar") {
+                    $.confirm({
+                        title: 'AVISO DEL SISTEMA',
+                        content: 'Desea Activar este Evento Principal!',
+                        theme: 'material',
+                        animation: 'zoom',
+                        closeAnimation: 'zoom',
+                        type: 'blue',
+                        typeAnimated: true,
+                        buttons: {
+                            aceptar: {
+                                text: 'Aceptar',
+                                btnClass: 'btn-primary',
+                                keys: ['enter', 'shift'],
+                                action: function () {
+                                    mode = 'A';
+                                    fn_GrabarDatos();
+                                }
+                            },
+                            cancelar: function () {
+                            }
+                        }
+                    });
+                } else if ($.trim($(opcion).text()) === "Desactivar") {
+                    $.confirm({
+                        title: 'AVISO DEL SISTEMA',
+                        content: 'Desea Desactivar este Evento Principal!',
+                        theme: 'material',
+                        animation: 'zoom',
+                        closeAnimation: 'zoom',
+                        type: 'red',
+                        typeAnimated: true,
+                        buttons: {
+                            aceptar: {
+                                text: 'Aceptar',
+                                btnClass: 'btn-primary',
+                                keys: ['enter', 'shift'],
+                                action: function () {
+                                    mode = 'D';
+                                    fn_GrabarDatos();
+                                }
+                            },
+                            cancelar: function () {
+                            }
+                        }
+                    });
+                } else if ($.trim($(opcion).text()) === "Ver Evento") {
+                    fn_verEvento();
+                } else {
+                    $.alert({
+                        theme: 'material',
+                        title: 'AVISO DEL SISTEMA',
+                        content: 'Opción NO VALIDA!!',
+                        animation: 'zoom',
+                        closeAnimation: 'zoom',
+                        type: 'red',
+                        typeAnimated: true
+                    });
+                }
+            }
+        });
+        //SELECCIONAMOS UN REGISTRO DE LA GRILLA
+        $("#div_GrillaPrincipal").on('rowselect', function (event) {
+            var args = event.args;
+            var row = $("#div_GrillaPrincipal").jqxGrid('getrowdata', args.rowindex);
+            eventoPrincipal = row['eventoPrincipal'];
+            eventoPrincipalNombre = row['eventoPrincipalNombre'];
+            niveles = row['niveles'];
+            nivel = row['nivel'];
+            $("#txt_EventoPrincipal").val(eventoPrincipalNombre);
+            $("#div_Niveles").val(niveles);
+        });
+        //CREA LOS ELEMENTOS DE LAS VENTANAS
+        var customButtonsDemo = (function () {
+            function _createElements() {
+                //INICIA LOS VALORES DE LA VENTANA
+                var posicionX, posicionY;
+                var ancho = 500;
+                var alto = 165;
+                posicionX = ($(window).width() / 2) - (ancho / 2);
+                posicionY = ($(window).height() / 2) - (alto / 2);
+                $('#div_VentanaPrincipal').jqxWindow({
+                    position: {x: posicionX, y: posicionY},
+                    width: ancho, height: alto, resizable: false,
+                    cancelButton: $('#btn_CancelarPrincipal'),
+                    initContent: function () {
+                        $("#txt_EventoPrincipal").jqxInput({placeHolder: 'INGRESE NOMBRE DEL EVENTO', width: 380, height: 25});
+                        $("#div_Niveles").jqxNumberInput({width: 100, height: 25, max: 99, digits: 2, decimalDigits: 0, inputMode: 'simple', spinButtons: true});
+                        $("#chk_EventoFinal").jqxCheckBox({height: 25});
+                        $("#chk_EventoFinal").on('change', function (event) {
+                            var checked = event.args.checked;
+                            if (checked) {
+                                $('#div_Niveles').val(0);
+                                $('#div_Niveles').jqxNumberInput({disabled: true});
+                            } else {
+                                $('#div_Niveles').jqxNumberInput({disabled: false});
+                                $('#div_Niveles').jqxNumberInput('focus');
+                            }
+                        });
+                        $('#btn_CancelarPrincipal').jqxButton({width: '65px', height: 30});
+                        $('#btn_GuardarPrincipal').jqxButton({width: '65px', height: 30});
+                        $('#btn_GuardarPrincipal').on('click', function () {
+                            fn_GrabarDatos();
+                        });
+                    }
+                });
+            }
+            return {init: function () {
+                    _createElements();
+                }
+            };
+        }());
+        $(document).ready(function () {
+            customButtonsDemo.init();
+        });
+    });
+    //FUNCION PARA ACTUALIZAR DATOS DE LA GRILLA
+    function fn_CargarBusqueda() {
+        $("#div_GrillaEventoSecundario").remove();
+        $("#div_VentanaEventoSecundario").remove();
+        $("#div_ContextMenuEventoSecundario").remove();
+        $("#div_ReporteEventoSecundario").remove();
+        $("#div_GrillaEventoFinal").remove();
+        $("#div_VentanaEventoFinal").remove();
+        $("#div_ContextMenuEventoFinal").remove();
+        $("#div_ReporteEventoFinal").remove();
+        var source = {
+            dataType: "json",
+            datafields: [
+                {name: 'eventoPrincipal', type: "string"},
+                {name: 'eventoPrincipalNombre', type: "string"},
+                {name: 'nivel', type: "string"},
+                {name: 'niveles', type: "string"},
+                {name: 'estado', type: "string"}
+            ],
+            id: 'codigo',
+            url: "../ProgramacionEventoPrincipalDetalle",
+            data: {mode: 'G', periodo: $('#cbo_Periodo').val(), tipoAsignacion: $('#cbo_TipoAsignacion').val(), brigada: $('#cbo_Brigadas').val()}
+        };
+        var dataAdapter = new $.jqx.dataAdapter(source);
+        $("#div_GrillaPrincipal").jqxGrid({source: dataAdapter});
+        $("#div_GrillaPrincipal").css("display", "block");
+        $("#div_GrillaSecundaria").css("display", "none");
+    }
+    //FUNCION PARA CARGAR VENTANA PARA EDITAR REGISTRO
+    function fn_EditarRegistro() {
+        $('#div_VentanaPrincipal').jqxWindow({isModal: true});
+        $('#div_VentanaPrincipal').jqxWindow('open');
+    }
+    //FUNCION PARA GRABAR LOS DATOS DE LA VENTANA PRINCIPAL
+    function fn_GrabarDatos() {
+        var periodo = $("#cbo_Periodo").val();
+        var tipoAsignacion = $("#cbo_TipoAsignacion").val();
+        var brigada = $("#cbo_Brigadas").val();
+        var eventoPrincipalNombre = $("#txt_EventoPrincipal").val();
+        var niveles = $("#div_Niveles").val();
+        var eventoFinal = $("#chk_EventoFinal").jqxCheckBox('checked');
+        $.ajax({
+            type: "GET",
+            url: "../IduProgramacionEventoPrincipal",
+            data: {mode: mode, periodo: periodo, tipoAsignacion: tipoAsignacion, brigada: brigada,
+                eventoPrincipal: eventoPrincipal, eventoPrincipalNombre: eventoPrincipalNombre,
+                nivel: nivel, niveles: niveles, eventoFinal: eventoFinal},
+            success: function (data) {
+                msg = data;
+                if (msg === "GUARDO") {
+                    $.confirm({
+                        title: 'AVISO DEL SISTEMA',
+                        content: 'Datos procesados correctamente!!',
+                        type: 'green',
+                        typeAnimated: true,
+                        autoClose: 'cerrarAction|1000',
+                        buttons: {
+                            cerrarAction: {
+                                text: 'Cerrar',
+                                action: function () {
+                                    $('#div_VentanaPrincipal').jqxWindow('close');
+                                    fn_CargarBusqueda();
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    $.alert({
+                        theme: 'material',
+                        title: 'AVISO DEL SISTEMA',
+                        content: msg,
+                        animation: 'zoom',
+                        closeAnimation: 'zoom',
+                        type: 'red',
+                        typeAnimated: true
+                    });
+                }
+            }
+        });
+    }
+    function fn_verEvento() {
+        $("#div_GrillaPrincipal").css("display", "none");
+        $("#div_GrillaSecundaria").css("display", "block");
+        if (niveles === 0) {
+            var $contenidoAjax = $('#div_GrillaSecundaria').html('<img src="../images/Fondos/cargando.gif">');
+            $.ajax({
+                type: "GET",
+                url: "../ProgramacionEventoPrincipal",
+                data: {mode: 'programacionEventoFinal'},
+                success: function (data) {
+                    $contenidoAjax.html(data);
+                }
+            });
+        } else {
+            nivel++;
+            var $contenidoAjax = $('#div_GrillaSecundaria').html('<img src="../images/Fondos/cargando.gif">');
+            $.ajax({
+                type: "GET",
+                url: "../ProgramacionEventoPrincipal",
+                data: {mode: 'programacionEventoSecundario'},
+                success: function (data) {
+                    $contenidoAjax.html(data);
+                }
+            });
+        }
+    }
+</script>
+<div id='div_Titulo' style="border: none;">
+    <div class="jqx-hideborder">PROGRAMACIÓN DE EVENTOS PRINCIPALES</div>
+    <div>
+        <div id="div_Cabecera">
+            <table class="navy">
+                <tbody>
+                    <tr> 
+                        <td class="Titulo">Período : </td>
+                        <td>
+                            <select id="cbo_Periodo" name="cbo_Periodo">
+                                <span th:each="periodo : ${session.objPeriodos}">
+                                    <option th:value="${periodo.codigo}"><span th:text="${periodo.codigo}"> </span></option>
+                                </span>
+                            </select>
+                        </td>
+                        <td class="Titulo">Tipo Asignación : </td>
+                        <td>
+                            <select id="cbo_TipoAsignacion" name="cbo_TipoAsignacion">
+                                <option value="0">Seleccione</option>
+                            </select>
+                        </td>
+                        <td class="Titulo">Brigada : </td>
+                        <td>
+                            <select id="cbo_Brigadas" name="cbo_Brigadas">
+                                <span th:each="brigada : ${session.objBrigadas}">
+                                    <option th:value="${brigada.codigo}"><span th:text="${brigada.descripcion}"> </span></option>
+                                </span>
+                            </select>
+                        </td>
+                        <td><a href="javascript: fn_CargarBusqueda();"><img src="../images/Botones/refresh42.gif" alt="Buscar Datos" name="imgrefresh" width="30" height="28" border="0" id="imgrefresh"></a></td>
+                        <td><a href="javascript: fn_MenuPrincipal();"><img src="../images/Botones/exit42.gif" alt="Salir de pantalla" name="imgexit" width="30" height="28"  border="0" id="imgexit" /></a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div id="div_GrillaPrincipal"></div>
+        <div id="div_GrillaSecundaria"></div>
+    </div>
+</div>
+<div id="div_VentanaPrincipal" style="display: none">
+    <div>
+        <span style="float: left">REGISTRO DE EVENTO PRINCIPAL</span>
+    </div>
+    <div style="overflow: hidden">
+        <form id="frm_EventoPrincipal" name="frm_EventoPrincipal" method="post" >
+            <table width="100%" border="0" cellspacing="0" cellpadding="0"> 
+                <tr>
+                    <td class="inputlabel">Evento : </td>
+                    <td><input type="text" id="txt_EventoPrincipal" name="txt_EventoPrincipal" style="text-transform: uppercase;"/></td>
+                </tr> 
+                <tr>
+                    <td class="inputlabel"># Niveles : </td>
+                    <td><div id="div_Niveles"></div></td>
+                </tr>
+                <tr>
+                    <td class="inputlabel">Ultimo Evento : </td>
+                    <td><div id='chk_EventoFinal'> </div></td>
+                </tr>
+                <tr>
+                    <td class="Summit" colspan="4">
+                        <div>
+                            <input type="button" id="btn_GuardarPrincipal"  value="Guardar" style="margin-right: 20px"/>
+                            <input type="button" id="btn_CancelarPrincipal" value="Cancelar" style="margin-right: 20px"/>
+                        </div>
+                    </td>
+                </tr>
+            </table>  
+        </form>
+    </div>
+</div>
+<div id='div_ContextMenu' style='display: none;'>
+    <ul>
+        <li style="font-weight: bold;">Editar</li>
+        <li type='separator'></li>
+        <li style="color: blue; font-weight: bold;">Activar</li>
+        <li style="color: brown; font-weight: bold;">Desactivar</li>
+        <li type='separator'></li>
+        <li style="font-weight: bold;">Ver Evento</li>
+    </ul>
+</div>

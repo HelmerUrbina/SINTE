@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mil.sinte.DataService.Service.Impl;
 
 import java.util.List;
@@ -18,8 +13,8 @@ import org.springframework.stereotype.Service;
  * @author MERCANTIL GROUP SAC
  */
 @Service
-public class MarcasServiceImpl implements MarcasService{
-    
+public class MarcasServiceImpl implements MarcasService {
+
     @Autowired
     private MarcasDAO marcasDAO;
 
@@ -46,9 +41,7 @@ public class MarcasServiceImpl implements MarcasService{
         } catch (Exception | Error e) {
             result = Utiles.getErrorSQL((Exception) e);
         }
-        return result;  
+        return result;
     }
-    
-    
-    
+
 }

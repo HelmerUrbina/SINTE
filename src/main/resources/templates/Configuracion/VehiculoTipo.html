@@ -1,4 +1,4 @@
-<script type="text/javascript">
+<script>
     var codigo = null;
     var mode = null;
     var msg = "";
@@ -180,7 +180,7 @@
             var row = $("#div_GrillaPrincipal").jqxGrid('getrowdata', args.rowindex);
             codigo = row['codigo'];
             $("#txt_Descripcion").val(row['descripcion']);
-            $("#txt_Abreviatura").val(row['abreviatura']===null?'':row['abreviatura']);
+            $("#txt_Abreviatura").val(row['abreviatura'] === null ? '' : row['abreviatura']);
         });
         //CREA LOS ELEMENTOS DE LAS VENTANAS
         var customButtonsDemo = (function () {
@@ -252,7 +252,7 @@
             type: "GET",
             url: "../IduVehiculoTipo",
             data: {mode: mode, codigo: codigo, descripcion: descripcion,
-                   abreviatura: abreviatura},
+                abreviatura: abreviatura},
             success: function (data) {
                 msg = data;
                 if (msg === "GUARDO") {

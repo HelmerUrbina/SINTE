@@ -1,28 +1,14 @@
-<script type="text/javascript">
+<script>
     var codigo = null;
     var mode = null;
     var msg = "";
     $(document).ready(function () {
         var theme = getTheme();
         $("#div_Titulo").jqxExpander({theme: theme, width: '100%'});
-        //PARA CARGAR LOS ELEMENTOS DE LA GRILLA
-        var source = {
-            dataType: "json",
-            datafields: [
-                {name: 'codigo', type: "string"},
-                {name: 'abreviatura', type: "string"},
-                {name: 'descripcion', type: "string"},
-                {name: 'estado', type: "string"}
-            ],
-            id: 'codigo',
-            url: "../PeriodosDetalle?mode=G"
-        };
-        var dataAdapter = new $.jqx.dataAdapter(source);
         //DEFINIMOS LOS CAMPOS Y DATOS DE LA GRILLA
         $("#div_GrillaPrincipal").jqxGrid({
             width: '99.8%',
             height: ($(window).height() - 65),
-            source: dataAdapter,
             autoheight: false,
             autorowheight: false,
             altrows: true,
@@ -228,6 +214,7 @@
         }());
         $(document).ready(function () {
             customButtonsDemo.init();
+            fn_Refrescar();
         });
     });
     //FUNCION PARA ACTUALIZAR DATOS DE LA GRILLA
@@ -322,15 +309,15 @@
             <table width="100%" border="0" cellspacing="0" cellpadding="0"> 
                 <tr>
                     <td class="inputlabel">Período : </td>
-                    <td><input type="text" id="txt_Periodo" name="txt_Periodo" /></td>
+                    <td><input type="text" class="text-input" id="txt_Periodo" name="txt_Periodo" /></td>
                 </tr>
                 <tr>
                     <td class="inputlabel">Abreviatura : </td>
-                    <td><input type="text" id="txt_Abreviatura" name="txt_Abreviatura" style='text-transform:uppercase;'/></td>
+                    <td><input type="text" class="text-input" id="txt_Abreviatura" name="txt_Abreviatura" style="text-transform:uppercase;"/></td>
                 </tr>
                 <tr>
                     <td class="inputlabel">Descripción : </td>
-                    <td><textarea id="txt_Descripcion" name="txt_Descripcion" style="text-transform: uppercase;"/></textarea></td>
+                    <td><textarea id="txt_Descripcion" class="text-input" name="txt_Descripcion" style="text-transform: uppercase;"></textarea></td>
                 </tr>
                 <tr>
                     <td class="Summit" colspan="4">

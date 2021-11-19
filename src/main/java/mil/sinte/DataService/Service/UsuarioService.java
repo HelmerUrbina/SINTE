@@ -12,10 +12,11 @@ public interface UsuarioService {
     public BeanUsuario findByUsername(String usuario);
 
     public BeanUsuario findByUsernameAndEstado(String usuario, String estado);
-    
+
     public List<BeanUsuario> findAll();
-    
+
     public BeanUsuario findByCodigo(String usuario);
-    
-    public String guardarUsuario(BeanUsuario objBeanUsuario,String opciones, String usuario, String modo);
+
+    public String guardarUsuario(BeanUsuario objBeanUsuario, String opciones, String usuario, String modo);
+
 }

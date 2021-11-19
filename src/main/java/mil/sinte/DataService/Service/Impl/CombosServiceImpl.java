@@ -17,6 +17,7 @@ public class CombosServiceImpl implements CombosService {
     @Autowired
     private CombosDAO combosDAO;
 
+    /*MODULO CONFIGURACION*/
     @Override
     public List<BeanCombos> getPeriodos() {
         return combosDAO.getPeriodos();
@@ -50,6 +51,38 @@ public class CombosServiceImpl implements CombosService {
     @Override
     public List<BeanCombos> getTipoDependencia() {
         return combosDAO.getTipoDependencia();
+    }
+
+    @Override
+
+    public List<BeanCombos> getBrigadas() {
+        return combosDAO.getBrigadas();
+    }
+
+    @Override
+    public List<BeanCombos> getBrigadasByUsuario(String usuario) {
+        return combosDAO.getBrigadasByUsuario(usuario);
+    }
+
+    @Override
+    public List<BeanCombos> getTipoCombustibleByVehiculo(Integer vehiculo) {
+        return combosDAO.getTipoCombustibleByVehiculo(vehiculo);
+    }
+
+    /*MODULO PROGRAMACION*/
+    @Override
+    public List<BeanCombos> getPeriodoTipoAsignacionPendiente(String periodo) {
+        return combosDAO.getPeriodoTipoAsignacionPendiente(periodo);
+    }
+
+    @Override
+    public List<BeanCombos> getTipoAsignacionByPeriodo(String periodo) {
+        return combosDAO.getTipoAsignacionByPeriodo(periodo);
+    }
+
+    @Override
+    public List<BeanCombos> getBrigadasByPeriodoTipoAsignacion(String periodo, Integer tipoAsignacion) {
+        return combosDAO.getBrigadasByPeriodoTipoAsignacion(periodo, tipoAsignacion);
     }
 
     @Override
@@ -88,18 +121,29 @@ public class CombosServiceImpl implements CombosService {
     }
 
     @Override
-    public List<BeanCombos> getBrigada() {
-        return combosDAO.getBrigada();
-    }
-
-    @Override
     public List<BeanCombos> getRol() {
         return combosDAO.getRol();
     }
 
     @Override
+    public List<BeanCombos> getVehiculosByBrigadaAndPeriodo(String periodo, Integer brigada) {
+        return combosDAO.getVehiculosByBrigadaAndPeriodo(periodo, brigada);
+    }
+
+    @Override
+    public List<BeanCombos> getDependenciaByVehiAndBrigAndPeri(String periodo, String brigada, String vehiculo) {
+        return combosDAO.getDependenciaByVehiAndBrigAndPeri(periodo, Integer.parseInt(brigada), Integer.parseInt(vehiculo)
+        );
+    }
+
+    @Override
     public List<BeanCombos> getVehiculosByPeriodo(String periodo) {
         return combosDAO.getVehiculosByPeriodo(periodo);
+    }
+
+    @Override
+    public List<BeanCombos> getVehiculosByPeriodoBrigada(String periodo, Integer brigada) {
+        return combosDAO.getVehiculosByPeriodoAndBrigada(periodo, brigada);
     }
 
     @Override

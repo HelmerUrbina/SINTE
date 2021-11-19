@@ -24,8 +24,11 @@ public class Utiles {
     }
 
     public static Integer checkNum(String dato) {
-        if (dato == null) {
+        if (dato == null || dato.equals("null") || dato.equals("false")) {
             return 0;
+        }
+        if (dato.equals("true")) {
+            return 1;
         }
         if (dato.equals("")) {
             return 0;
@@ -118,7 +121,7 @@ public class Utiles {
 
     public static String getErrorSQL(Exception e) {
         String msj = null;
-        if(e !=null){
+        if (e != null) {
             msj = e.getCause().getCause().getLocalizedMessage();
         }
         return "<span style='color: white;'>" + msj + "</span>";
