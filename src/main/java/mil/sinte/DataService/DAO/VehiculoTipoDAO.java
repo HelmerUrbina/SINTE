@@ -24,12 +24,6 @@ public interface VehiculoTipoDAO extends JpaRepository<BeanVehiculoTipo, String>
     @Override
     List<BeanVehiculoTipo> findAll();
 
-    @Query(nativeQuery = true, value = "SELECT NVEHICULO_TIPO_CODIGO, "
-            + "VVEHICULO_TIPO_DESCRIPCION, VVEHICULO_TIPO_ABREVIATURA, CESTADO_CODIGO "
-            + "FROM SINTE_VEHICULO_TIPO WHERE "
-            + "NVEHICULO_TIPO_CODIGO =?1 ")
-    BeanVehiculoTipo findByCodigo(Integer codigo);
-
     @Transactional
     @Modifying
     @Query(value = "{CALL SP_IDU_VEHICULO_TIPO(:codigo, :descripcion, :abreviatura, :usuario, :modo)}", nativeQuery = true)

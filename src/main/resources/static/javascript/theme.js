@@ -1,6 +1,6 @@
 var theme = "ui-redmond"; // ui-start  -- ui-redmond -- ui-lightness -- arctic -- darkblue -- fresh --bootstrap --material --energyblue
 function getTheme() {
-    var url = "/css/styles/jqx." + theme + ".css";
+    var url = "css/styles/jqx." + theme + ".css";
     var hasStyle = false;
     if (document.styleSheets) {
         $.each(document.styleSheets, function (index, value) {

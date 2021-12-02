@@ -24,13 +24,6 @@ public interface SoatAseguradoraDAO extends JpaRepository<BeanSoatAseguradora, S
     @Override
     List<BeanSoatAseguradora> findAll();
 
-    @Query(nativeQuery = true, value = "SELECT NSOAT_ASEGURADORA_CODIGO, "
-            + "VSOAT_ASEGURADORA_NOMBRE, VSOAT_ASEGURADORA_TELEFONO, "
-            + "VSOAT_ASEGURADORA_DIRECCION, CESTADO_CODIGO "
-            + "FROM SINTE_SOAT_ASEGURADORA WHERE "
-            + "NSOAT_ASEGURADORA_CODIGO=?1")
-    BeanSoatAseguradora findByCodigo(Integer codigo);
-
     @Transactional
     @Modifying
     @Query(value = "{CALL SP_IDU_SOAT_ASEGURADORA(:codigo, :nombre, :telefono, :direccion, :usuario, :modo)}", nativeQuery = true)

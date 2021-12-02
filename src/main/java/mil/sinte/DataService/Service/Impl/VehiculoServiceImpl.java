@@ -70,17 +70,12 @@ public class VehiculoServiceImpl implements VehiculoService {
     }
 
     @Override
-    public BeanVehiculoTipoCombustible getVehiculoTipoCombustible(Integer vehiculo, Integer codigo) {
-        return vehiculoTipoCombustibleDAO.findByCodigo(vehiculo, codigo);
-    }
-
-    @Override
     public String guardarVehiculoTipoCombustible(BeanVehiculoTipoCombustible objBeanVehiculoTipoCombustible, String usuario, String modo) {
         String result = "GUARDO";
         try {
             vehiculoTipoCombustibleDAO.sp_vehiculo_tipo_combustible(
                     objBeanVehiculoTipoCombustible.getVehiculo() != null ? Integer.parseInt(objBeanVehiculoTipoCombustible.getVehiculo()) : null,
-                    objBeanVehiculoTipoCombustible.getTipoCombustible() != null ? Integer.parseInt(objBeanVehiculoTipoCombustible.getTipoCombustible()) : null,
+                    objBeanVehiculoTipoCombustible.getTipoCombustible(),
                     objBeanVehiculoTipoCombustible.getCapacidad(),
                     usuario,
                     modo
@@ -97,22 +92,17 @@ public class VehiculoServiceImpl implements VehiculoService {
     }
 
     @Override
-    public BeanVehiculoSoat getVehiculoSoat(Integer vehiculo, Integer codigo) {
-        return vehiculoSoatDAO.findByCodigo(vehiculo, codigo);
-    }
-
-    @Override
     public String guardarVehiculoSoat(BeanVehiculoSoat objBeanVehiculoSoat, String usuario, String modo) {
         String result = "GUARDO";
         try {
             vehiculoSoatDAO.sp_vehiculo_soat(
-                    objBeanVehiculoSoat.getCodigo(),
                     objBeanVehiculoSoat.getVehiculo() != null ? Integer.parseInt(objBeanVehiculoSoat.getVehiculo()) : null,
-                    objBeanVehiculoSoat.getSoat() != null ? Integer.parseInt(objBeanVehiculoSoat.getSoat()) : null,
+                    objBeanVehiculoSoat.getCodigo(),
+                    objBeanVehiculoSoat.getAseguradora() != null ? Integer.parseInt(objBeanVehiculoSoat.getAseguradora()) : null,
+                    objBeanVehiculoSoat.getTipo(),
                     objBeanVehiculoSoat.getCertificado(),
                     objBeanVehiculoSoat.getInicio(),
                     objBeanVehiculoSoat.getFin(),
-                    objBeanVehiculoSoat.getTipo(),
                     usuario,
                     modo
             );

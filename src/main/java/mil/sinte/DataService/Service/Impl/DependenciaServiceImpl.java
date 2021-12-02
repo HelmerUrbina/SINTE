@@ -25,7 +25,7 @@ public class DependenciaServiceImpl implements DependenciaService {
 
     @Override
     public BeanDependencia getDependencia(Integer brigada, Integer codigo) {
-        return dependenciaDAO.findByCodigo(brigada, codigo);
+        return dependenciaDAO.findByBrigadaAndCodigo(brigada, codigo);
     }
 
     @Override

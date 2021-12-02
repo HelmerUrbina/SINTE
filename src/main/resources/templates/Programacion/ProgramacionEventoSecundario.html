@@ -25,10 +25,10 @@
             rendertoolbar: function (toolbar) {
                 // appends buttons to the status bar.
                 var container = $("<div style='overflow: hidden; position: relative; margin: 1px;'></div>");
-                var addButton = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='../images/Botones/nuevo42.gif' th:src='@{/images/Botones/nuevo42.gif' width=18 height=18 /><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
-                var reloadButton = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='../images/Botones/refresh42.gif' th:src='@{/images/Botones/refresh42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
-                var exportButton = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='../images/Botones/pauf42.gif' th:src='@{/images/Botones/pauf42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
-                var ButtonReporte = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='../images/Botones/printer42.gif' th:src='@{/images/Botones/printer42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
+                var addButton = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='images/Botones/nuevo42.gif' th:src='@{images/Botones/nuevo42.gif' width=18 height=18 /><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
+                var reloadButton = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='images/Botones/refresh42.gif' th:src='@{images/Botones/refresh42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
+                var exportButton = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='images/Botones/pauf42.gif' th:src='@{images/Botones/pauf42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
+                var ButtonReporte = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='images/Botones/printer42.gif' th:src='@{images/Botones/printer42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
                 container.append(addButton);
                 container.append(reloadButton);
                 container.append(exportButton);
@@ -74,7 +74,7 @@
                     }
                 },
                 {text: 'EVENTO SECUNDARIO', dataField: 'eventoPrincipalNombre', columngroup: 'EventoPrincipal', width: '77%', align: 'center', cellsAlign: 'left'},
-                {text: 'ESTADO', dataField: 'estado', filtertype: 'list', columngroup: 'Nivel', width: '20%', align: 'center', cellsAlign: 'center'}
+                {text: 'ESTADO', dataField: 'estado', filtertype: 'checkedlist', columngroup: 'Nivel', width: '20%', align: 'center', cellsAlign: 'center'}
             ],
             columngroups: [
                 {text: '<strong>LISTADO DE EVENTOS SECUNDARIOS</strong>', name: 'Titulo', align: 'center'},
@@ -224,7 +224,7 @@
                                     break;
                             }
                             if (msg === "") {
-                                var url = '../Reportes?reporte=' + reporte + '&periodo=' + periodo + '&unidadOperativa=' + unidadOperativa + '&tipoAsignacion=' + tipoAsignacion + '&codigo=' + codigo;
+                                var url = 'Reportes?reporte=' + reporte + '&periodo=' + periodo + '&unidadOperativa=' + unidadOperativa + '&tipoAsignacion=' + tipoAsignacion + '&codigo=' + codigo;
                                 window.open(url, '_blank');
                             } else {
                                 $.alert({
@@ -267,7 +267,7 @@
                     {name: 'estado', type: "string"}
                 ],
                 id: 'codigo',
-                url: "../ProgramacionEventoPrincipalDetalle",
+                url: "ProgramacionEventoPrincipalDetalle",
                 data: {mode: 'GS', periodo: periodo, tipoAsignacion: tipoAsignacion, brigada: brigada, eventoPrincipal: eventoPrincipal, nivel: nivel}
             };
             var dataAdapter = new $.jqx.dataAdapter(source);
@@ -283,7 +283,7 @@
             var eventoSecundarioNombre = $("#txt_EventoSecundario").val();
             $.ajax({
                 type: "GET",
-                url: "../IduProgramacionEventoPrincipal",
+                url: "IduProgramacionEventoPrincipal",
                 data: {mode: modeSecundario, periodo: periodo, tipoAsignacion: tipoAsignacion, brigada: brigada,
                     eventoPrincipal: eventoSecundario, eventoPrincipalNombre: eventoSecundarioNombre,
                     nivel: nivel, niveles: niveles, eventoFinal: '0'},
@@ -322,10 +322,10 @@
         }
         function fn_SiguienteSecundario() {
             if (nivel === niveles) {
-                var $contenidoAjax = $('#div_GrillaSecundaria').html('<img src="../images/Fondos/cargando.gif">');
+                var $contenidoAjax = $('#div_GrillaSecundaria').html('<img src="images/Fondos/cargando.gif">');
                 $.ajax({
                     type: "GET",
-                    url: "../ProgramacionEventoPrincipal",
+                    url: "ProgramacionEventoPrincipal",
                     data: {mode: 'programacionEventoFinal'},
                     success: function (data) {
                         $contenidoAjax.html(data);
@@ -338,10 +338,10 @@
                 $("#div_ReporteEventoSecundario").remove();
                 nivel++;
                 eventoPrincipal = eventoSecundario;
-                var $contenidoAjax = $('#div_EventoSecundario').html('<img src="../images/Fondos/cargando.gif">');
+                var $contenidoAjax = $('#div_EventoSecundario').html('<img src="images/Fondos/cargando.gif">');
                 $.ajax({
                     type: "GET",
-                    url: "../ProgramacionEventoPrincipal",
+                    url: "ProgramacionEventoPrincipal",
                     data: {mode: 'programacionEventoSecundario'},
                     success: function (data) {
                         $contenidoAjax.html(data);
@@ -359,10 +359,10 @@
                 $("#div_VentanaEventoSecundario").remove();
                 $("#div_ContextMenuEventoSecundario").remove();
                 $("#div_ReporteEventoSecundario").remove();
-                var $contenidoAjax = $('#div_EventoSecundario').html('<img src="../images/Fondos/cargando.gif">');
+                var $contenidoAjax = $('#div_EventoSecundario').html('<img src="images/Fondos/cargando.gif">');
                 $.ajax({
                     type: "GET",
-                    url: "../ProgramacionEventoPrincipal",
+                    url: "ProgramacionEventoPrincipal",
                     data: {mode: 'programacionEventoSecundario'},
                     success: function (data) {
                         $contenidoAjax.html(data);

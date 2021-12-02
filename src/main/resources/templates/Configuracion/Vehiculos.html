@@ -1,46 +1,33 @@
 <script>
     var codigo = null;
+    var codigoCombustible = 0;
+    var codigoSoat = 0;
     var mode = null;
-    var msg = "";
-    var codigoCombustible = null;
     var modeCombustible = null;
-    var msgCombustible = "";
-    var flgSelect1 = null;
-    var codigoAseguradora = null;
-    var codigoSoat = null;
-    var modeAseguradora = null;
-    var msgAseguradora = "";
-    var flgSelect2 = null;
+    var modeSoat = null;
+    var msg = "";
     $(document).ready(function () {
         var theme = getTheme();
         $("#div_Titulo").jqxExpander({theme: theme, width: '100%'});
-        //PARA CARGAR LOS ELEMENTOS DE LA GRILLA
-        var source = {
-            dataType: "json",
-            datafields: [
-                {name: 'codigo', type: "string"},
-                {name: 'placa', type: "string"},
-                {name: 'serieChasis', type: "string"},
-                {name: 'serieMotor', type: "string"},
-                {name: 'tipo', type: "string"},
-                {name: 'clase', type: "string"},
-                {name: 'marca', type: "string"},
-                {name: 'modelo', type: "string"},
-                {name: 'transmision', type: "string"},
-                {name: 'fabricacion', type: "string"},
-                {name: 'puertas', type: "string"},
-                {name: 'color', type: "string"},
-                {name: 'estado', type: "string"}
-            ],
-            id: 'codigo',
-            url: "../VehiculoDetalle?mode=G"
+        //DEFINIMOS LOS ESTILOS DE LAS GRILLAS
+        var cellclass = function (row, datafield, value, rowdata) {
+            if (datafield === "capacidad" || datafield === "certificado") {
+                return "RowBold";
+            }
+            if (datafield === "placa" || datafield === "vehiculo" || datafield === "aseguradora") {
+                return "RowBlue";
+            }
+            if (datafield === "tipo") {
+                return "RowBrown";
+            }
+            if (datafield === "clase") {
+                return "RowGreen";
+            }
         };
-        var dataAdapter = new $.jqx.dataAdapter(source);
         //DEFINIMOS LOS CAMPOS Y DATOS DE LA GRILLA
         $("#div_GrillaPrincipal").jqxGrid({
             width: '99.8%',
             height: ($(window).height() - 65),
-            source: dataAdapter,
             autoheight: false,
             autorowheight: false,
             altrows: true,
@@ -55,10 +42,10 @@
             rendertoolbar: function (toolbar) {
                 // ADICIONAMOS BOTONES A LA BARRA DE ESTADOS
                 var container = $("<div style='overflow: hidden; position: relative; margin: 1px;'></div>");
-                var ButtonNuevo = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='/images/Botones/nuevo42.gif' th:src='@{/images/Botones/nuevo42.gif' width=18 height=18 /><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
-                var ButtonExportar = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='/images/Botones/pauf42.gif' th:src='@{/images/Botones/pauf42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
-                var ButtonRecargar = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='/images/Botones/refresh42.gif' th:src='@{/images/Botones/refresh42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
-                var ButtonSalir = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='/images/Botones/exit42.gif' th:src='@{/images/Botones/exit42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
+                var ButtonNuevo = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='images/Botones/nuevo42.gif' th:src='@{images/Botones/nuevo42.gif' width=18 height=18 /><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
+                var ButtonExportar = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='images/Botones/pauf42.gif' th:src='@{images/Botones/pauf42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
+                var ButtonRecargar = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='images/Botones/refresh42.gif' th:src='@{images/Botones/refresh42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
+                var ButtonSalir = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='images/Botones/exit42.gif' th:src='@{images/Botones/exit42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
                 container.append(ButtonNuevo);
                 container.append(ButtonExportar);
                 container.append(ButtonRecargar);
@@ -74,21 +61,20 @@
                 ButtonSalir.jqxTooltip({position: 'bottom', content: "Salir de la Pantalla"});
                 //ASIGNAMOS LAS FUNCIONES PARA EL BOTON NUEVO
                 ButtonNuevo.click(function (event) {
+                    mode = 'I';
+                    codigo = '0';
                     $("#txt_Placa").val('');
-                    $("#txt_Serie_Chasis").val('');
-                    $("#txt_Serie_Motor").val('');
+                    $("#txt_SerieChasis").val('');
+                    $("#txt_SerieMotor").val('');
                     $("#cbo_TipoVehiculo").jqxDropDownList('setContent', 'Seleccione');
                     $("#cbo_ClaseVehiculo").jqxDropDownList('setContent', 'Seleccione');
                     $("#cbo_Marca").jqxDropDownList('setContent', 'Seleccione');
                     $("#cbo_Modelo").jqxDropDownList('setContent', 'Seleccione');
-//                    $("#cbo_transmision").jqxDropDownList('setContent', 'Seleccione');
-                    $("#radio").jqxRadioButton('Check');
-                    $("#radio2").jqxRadioButton('unCheck');
-                    $("#txt_fabricacion").val('');
-                    $("#txt_puertas").val('');
-                    $("#cbo_color").jqxDropDownList('setContent', 'Seleccione');
-                    mode = 'I';
-                    codigo = '0';
+                    $("#div_Transmision").jqxRadioButton('Check');
+                    $("#div_Transmision2").jqxRadioButton('unCheck');
+                    $("#div_Fabricacion").val('');
+                    $("#div_Puertas").val('');
+                    $("#cbo_Color").jqxDropDownList('setContent', 'Seleccione');
                     $('#div_VentanaPrincipal').jqxWindow({isModal: true, modalOpacity: 0.9});
                     $('#div_VentanaPrincipal').jqxWindow('open');
                 });
@@ -106,22 +92,21 @@
                 });
             },
             columns: [
-                {text: 'PLACA', dataField: 'placa', width: '10%', align: 'center', cellsAlign: 'center'},
-                {text: 'SERIE CHASIS', dataField: 'serieChasis', width: '7%', align: 'center', cellsAlign: 'center'},
-                {text: 'SERIE MOTOR', dataField: 'serieMotor', width: '7%', align: 'center', cellsAlign: 'center'},
-                {text: 'TIPO', dataField: 'tipo', filtertype: 'list', width: '8%', align: 'center', cellsAlign: 'center'},
-                {text: 'CLASE', dataField: 'clase', filtertype: 'list', width: '8%', align: 'center', cellsAlign: 'center'},
-                {text: 'MARCA', dataField: 'marca', filtertype: 'list', width: '10%', align: 'center', cellsAlign: 'center'},
-                {text: 'MODELO', dataField: 'modelo', filtertype: 'list', width: '10%', align: 'center', cellsAlign: 'center'},
-                {text: 'TRANSMISIÓN', dataField: 'transmision', filtertype: 'list', width: '10%', align: 'center', cellsAlign: 'center'},
-                {text: 'FABRICACIÓN', dataField: 'fabricacion', width: '10%', align: 'center', cellsAlign: 'center'},
-                {text: 'PUERTAS', dataField: 'puertas', filtertype: 'list', width: '5%', align: 'center', cellsAlign: 'center'},
-                {text: 'COLOR', dataField: 'color', filtertype: 'list', width: '10%', align: 'center', cellsAlign: 'center'},
-                {text: 'ESTADO', dataField: 'estado', filtertype: 'list', width: '5%', align: 'center', cellsAlign: 'center'}
+                {text: 'PLACA', dataField: 'placa', width: '9%', align: 'center', cellsAlign: 'center', cellclassname: cellclass},
+                {text: 'SERIE CHASIS', dataField: 'serieChasis', width: '13%', align: 'center', cellsAlign: 'center'},
+                {text: 'SERIE MOTOR', dataField: 'serieMotor', width: '13%', align: 'center', cellsAlign: 'center'},
+                {text: 'TIPO', dataField: 'tipo', filtertype: 'checkedlist', width: '10%', align: 'center', cellsAlign: 'center', cellclassname: cellclass},
+                {text: 'CLASE', dataField: 'clase', filtertype: 'checkedlist', width: '10%', align: 'center', cellsAlign: 'center', cellclassname: cellclass},
+                {text: 'MARCA', dataField: 'marca', filtertype: 'checkedlist', width: '10%', align: 'center', cellsAlign: 'center'},
+                {text: 'MODELO', dataField: 'modelo', filtertype: 'checkedlist', width: '10%', align: 'center', cellsAlign: 'center'},
+                {text: 'TRANSMISIÓN', dataField: 'transmision', filtertype: 'checkedlist', width: '6%', align: 'center', cellsAlign: 'center'},
+                {text: 'AÑO FAB.', dataField: 'fabricacion', filtertype: 'checkedlist', width: '6%', align: 'center', cellsAlign: 'center'},
+                {text: 'COLOR', dataField: 'color', filtertype: 'checkedlist', width: '8%', align: 'center', cellsAlign: 'center'},
+                {text: 'ESTADO', dataField: 'estado', filtertype: 'checkedlist', width: '5%', align: 'center', cellsAlign: 'center'}
             ]
         });
         // DEFINIMOS EL MENU CONTEXTUAL
-        var contextMenu = $("#div_ContextMenu").jqxMenu({width: 200, height: 140, autoOpenPopup: false, mode: 'popup'});
+        var contextMenu = $("#div_ContextMenu").jqxMenu({width: 200, height: 145, autoOpenPopup: false, mode: 'popup'});
         $("#div_GrillaPrincipal").on('contextmenu', function () {
             return false;
         });
@@ -155,7 +140,7 @@
                 } else if ($.trim($(opcion).text()) === "Activar") {
                     $.confirm({
                         title: 'AVISO DEL SISTEMA',
-                        content: 'Desea Activar esta Área Laboral!',
+                        content: 'Desea Activar este Vehículo!',
                         theme: 'material',
                         animation: 'zoom',
                         closeAnimation: 'zoom',
@@ -178,7 +163,7 @@
                 } else if ($.trim($(opcion).text()) === "Desactivar") {
                     $.confirm({
                         title: 'AVISO DEL SISTEMA',
-                        content: 'Desea Desactivar esta Área Laboral!',
+                        content: 'Desea Desactivar este Vehículo!',
                         theme: 'material',
                         animation: 'zoom',
                         closeAnimation: 'zoom',
@@ -201,7 +186,7 @@
                 } else if ($.trim($(opcion).text()) === "Tipo Combustible") {
                     fn_cargarTipoCombustible();
                 } else if ($.trim($(opcion).text()) === "Soat") {
-                    fn_cargarTipoAseguradoras();
+                    fn_cargarSoat();
                 } else {
                     $.alert({
                         theme: 'material',
@@ -221,15 +206,15 @@
             var row = $("#div_GrillaPrincipal").jqxGrid('getrowdata', args.rowindex);
             codigo = row['codigo'];
             $("#txt_VehiculoDetalle").val(row['placa']);
-            $("#txt_VehiculoAseguradoraDetalle").val(row['placa']);
+            $("#txt_VehiculoSoatDetalle").val(row['placa']);
         });
         //CREA LOS ELEMENTOS DE LAS VENTANAS
         var customButtonsDemo = (function () {
             function _createElements() {
                 //INICIA LOS VALORES DE LA VENTANA
                 var posicionX, posicionY;
-                var ancho = 450;
-                var alto = 330;
+                var ancho = 410;
+                var alto = 340;
                 posicionX = ($(window).width() / 2) - (ancho / 2);
                 posicionY = ($(window).height() / 2) - (alto / 2);
                 $('#div_VentanaPrincipal').jqxWindow({
@@ -237,24 +222,22 @@
                     width: ancho, height: alto, resizable: false,
                     cancelButton: $('#btn_Cancelar'),
                     initContent: function () {
-                        $("#txt_Placa").jqxInput({placeHolder: 'Placa', width: 300, height: 20, minLength: 2, maxLength: 8});
-                        $("#txt_Serie_Chasis").jqxInput({placeHolder: "Serie Chasis", width: 300, height: 20, minLength: 2, maxLength: 20});
-                        $("#txt_Serie_Motor").jqxInput({placeHolder: "Serie Motor", width: 300, height: 20, minLength: 2, maxLength: 20});
-                        $("#cbo_TipoVehiculo").jqxDropDownList({width: 300, height: 20, dropDownWidth: 300, promptText: "Seleccione"});
-                        $("#cbo_ClaseVehiculo").jqxDropDownList({width: 300, height: 20, dropDownWidth: 300, promptText: "Seleccione"});
-                        $("#cbo_Marca").jqxDropDownList({width: 300, height: 20, dropDownWidth: 300, promptText: "Seleccione"});
+                        $("#txt_Placa").jqxInput({placeHolder: 'Placa', width: 100, height: 25, minLength: 2, maxLength: 10});
+                        $("#txt_SerieChasis").jqxInput({placeHolder: "Serie Chasis", width: 300, height: 25, minLength: 2, maxLength: 50});
+                        $("#txt_SerieMotor").jqxInput({placeHolder: "Serie Motor", width: 300, height: 25, minLength: 2, maxLength: 50});
+                        $("#cbo_TipoVehiculo").jqxDropDownList({width: 300, height: 25, dropDownWidth: 400, promptText: "Seleccione"});
+                        $("#cbo_ClaseVehiculo").jqxDropDownList({width: 300, height: 25, dropDownWidth: 400, promptText: "Seleccione"});
+                        $("#cbo_Marca").jqxDropDownList({width: 300, height: 25, dropDownWidth: 400, promptText: "Seleccione"});
                         $('#cbo_Marca').on('select', function (event) {
                             $("#cbo_Modelo").jqxDropDownList('clear');
                             fn_cargarComboAjax("#cbo_Modelo", {mode: 'modelo', codigo: $("#cbo_Marca").val()});
                         });
-                        $("#cbo_Modelo").jqxDropDownList({width: 300, height: 20, dropDownWidth: 300, promptText: "Seleccione"});
-//                        $("#cbo_transmision").jqxDropDownList({width: 300, height: 20, dropDownWidth: 300, promptText: "Seleccione"});
-                        $("#radio").jqxRadioButton({width: 300, height: 25});
-                        $("#radio2").jqxRadioButton({width: 300, height: 25});
-                        $("#txt_fabricacion").jqxInput({placeHolder: "Fabricación", width: 300, height: 20, minLength: 2, maxLength: 4});
-//                        $("#txt_puertas").jqxInput({placeHolder: "Num. Puertas", width: 300, height: 20, minLength: 2, maxLength: 2});
-                        $("#txt_puertas").jqxNumberInput({width: 300, height: 20, max: 99, digits: 2, decimalDigits: 0, inputMode: 'simple', spinButtons: true});
-                        $("#cbo_color").jqxDropDownList({width: 300, height: 20, dropDownWidth: 300, promptText: "Seleccione"});
+                        $("#cbo_Modelo").jqxDropDownList({width: 300, height: 25, dropDownWidth: 400, promptText: "Seleccione"});
+                        $("#div_Transmision").jqxRadioButton({width: 150, height: 25});
+                        $("#div_Transmision2").jqxRadioButton({width: 150, height: 25});
+                        $("#div_Fabricacion").jqxNumberInput({width: 50, height: 25, max: 9999, digits: 4, decimalDigits: 0, inputMode: 'simple'});
+                        $("#div_Puertas").jqxNumberInput({width: 50, height: 25, max: 99, digits: 2, decimalDigits: 0, inputMode: 'simple', spinButtons: true});
+                        $("#cbo_Color").jqxDropDownList({width: 300, height: 25, dropDownWidth: 300, promptText: "Seleccione"});
                         $('#btn_Cancelar').jqxButton({width: '65px', height: 30});
                         $('#btn_Guardar').jqxButton({width: '65px', height: 30});
                         $('#btn_Guardar').on('click', function () {
@@ -262,11 +245,11 @@
                         });
                         $('#frm_Vehiculo').jqxValidator({
                             rules: [
-                                {input: '#txt_Placa', message: 'Ingrese la Placa del Vehiculo!', action: 'keyup, blur', rule: 'required'},
-                                {input: '#txt_Serie_Chasis', message: 'Ingrese la Serie de Chasis del Vehiculo!', action: 'keyup, blur', rule: 'required'},
-                                {input: '#txt_Serie_Motor', message: 'Ingrese la Serie de Motor del Vehiculo!', action: 'keyup, blur', rule: 'required'},
-                                {input: '#txt_fabricacion', message: 'Ingrese la Fabricacion del Vehiculo!!', action: 'keyup, blur', rule: 'number'},
-                                {input: '#txt_puertas', message: 'Ingrese solo numeros!', action: 'keyup, blur', rule: 'number'}
+                                {input: '#txt_Placa', message: 'Ingrese la Placa del Vehículo!', action: 'keyup, blur', rule: 'required'},
+                                {input: '#txt_SerieChasis', message: 'Ingrese la Serie de Chasis del Vehículo!', action: 'keyup, blur', rule: 'required'},
+                                {input: '#txt_SerieMotor', message: 'Ingrese la Serie de Motor del Vehículo!', action: 'keyup, blur', rule: 'required'},
+                                {input: '#div_Fabricacion', message: 'Ingrese el Año Fabricacion del Vehículo!!', action: 'keyup, blur', rule: 'number'},
+                                {input: '#div_Puertas', message: 'Ingrese solo numeros!', action: 'keyup, blur', rule: 'number'}
                             ]
                         });
                         $('#frm_Vehiculo').jqxValidator({
@@ -285,13 +268,12 @@
                     width: ancho, height: alto, resizable: false,
                     cancelButton: $('#btn_Cerrar'),
                     initContent: function () {
-                        $("#txt_VehiculoDetalle").jqxInput({placeHolder: 'VEHICULO', width: 700, height: 20, disabled: true});
+                        $("#txt_VehiculoDetalle").jqxInput({placeHolder: 'VEHICULO', width: 700, height: 25, disabled: true});
                         $('#btn_Cerrar').jqxButton({width: '65px', height: 30});
                     }
                 });
-
-                ancho = 500;
-                alto = 130;
+                ancho = 350;
+                alto = 140;
                 posicionX = ($(window).width() / 2) - (ancho / 2);
                 posicionY = ($(window).height() / 2) - (alto / 2);
                 $('#div_TipoCombustibleDetalle').jqxWindow({
@@ -299,8 +281,8 @@
                     width: ancho, height: alto, resizable: false,
                     cancelButton: $('#btn_CancelarCombustibleRegistro'),
                     initContent: function () {
-                        $("#cbo_TipoCombustible").jqxDropDownList({width: 300, height: 20, dropDownWidth: 300, promptText: "Seleccione"});
-                        $("#txt_Capacidad").jqxInput({placeHolder: "CAPACIDAD", width: 300, height: 20, minLength: 2, maxLength: 200});
+                        $("#cbo_TipoCombustible").jqxDropDownList({width: 200, height: 25, dropDownWidth: 300, promptText: "Seleccione"});
+                        $("#div_Capacidad").jqxNumberInput({width: 90, height: 25, max: 9999999999, digits: 15, decimalDigits: 0, inputMode: 'simple'});
                         $('#btn_CancelarCombustibleRegistro').jqxButton({width: '65px', height: 30});
                         $('#btn_GuardarCombustibleRegistro').jqxButton({width: '65px', height: 30});
                         $('#btn_GuardarCombustibleRegistro').on('click', function () {
@@ -308,7 +290,7 @@
                         });
                         $('#frm_TipoCombustible').jqxValidator({
                             rules: [
-                                {input: '#txt_Capacidad', message: 'Ingrese solo numeros!', action: 'keyup, blur', rule: 'number'}
+                                {input: '#div_Capacidad', message: 'Ingrese solo numeros!', action: 'keyup, blur', rule: 'number'}
                             ]
                         });
                         $('#frm_TipoCombustible').jqxValidator({
@@ -318,50 +300,47 @@
                         });
                     }
                 });
-
                 ancho = 800;
                 alto = 500;
                 posicionX = ($(window).width() / 2) - (ancho / 2);
                 posicionY = ($(window).height() / 2) - (alto / 2);
-                $('#div_VentanaAseguradora').jqxWindow({
+                $('#div_VentanaSoat').jqxWindow({
                     position: {x: posicionX, y: posicionY},
                     width: ancho, height: alto, resizable: false,
-                    cancelButton: $('#btn_Cerrar_aseguradora'),
+                    cancelButton: $('#btn_CerrarSoat'),
                     initContent: function () {
-                        $("#txt_VehiculoAseguradoraDetalle").jqxInput({placeHolder: 'VEHICULO', width: 700, height: 20, disabled: true});
-                        $('#btn_Cerrar').jqxButton({width: '65px', height: 30});
+                        $("#txt_VehiculoSoatDetalle").jqxInput({placeHolder: 'VEHICULO', width: 700, height: 25, disabled: true});
+                        $('#btn_CerrarSoat').jqxButton({width: '65px', height: 30});
                     }
                 });
-
-                ancho = 500;
-                alto = 220;
+                ancho = 430;
+                alto = 190;
                 posicionX = ($(window).width() / 2) - (ancho / 2);
                 posicionY = ($(window).height() / 2) - (alto / 2);
-                $('#div_AseguradoraDetalle').jqxWindow({
+                $('#div_DetalleSoat').jqxWindow({
                     position: {x: posicionX, y: posicionY},
                     width: ancho, height: alto, resizable: false,
-                    cancelButton: $('#btn_CancelarAseguradoraRegistro'),
+                    cancelButton: $('#btn_CancelarSoatRegistro'),
                     initContent: function () {
-                        $("#cbo_Aseguradora").jqxDropDownList({width: 300, height: 20, dropDownWidth: 300, promptText: "Seleccione"});
-                        $("#txt_Certificado").jqxInput({placeHolder: "CERTIFICADO", width: 300, height: 20, minLength: 2, maxLength: 200});
-                        $("#txt_fecha_inicio").jqxDateTimeInput({culture: 'es-PE', animationType: 'fade', width: '300px', height: '25px'});
-                        $("#txt_fecha_fin").jqxDateTimeInput({culture: 'es-PE', animationType: 'fade', width: '300px', height: '25px'});
-//                        $("#txt_Tipo").jqxInput({placeHolder: "TIPO", width: 300, height: 20, minLength: 1, maxLength: 1});
-                        $("#radio3").jqxRadioButton({width: 300, height: 25});
-                        $("#radio4").jqxRadioButton({width: 300, height: 25});
-                        $('#btn_CancelarAseguradoraRegistro').jqxButton({width: '65px', height: 30});
-                        $('#btn_GuardarAseguradoraRegistro').jqxButton({width: '65px', height: 30});
-                        $('#btn_GuardarAseguradoraRegistro').on('click', function () {
-                            $('#frm_Asegurado').jqxValidator('validate');
+                        $("#cbo_Aseguradora").jqxDropDownList({width: 300, height: 25, dropDownWidth: 400, promptText: "Seleccione"});
+                        $("#txt_Certificado").jqxInput({placeHolder: "NRO CERTIFICADO", width: 300, height: 25, minLength: 2, maxLength: 50});
+                        $("#div_SoatInicio").jqxDateTimeInput({culture: 'es-PE', animationType: 'fade', width: 120, height: 25});
+                        $("#div_SoatFin").jqxDateTimeInput({culture: 'es-PE', animationType: 'fade', width: 120, height: 25});
+                        $("#div_TipoSoat").jqxRadioButton({width: 100, height: 25});
+                        $("#div_TipoSoat2").jqxRadioButton({width: 100, height: 25});
+                        $('#btn_CancelarSoatRegistro').jqxButton({width: '65px', height: 30});
+                        $('#btn_GuardarSoatRegistro').jqxButton({width: '65px', height: 30});
+                        $('#btn_GuardarSoatRegistro').on('click', function () {
+                            $('#frm_Soat').jqxValidator('validate');
                         });
-                        $('#frm_Asegurado').jqxValidator({
+                        $('#frm_Soat').jqxValidator({
                             rules: [
                                 {input: '#txt_Certificado', message: 'Ingrese el Certificado!', action: 'keyup, blur', rule: 'required'}
                             ]
                         });
-                        $('#frm_Asegurado').jqxValidator({
+                        $('#frm_Soat').jqxValidator({
                             onSuccess: function () {
-                                fn_GrabarDatosAseguradora();
+                                fn_GrabarDatosSoat();
                             }
                         });
                     }
@@ -374,20 +353,16 @@
         }());
         $(document).ready(function () {
             customButtonsDemo.init();
-            $("#cbo_TipoVehiculo").jqxDropDownList('clear');
-            $("#cbo_ClaseVehiculo").jqxDropDownList('clear');
-            $("#cbo_Marca").jqxDropDownList('clear');
-            $("#cbo_color").jqxDropDownList('clear');
+            fn_Refrescar();
             fn_cargarComboAjax("#cbo_TipoVehiculo", {mode: 'tipoVehiculo'});
             fn_cargarComboAjax("#cbo_ClaseVehiculo", {mode: 'claseVehiculo'});
             fn_cargarComboAjax("#cbo_Marca", {mode: 'marca'});
-            fn_cargarComboAjax("#cbo_color", {mode: 'color'});
-
+            fn_cargarComboAjax("#cbo_Color", {mode: 'color'});
         });
-
-        $("#div_tipoCombustibleGrilla").jqxGrid({
+        //GRILLA TIPO DE COMBUSTIBLE
+        $("#div_GrillaTipoCombustible").jqxGrid({
             width: '100%',
-            height: 390,
+            height: 380,
             pageable: true,
             columnsresize: true,
             showtoolbar: true,
@@ -399,10 +374,10 @@
             rendertoolbar: function (toolbar) {
                 // appends buttons to the status bar.
                 var containerRegistro = $("<div style='overflow: hidden; position: relative; margin: 1px;'></div>");
-                var ButtonNuevoRegistro = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='/images/Botones/nuevo42.gif' th:src='@{/images/Botones/nuevo42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'></span></div>");
-                var ButtonEditarRegistro = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='/images/Botones/update42.gif' th:src='@{/images/Botones/update42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'></span></div>");
-                var ButtonEliminaRegistro = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='/images/Botones/delete42.gif' th:src='@{/images/Botones/delete42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'></span></div>");
-                var ButtonActivarRegistro = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='/images/Botones/ok42.gif' th:src='@{/images/Botones/ok42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'></span></div>");
+                var ButtonNuevoRegistro = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='images/Botones/nuevo42.gif' th:src='@{images/Botones/nuevo42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'></span></div>");
+                var ButtonEditarRegistro = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='images/Botones/update42.gif' th:src='@{images/Botones/update42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'></span></div>");
+                var ButtonEliminaRegistro = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='images/Botones/delete42.gif' th:src='@{images/Botones/delete42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'></span></div>");
+                var ButtonActivarRegistro = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='images/Botones/ok42.gif' th:src='@{images/Botones/ok42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'></span></div>");
                 containerRegistro.append(ButtonNuevoRegistro);
                 containerRegistro.append(ButtonEditarRegistro);
                 containerRegistro.append(ButtonEliminaRegistro);
@@ -419,20 +394,20 @@
                 // add new row.
                 ButtonNuevoRegistro.click(function (event) {
                     modeCombustible = 'I';
-                    codigoDetalle = 0;
+                    codigoCombustible = 0;
                     $("#cbo_TipoCombustible").jqxDropDownList('setContent', 'Seleccione');
                     $("#cbo_TipoCombustible").jqxDropDownList({disabled: false});
-                    $("#txt_Capacidad").val('');
+                    $("#div_Capacidad").val('0');
                     $('#div_TipoCombustibleDetalle').jqxWindow({isModal: true, modalOpacity: 0.9});
                     $('#div_TipoCombustibleDetalle').jqxWindow('open');
                 });
                 // edit new row.
                 ButtonEditarRegistro.click(function (event) {
-                    modeCombustible = 'U';
-                    if (flgSelect1 !== 0) {
+                    if (codigoCombustible !== 0) {
+                        modeCombustible = 'U';
+                        $("#cbo_TipoCombustible").jqxDropDownList({disabled: true});
                         $('#div_TipoCombustibleDetalle').jqxWindow({isModal: true});
                         $('#div_TipoCombustibleDetalle').jqxWindow('open');
-                        $("#cbo_TipoCombustible").jqxDropDownList({disabled: true});
                     } else {
                         $.alert({
                             theme: 'material',
@@ -445,9 +420,9 @@
                         });
                     }
                 });
-                // delete selected row.
+                // desactiva selected row.
                 ButtonEliminaRegistro.click(function (event) {
-                    if (flgSelect1 !== 0) {
+                    if (codigoCombustible !== 0) {
                         $.confirm({
                             title: 'AVISO DEL SISTEMA',
                             content: 'Desea Desactivar este Tipo de Combustible!',
@@ -482,8 +457,9 @@
                         });
                     }
                 });
+                 // activa selected row.
                 ButtonActivarRegistro.click(function (event) {
-                    if (flgSelect1 !== 0) {
+                    if (codigoCombustible !== 0) {
                         $.confirm({
                             title: 'AVISO DEL SISTEMA',
                             content: 'Desea Activar este Tipo de Combustible!',
@@ -520,23 +496,22 @@
                 });
             },
             columns: [
-                {text: 'TIPO COMBUSTIBLE', datafield: 'vehiculo', width: '40%', align: 'center', cellsAlign: 'center'},
-                {text: 'CAPACIDAD', dataField: 'capacidad', width: '40%', align: 'center', cellsAlign: 'center'},
-                {text: 'ESTADO', datafield: 'estado', filtertype: 'list', width: '20%', align: 'center', cellsAlign: 'center'}
+                {text: 'TIPO COMBUSTIBLE', datafield: 'vehiculo', width: '50%', align: 'center', cellsAlign: 'center', cellclassname: cellclass},
+                {text: 'CAPACIDAD', dataField: 'capacidad', width: '30%', align: 'center', cellsAlign: 'center', cellsFormat: 'f1', cellclassname: cellclass},
+                {text: 'ESTADO', datafield: 'estado', filtertype: 'checkedlist', width: '20%', align: 'center', cellsAlign: 'center'}
             ]
         });
-        $("#div_tipoCombustibleGrilla").on('rowselect', function (event) {
-            flgSelect1 = 1;
+        $("#div_GrillaTipoCombustible").on('rowselect', function (event) {
             var args = event.args;
-            var rowDet = $("#div_tipoCombustibleGrilla").jqxGrid('getrowdata', args.rowindex);
+            var rowDet = $("#div_GrillaTipoCombustible").jqxGrid('getrowdata', args.rowindex);
             codigoCombustible = rowDet['tipoCombustible'];
-//            console.log(codigoCombustible);
             $("#cbo_TipoCombustible").jqxDropDownList('selectItem', rowDet['tipoCombustible']);
-            $('#txt_Capacidad').val(rowDet['capacidad']);
+            $('#div_Capacidad').val(rowDet['capacidad']);
         });
-        $("#div_aseguradoraGrilla").jqxGrid({
+        //GRILLA SOAT-VEHÍCULO
+        $("#div_GrillaSoat").jqxGrid({
             width: '100%',
-            height: 390,
+            height: 380,
             pageable: true,
             columnsresize: true,
             showtoolbar: true,
@@ -548,10 +523,10 @@
             rendertoolbar: function (toolbar) {
                 // appends buttons to the status bar.
                 var containerRegistro = $("<div style='overflow: hidden; position: relative; margin: 1px;'></div>");
-                var ButtonNuevoRegistro = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='/images/Botones/nuevo42.gif' th:src='@{/images/Botones/nuevo42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'></span></div>");
-                var ButtonEditarRegistro = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='/images/Botones/update42.gif' th:src='@{/images/Botones/update42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'></span></div>");
-                var ButtonEliminaRegistro = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='/images/Botones/delete42.gif' th:src='@{/images/Botones/delete42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'></span></div>");
-                var ButtonActivarRegistro = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='/images/Botones/ok42.gif' th:src='@{/images/Botones/ok42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'></span></div>");
+                var ButtonNuevoRegistro = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='images/Botones/nuevo42.gif' th:src='@{images/Botones/nuevo42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'></span></div>");
+                var ButtonEditarRegistro = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='images/Botones/update42.gif' th:src='@{images/Botones/update42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'></span></div>");
+                var ButtonEliminaRegistro = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='images/Botones/delete42.gif' th:src='@{images/Botones/delete42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'></span></div>");
+                var ButtonActivarRegistro = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='images/Botones/ok42.gif' th:src='@{images/Botones/ok42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'></span></div>");
                 containerRegistro.append(ButtonNuevoRegistro);
                 containerRegistro.append(ButtonEditarRegistro);
                 containerRegistro.append(ButtonEliminaRegistro);
@@ -567,26 +542,25 @@
                 ButtonActivarRegistro.jqxTooltip({position: 'bottom', content: "Activar Registro"});
                 // add new row.
                 ButtonNuevoRegistro.click(function (event) {
-                    modeAseguradora = 'I';
-                    codigoAseguradora = 0;
+                    modeSoat = 'I';
+                    codigoSoat = 0;
                     $("#cbo_Aseguradora").jqxDropDownList('setContent', 'Seleccione');
                     $("#cbo_Aseguradora").jqxDropDownList({disabled: false});
                     $("#txt_Certificado").val('');
-                    $("#txt_fecha_inicio").jqxDateTimeInput('setDate', new Date());
-                    $("#txt_fecha_fin").jqxDateTimeInput('setDate', new Date());
-//                    $("#txt_Tipo").val(''); 
-                    $("#radio3").jqxRadioButton('Check');
-                    $("#radio4").jqxRadioButton('unCheck');
-                    $('#div_AseguradoraDetalle').jqxWindow({isModal: true, modalOpacity: 0.9});
-                    $('#div_AseguradoraDetalle').jqxWindow('open');
+                    $("#div_SoatInicio").jqxDateTimeInput('setDate', new Date());
+                    $("#div_SoatFin").jqxDateTimeInput('setDate', new Date());
+                    $("#div_TipoSoat").jqxRadioButton('Check');
+                    $("#div_TipoSoat2").jqxRadioButton('unCheck');
+                    $('#div_DetalleSoat').jqxWindow({isModal: true, modalOpacity: 0.9});
+                    $('#div_DetalleSoat').jqxWindow('open');
                 });
                 // edit new row.
                 ButtonEditarRegistro.click(function (event) {
-                    modeAseguradora = 'U';
-                    if (flgSelect2 !== 0) {
+                    if (codigoSoat !== 0) {
+                        modeSoat = 'U';
                         $("#cbo_Aseguradora").jqxDropDownList({disabled: true});
-                        $('#div_AseguradoraDetalle').jqxWindow({isModal: true});
-                        $('#div_AseguradoraDetalle').jqxWindow('open');
+                        $('#div_DetalleSoat').jqxWindow({isModal: true});
+                        $('#div_DetalleSoat').jqxWindow('open');
                     } else {
                         $.alert({
                             theme: 'material',
@@ -599,9 +573,9 @@
                         });
                     }
                 });
-                // delete selected row.
+                // desactiva selected row.
                 ButtonEliminaRegistro.click(function (event) {
-                    if (flgSelect2 !== 0) {
+                    if (codigoSoat !== 0) {
                         $.confirm({
                             title: 'AVISO DEL SISTEMA',
                             content: 'Desea Desactivar este Aseguramiento!',
@@ -616,8 +590,8 @@
                                     btnClass: 'btn-primary',
                                     keys: ['enter', 'shift'],
                                     action: function () {
-                                        modeAseguradora = 'D';
-                                        fn_GrabarDatosAseguradora();
+                                        modeSoat = 'D';
+                                        fn_GrabarDatosSoat();
                                     }
                                 },
                                 cancelar: function () {
@@ -636,8 +610,9 @@
                         });
                     }
                 });
+                // activa selected row.
                 ButtonActivarRegistro.click(function (event) {
-                    if (flgSelect2 !== 0) {
+                    if (codigoSoat !== 0) {
                         $.confirm({
                             title: 'AVISO DEL SISTEMA',
                             content: 'Desea Activar este Aseguramiento!',
@@ -652,8 +627,8 @@
                                     btnClass: 'btn-primary',
                                     keys: ['enter', 'shift'],
                                     action: function () {
-                                        modeAseguradora = 'A';
-                                        fn_GrabarDatosAseguradora();
+                                        modeSoat = 'A';
+                                        fn_GrabarDatosSoat();
                                     }
                                 },
                                 cancelar: function () {
@@ -674,56 +649,45 @@
                 });
             },
             columns: [
-                {text: 'ASEGURADORA', datafield: 'soat', width: '20%', align: 'center', cellsAlign: 'center'},
-                {text: 'CERTIFICADO', datafield: 'certificado', width: '20%', align: 'center', cellsAlign: 'center'},
-                {text: 'FECH. INICIO', datafield: 'inicio', width: '20%', align: 'center', cellsAlign: 'center'},
-                {text: 'FECH. FIN', datafield: 'fin', width: '20%', align: 'center', cellsAlign: 'center'},
+                {text: 'ASEGURADORA', datafield: 'aseguradora', width: '20%', align: 'center', cellsAlign: 'center', cellclassname: cellclass},
+                {text: 'CERTIFICADO', datafield: 'certificado', width: '30%', align: 'center', cellsAlign: 'center', cellclassname: cellclass},
+                {text: 'FECH. INICIO', datafield: 'inicio', width: '15%', align: 'center', cellsAlign: 'center', cellsformat: 'dd/MM/yyyy'},
+                {text: 'FECH. FIN', datafield: 'fin', width: '15%', align: 'center', cellsAlign: 'center', cellsformat: 'dd/MM/yyyy'},
                 {text: 'TIPO', datafield: 'tipo', width: '10%', align: 'center', cellsAlign: 'center'},
-                {text: 'ESTADO', datafield: 'estado', filtertype: 'list', width: '10%', align: 'center', cellsAlign: 'center'}
+                {text: 'ESTADO', datafield: 'estado', filtertype: 'checkedlist', width: '10%', align: 'center', cellsAlign: 'center'}
             ]
         });
-        $("#div_aseguradoraGrilla").on('rowselect', function (event) {
-            flgSelect2 = 1;
+        $("#div_GrillaSoat").on('rowselect', function (event) {
             var args = event.args;
-            var rowDet = $("#div_aseguradoraGrilla").jqxGrid('getrowdata', args.rowindex);
-            codigoAseguradora = rowDet['codigo'];
-            codigoSoat = rowDet['vehiculo'];
+            var rowDet = $("#div_GrillaSoat").jqxGrid('getrowdata', args.rowindex);
+            codigoSoat = rowDet['codigo'];
             $("#cbo_Aseguradora").jqxDropDownList('selectItem', rowDet['vehiculo']);
             $('#txt_Certificado').val(rowDet['certificado']);
-            $('#txt_fecha_inicio').jqxDateTimeInput('setDate', new Date(rowDet['inicio']));
-            $('#txt_fecha_fin').jqxDateTimeInput('setDate', new Date(rowDet['fin']));
-//            $('#txt_Tipo').val(rowDet['tipo']);
+            $('#div_SoatInicio').jqxDateTimeInput('setDate', new Date(rowDet['inicio']));
+            $('#div_SoatFin').jqxDateTimeInput('setDate', new Date(rowDet['fin']));
             if (rowDet['tipo'] === 'F') {
-                $("#radio3").jqxRadioButton('Check');
+                $("#div_TipoSoat").jqxRadioButton('Check');
             } else if (rowDet['tipo'] === 'D') {
-                $("#radio4").jqxRadioButton('Check');
+                $("#div_TipoSoat2").jqxRadioButton('Check');
             }
         });
     });
-
     //FUNCION PARA CARGAR VENTANA DETALLE TIPO COMBUSTIBLE
     function fn_cargarTipoCombustible() {
-        flgSelect1 = 0;
-        $('#div_tipoCombustibleGrilla').jqxGrid('clear');
-        $("#cbo_TipoCombustible").jqxDropDownList('clear');
+        $('#div_GrillaTipoCombustible').jqxGrid('clear');
         fn_RefrescarTipoCombustible();
         fn_cargarComboAjax("#cbo_TipoCombustible", {mode: 'tipoCombustible'});
         $('#div_VentanaTipoCombustible').jqxWindow({isModal: true});
         $('#div_VentanaTipoCombustible').jqxWindow('open');
-        
     }
-
     //FUNCION PARA CARGAR VENTANA DETALLE ASEGURADORAS
-    function fn_cargarTipoAseguradoras() {
-        flgSelect2 = 0;
-        $('#div_aseguradoraGrilla').jqxGrid('clear');
-        fn_RefrescarAseguradora();
+    function fn_cargarSoat() {
+        $('#div_GrillaSoat').jqxGrid('clear');
+        fn_RefrescarSoat();
         fn_cargarComboAjax("#cbo_Aseguradora", {mode: 'soat'});
-        $('#div_VentanaAseguradora').jqxWindow({isModal: true});
-        $('#div_VentanaAseguradora').jqxWindow('open');
-        $("#cbo_Aseguradora").jqxDropDownList('clear');
+        $('#div_VentanaSoat').jqxWindow({isModal: true});
+        $('#div_VentanaSoat').jqxWindow('open');
     }
-
     //FUNCION PARA ACTUALIZAR DATOS DE LA GRILLA
     function fn_Refrescar() {
         var source = {
@@ -744,73 +708,75 @@
                 {name: 'estado', type: "string"}
             ],
             id: 'codigo',
-            url: "../VehiculoDetalle?mode=G"
+            url: "VehiculoDetalle",
+            data: {mode: 'G'}
         };
         var dataAdapter = new $.jqx.dataAdapter(source);
         $("#div_GrillaPrincipal").jqxGrid({source: dataAdapter});
         $('#div_GrillaPrincipal').jqxGrid('clearselection');
     }
-
     function fn_RefrescarTipoCombustible() {
         var sourceDetalle = {
             dataType: "json",
             datafields: [
                 {name: 'vehiculo', type: "string"},
                 {name: 'tipoCombustible', type: "string"},
-                {name: 'capacidad', type: "string"},
+                {name: 'capacidad', type: "number"},
                 {name: 'estado', type: "string"}
             ],
             id: 'tipoCombustible',
-            url: "../VehiculoTipoCombustibleDetalle",
+            url: "VehiculoTipoCombustibleDetalle",
             data: {mode: 'G', vehiculo: codigo}
         };
         var dataDetalle = new $.jqx.dataAdapter(sourceDetalle);
-        $("#div_tipoCombustibleGrilla").jqxGrid({source: dataDetalle});
+        $("#div_GrillaTipoCombustible").jqxGrid({source: dataDetalle});
+        if ($('#div_GrillaTipoCombustible').jqxGrid('getselectedrowindex') >= 0)
+            $('#div_GrillaTipoCombustible').jqxGrid('clearselection');
     }
-
-    function fn_RefrescarAseguradora() {
+    function fn_RefrescarSoat() {
         var sourceDetalle = {
             dataType: "json",
             datafields: [
                 {name: 'codigo', type: "string"},
                 {name: 'vehiculo', type: "string"},
-                {name: 'soat', type: "string"},
+                {name: 'aseguradora', type: "string"},
                 {name: 'certificado', type: "string"},
-                {name: 'inicio', type: "string"},
-                {name: 'fin', type: "string"},
+                {name: 'inicio', type: "date"},
+                {name: 'fin', type: "date"},
                 {name: 'tipo', type: "string"},
                 {name: 'estado', type: "string"}
             ],
             id: 'codigo',
-            url: "../VehiculoSoatDetalle",
+            url: "VehiculoSoatDetalle",
             data: {mode: 'G', vehiculo: codigo}
         };
         var dataDetalle = new $.jqx.dataAdapter(sourceDetalle);
-        $("#div_aseguradoraGrilla").jqxGrid({source: dataDetalle});
+        $("#div_GrillaSoat").jqxGrid({source: dataDetalle});
+        if ($('#div_GrillaSoat').jqxGrid('getselectedrowindex') >= 0)
+            $('#div_GrillaSoat').jqxGrid('clearselection');
     }
     //FUNCION PARA CARGAR VENTANA PARA EDITAR REGISTRO
     function fn_EditarRegistro() {
         $.ajax({
             type: "GET",
-            url: "../VehiculoDetalle",
+            url: "VehiculoDetalle",
             data: {mode: mode, codigo: codigo},
             success: function (data) {
                 var dato = JSON.parse(data);
                 $("#txt_Placa").val(dato.placa);
-                $("#txt_Serie_Chasis").val(dato.serieChasis);
-                $("#txt_Serie_Motor").val(dato.serieMotor);
+                $("#txt_SerieChasis").val(dato.serieChasis);
+                $("#txt_SerieMotor").val(dato.serieMotor);
                 $("#cbo_TipoVehiculo").jqxDropDownList('selectItem', dato.tipo);
                 $("#cbo_ClaseVehiculo").jqxDropDownList('selectItem', dato.clase);
                 $("#cbo_Marca").jqxDropDownList('selectItem', dato.marca);
-//                $("#cbo_transmision").jqxDropDownList('selectItem', dato.transmision);
                 if (dato.transmision === 'TA') {
-                    $("#radio").jqxRadioButton('Check');
+                    $("#div_Transmision").jqxRadioButton('Check');
                 } else if (dato.transmision === 'TM') {
-                    $("#radio2").jqxRadioButton('Check');
+                    $("#div_Transmision2").jqxRadioButton('Check');
                 }
-                $("#txt_fabricacion").val(dato.fabricacion);
-                $("#txt_puertas").val(dato.puertas);
-                $("#cbo_color").jqxDropDownList('selectItem', dato.color);
+                $("#div_Fabricacion").val(dato.fabricacion);
+                $("#div_Puertas").val(dato.puertas);
+                $("#cbo_Color").jqxDropDownList('selectItem', dato.color);
                 $.confirm({
                     title: 'AVISO DEL SISTEMA',
                     content: 'Cargando Datos del vehiculo',
@@ -826,36 +792,29 @@
                         }
                     }
                 });
-
             }
         });
         $('#div_VentanaPrincipal').jqxWindow({isModal: true});
         $('#div_VentanaPrincipal').jqxWindow('open');
     }
-
     //FUNCION PARA GRABAR LOS DATOS DE LA VENTANA PRINCIPAL
     function fn_GrabarDatos() {
         var placa = $("#txt_Placa").val();
-        var serieChasis = $("#txt_Serie_Chasis").val();
-        var serieMotor = $("#txt_Serie_Motor").val();
+        var serieChasis = $("#txt_SerieChasis").val();
+        var serieMotor = $("#txt_SerieMotor").val();
         var tipoVehiculo = $("#cbo_TipoVehiculo").val();
         var claseVehiculo = $("#cbo_ClaseVehiculo").val();
         var marca = $("#cbo_Marca").val();
         var modelo = $("#cbo_Modelo").val();
         var transmision = 'TM';
-        if ($("#radio").jqxRadioButton('checked')) {
+        if ($("#div_Transmision").jqxRadioButton('checked'))
             transmision = 'TA';
-        }
-        var fabricacion = $("#txt_fabricacion").val();
-        var puertas = $("#txt_puertas").val();
-        var color = $("#cbo_color").val();
-//        var json = {mode: mode, codigo: codigo, placa: placa, serieChasis: serieChasis,
-//                serieMotor: serieMotor,tipoVehiculo: tipoVehiculo,claseVehiculo: claseVehiculo, marca: marca, modelo: modelo,  
-//                transmision: transmision, fabricacion: fabricacion, puertas: puertas, color: color};
-//        console.log(json)    
+        var fabricacion = $("#div_Fabricacion").val();
+        var puertas = $("#div_Puertas").val();
+        var color = $("#cbo_Color").val();
         $.ajax({
             type: "GET",
-            url: "../IduVehiculo",
+            url: "IduVehiculo",
             data: {mode: mode, codigo: codigo, placa: placa, serieChasis: serieChasis,
                 serieMotor: serieMotor, tipoVehiculo: tipoVehiculo, claseVehiculo: claseVehiculo, marca: marca, modelo: modelo,
                 transmision: transmision, fabricacion: fabricacion, puertas: puertas, color: color},
@@ -892,18 +851,14 @@
             }
         });
     }
-
+    //FUNCIÓN PARA GRABAR DATOS DEL TIPO DE COMBUSTIBLE DEL VEHÍCULO
     function fn_GrabarDatosTipoCombustible() {
-        var codigoCombustibleSec = codigoCombustible
-        if (modeCombustible === 'I') {
-            codigoCombustibleSec = $("#cbo_TipoCombustible").val();
-        }
-        var capacidad = $("#txt_Capacidad").val();
-//        console.log('mode:'+ modeCombustible+', vehiculo:'+ codigo+', tipoCombustible: '+codigoCombustibleSec+', capacidad: '+capacidad);
+        codigoCombustible = $("#cbo_TipoCombustible").val();
+        var capacidad = $("#div_Capacidad").val();
         $.ajax({
             type: "GET",
-            url: "../IduVehiculoTipoCombustible",
-            data: {mode: modeCombustible, vehiculo: codigo, tipoCombustible: codigoCombustibleSec, capacidad: capacidad},
+            url: "IduVehiculoTipoCombustible",
+            data: {mode: modeCombustible, vehiculo: codigo, tipoCombustible: codigoCombustible, capacidad: capacidad},
             success: function (data) {
                 msg = data;
                 if (msg === "GUARDO") {
@@ -919,8 +874,6 @@
                                 action: function () {
                                     $('#div_TipoCombustibleDetalle').jqxWindow('close');
                                     fn_RefrescarTipoCombustible();
-                                    $('#div_tipoCombustibleGrilla').jqxGrid('clearselection');
-                                    flgSelect1 = 0;
                                 }
                             }
                         }
@@ -939,26 +892,20 @@
             }
         });
     }
-    function fn_GrabarDatosAseguradora() {
-        var codigoSoat2 = codigoSoat;
-        if (modeAseguradora === 'I') {
-            codigoSoat2 = $("#cbo_Aseguradora").val();
-        }
+    function fn_GrabarDatosSoat() {
+        var aseguradora = $("#cbo_Aseguradora").val();
         var certificado = $("#txt_Certificado").val();
-        var inicio = $("#txt_fecha_inicio").val();
-        var fin = $("#txt_fecha_fin").val();
+        var inicio = $("#div_SoatInicio").val();
+        var fin = $("#div_SoatFin").val();
         var tipo = 'D';
-        if ($("#radio3").jqxRadioButton('checked')) {
+        if ($("#div_TipoSoat").jqxRadioButton('checked')) {
             tipo = 'F';
         }
-        var json = {mode: modeAseguradora, codigo: codigoAseguradora, vehiculo: codigo, soat: codigoSoat2,
-            certificado: certificado, inicio: inicio, fin: fin, tipo: tipo};
-        console.log(json);
         $.ajax({
             type: "GET",
-            url: "../IduVehiculoSoat",
-            data: {mode: modeAseguradora, codigo: codigoAseguradora, vehiculo: codigo, soat: codigoSoat2,
-                certificado: certificado, inicio: inicio, fin: fin, tipo: tipo},
+            url: "IduVehiculoSoat",
+            data: {mode: modeSoat, vehiculo: codigo, codigo: codigoSoat, aseguradora: aseguradora,
+                tipo: tipo, certificado: certificado, inicio: inicio, fin: fin},
             success: function (data) {
                 msg = data;
                 if (msg === "GUARDO") {
@@ -972,10 +919,8 @@
                             cerrarAction: {
                                 text: 'Cerrar',
                                 action: function () {
-                                    $('#div_AseguradoraDetalle').jqxWindow('close');
-                                    fn_RefrescarAseguradora();
-                                    $('#div_aseguradoraGrilla').jqxGrid('clearselection');
-                                    flgSelect2 = 0;
+                                    $('#div_DetalleSoat').jqxWindow('close');
+                                    fn_RefrescarSoat();
                                 }
                             }
                         }
@@ -1011,19 +956,19 @@
             <table width="100%" border="0" cellspacing="0" cellpadding="0"> 
                 <tr>
                     <td class="inputlabel">Placa : </td>
-                    <td><input type="text" id="txt_Placa" name="txt_Placa" style='text-transform:uppercase;'/></td>
+                    <td colspan="3"><input type="text" class="text-input" id="txt_Placa" name="txt_Placa" style='text-transform:uppercase;'/></td>
                 </tr>
                 <tr>
                     <td class="inputlabel">Serie Chasis : </td>
-                    <td><input id="txt_Serie_Chasis" name="txt_Serie_Chasis" style="text-transform: uppercase;"/></td>
+                    <td colspan="3"><input type="text" class="text-input" id="txt_SerieChasis" name="txt_SerieChasis" style="text-transform: uppercase;"/></td>
                 </tr>
                 <tr>
                     <td class="inputlabel">Serie Motor : </td>
-                    <td><input id="txt_Serie_Motor" name="txt_Serie_Motor" style="text-transform: uppercase;"/></td>
+                    <td colspan="3"><input type="text" class="text-input" id="txt_SerieMotor" name="txt_SerieMotor" style="text-transform: uppercase;"/></td>
                 </tr>
                 <tr>
                     <td class="inputlabel">Tipo : </td>
-                    <td>
+                    <td colspan="3">
                         <select id="cbo_TipoVehiculo" name="cbo_TipoVehiculo">
                             <option value="0">Seleccione</option>
                         </select>
@@ -1031,7 +976,7 @@
                 </tr>
                 <tr>
                     <td class="inputlabel">Clase : </td>
-                    <td>
+                    <td colspan="3">
                         <select id="cbo_ClaseVehiculo" name="cbo_ClaseVehiculo">
                             <option value="0">Seleccione</option>
                         </select>
@@ -1039,7 +984,7 @@
                 </tr>
                 <tr>
                     <td class="inputlabel">Marca : </td>
-                    <td>
+                    <td colspan="3">
                         <select id="cbo_Marca" name="cbo_Marca">
                             <option value="0">Seleccione</option>
                         </select>
@@ -1047,7 +992,7 @@
                 </tr>
                 <tr>
                     <td class="inputlabel">Modelo : </td>
-                    <td>
+                    <td colspan="3">
                         <select id="cbo_Modelo" name="cbo_Modelo">
                             <option value="0">Seleccione</option>
                         </select>
@@ -1055,23 +1000,19 @@
                 </tr>
                 <tr>
                     <td class="inputlabel">Transmisión : </td>
-                    <td>                        
-                        <input id="radio"/>Automática
-                        <input id="radio2"/>Manual
-                    </td> 
+                    <td colspan="2"><div id="div_Transmision">Automática</div></td>
+                    <td><div id="div_Transmision2">Manual</div></td>
                 </tr>
                 <tr>
-                    <td class="inputlabel">Fabricación : </td>
-                    <td><input id="txt_fabricacion" name="txt_fabricacion" style="text-transform: uppercase;"/></td>
-                </tr>
-                <tr>
-                    <td class="inputlabel">Num. Puertas : </td>
-                    <td><div id="txt_puertas"></div></td>
+                    <td class="inputlabel">Año Fab. : </td>
+                    <td><div id="div_Fabricacion"></div></td>
+                    <td class="inputlabel"># Puertas : </td>
+                    <td><div id="div_Puertas"></div></td>
                 </tr>
                 <tr>
                     <td class="inputlabel">Color : </td>
-                    <td>
-                        <select id="cbo_color" name="cbo_color">
+                    <td colspan="3">
+                        <select id="cbo_Color" name="cbo_Color">
                             <option value="0">Seleccione</option>
                         </select>
                     </td> 
@@ -1084,7 +1025,7 @@
                         </div>
                     </td>
                 </tr>
-            </table>  
+            </table>
         </form>
     </div>
 </div>
@@ -1095,11 +1036,11 @@
     <div style="overflow: hidden">
         <table width="100%" border="0" cellspacing="0" cellpadding="0">
             <tr>
-                <td class="inputlabel">Vehiculo : </td>
-                <td><input type="text" id="txt_VehiculoDetalle" name="txt_VehiculoDetalle" style="text-transform: uppercase;"/></td>
+                <td class="inputlabel">Vehículo : </td>
+                <td><input type="text" class="text-input" id="txt_VehiculoDetalle" name="txt_VehiculoDetalle" style="text-transform: uppercase;"/></td>
             </tr>
             <tr>
-                <td colspan="2"><div id="div_tipoCombustibleGrilla"> </div></td>
+                <td colspan="2"><div id="div_GrillaTipoCombustible"> </div></td>
             </tr>
             <tr>
                 <td class="Summit" colspan="2">
@@ -1118,7 +1059,7 @@
                     <table width="100%" border="0" cellspacing="0" cellpadding="0">
                         <tr>
                             <td class="inputlabel">Tipo Combustible : </td>
-                            <td>
+                            <td colspan="3">
                                 <select id="cbo_TipoCombustible" name="cbo_TipoCombustible">
                                     <option value="0">Seleccione</option>
                                 </select>
@@ -1126,7 +1067,9 @@
                         </tr>
                         <tr>
                             <td class="inputlabel">Capacidad : </td>
-                            <td><input type="text" id="txt_Capacidad" name="txt_Capacidad" style='text-transform:uppercase;'/></td>
+                            <td><div id="div_Capacidad"></div></td>
+                            <td><span style="font-weight: bold; text-align: left">(Galones)</span></td>
+                            <td>&nbsp;</td>
                         </tr>
                         <tr>
                             <td class="Summit" colspan="4">
@@ -1137,49 +1080,47 @@
                             </td>
                         </tr>
                     </table>
-                </form>    
+                </form>
             </div>
         </div>
     </div>
 </div>
-<div id="div_VentanaAseguradora" style="display: none">
+<div id="div_VentanaSoat" style="display: none">
     <div>
-        <span style="float: left">LISTADO DE ASEGURADORAS</span>
+        <span style="float: left">LISTADO DE SOAT DEL VEHÍCULO</span>
     </div>
     <div style="overflow: hidden">
         <table width="100%" border="0" cellspacing="0" cellpadding="0">
             <tr>
-                <td class="inputlabel">Vehiculo : </td>
-                <td><input type="text" id="txt_VehiculoAseguradoraDetalle" name="txt_VehiculoAseguradoraDetalle" style="text-transform: uppercase;"/></td>
+                <td class="inputlabel">Vehículo : </td>
+                <td><input type="text" class="text-input" id="txt_VehiculoSoatDetalle" name="txt_VehiculoSoatDetalle" style="text-transform: uppercase;"/></td>
             </tr>
             <tr>
-                <td colspan="2"><div id="div_aseguradoraGrilla"> </div></td>
+                <td colspan="2"><div id="div_GrillaSoat"> </div></td>
             </tr>
             <tr>
                 <td class="Summit" colspan="2">
                     <div>
-                        <input type="button" id="btn_Cerrar_aseguradora" value="Cerrar" style="margin-right: 20px"/>
+                        <input type="button" id="btn_CerrarSoat" value="Cerrar" style="margin-right: 20px"/>
                     </div>
                 </td>
             </tr>
         </table> 
-        <div style="display: none" id="div_AseguradoraDetalle">
+        <div style="display: none" id="div_DetalleSoat">
             <div>
-                <span style="float: left">Datos de Asegurado</span>
+                <span style="float: left">Datos del SOAT</span>
             </div>
             <div style="overflow: hidden">
-                <form id="frm_Asegurado" name="frm_Asegurado" method="post" >
+                <form id="frm_Soat" name="frm_Soat" method="post" >
                     <table width="100%" border="0" cellspacing="0" cellpadding="0">
                         <tr>
                             <td class="inputlabel">Tipo : </td>
-                            <td>
-                                <input id="radio3"/>Físico
-                                <input id="radio4"/>Digital
-                            </td>        
+                            <td><div id="div_TipoSoat">Físico</div></td>
+                            <td colspan="2"><div id="div_TipoSoat2">Digital</div></td>
                         </tr>
                         <tr>
                             <td class="inputlabel">Aseguradora : </td>
-                            <td>
+                            <td colspan="3">
                                 <select id="cbo_Aseguradora" name="cbo_Aseguradora">
                                     <option value="0">Seleccione</option>
                                 </select>
@@ -1187,26 +1128,24 @@
                         </tr>
                         <tr>
                             <td class="inputlabel">Certificado : </td>
-                            <td><input type="text" id="txt_Certificado" name="txt_Certificado" style='text-transform:uppercase;'/></td>
+                            <td colspan="3"><input type="text" class="text-input" id="txt_Certificado" name="txt_Certificado" style='text-transform:uppercase;'/></td>
                         </tr>
                         <tr>
-                            <td class="inputlabel">Fecha inicio : </td>
-                            <td><div id="txt_fecha_inicio"></div></td>
-                        </tr>
-                        <tr>
-                            <td class="inputlabel">Fecha fin : </td>
-                            <td><div id="txt_fecha_fin"></div></td>
+                            <td class="inputlabel">Vigencia Inicio : </td>
+                            <td><div id="div_SoatInicio"></div></td>
+                            <td class="inputlabel">Fin : </td>
+                            <td><div id="div_SoatFin"></div></td>
                         </tr>
                         <tr>
                             <td class="Summit" colspan="4">
                                 <div>
-                                    <input type="button" id="btn_GuardarAseguradoraRegistro" value="Guardar" style="margin-right: 20px" />
-                                    <input type="button" id="btn_CancelarAseguradoraRegistro"  value="Cancelar" style="margin-right: 20px"/>
+                                    <input type="button" id="btn_GuardarSoatRegistro" value="Guardar" style="margin-right: 20px" />
+                                    <input type="button" id="btn_CancelarSoatRegistro"  value="Cancelar" style="margin-right: 20px"/>
                                 </div>
                             </td>
                         </tr>
                     </table>
-                </form>    
+                </form>
             </div>
         </div>
     </div>

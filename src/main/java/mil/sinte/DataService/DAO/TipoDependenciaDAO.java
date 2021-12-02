@@ -35,5 +35,4 @@ public interface TipoDependenciaDAO extends JpaRepository<BeanTipoDependencia, S
             @Param("abreviatura") String abreviatura,
             @Param("usuario") String usuario,
             @Param("modo") String modo);
-
 }

@@ -24,11 +24,6 @@ public class SoatAseguradoraServiceImpl implements SoatAseguradoService {
     }
 
     @Override
-    public BeanSoatAseguradora getSoatAseguradora(String codigo) {
-        return soatAseguradoraDAO.findByCodigo(Integer.parseInt(codigo));
-    }
-
-    @Override
     public String guardarSoatAseguradora(BeanSoatAseguradora objAseguradora, String usuario, String modo) {
         String result = "GUARDO";
         try {

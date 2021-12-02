@@ -5,31 +5,10 @@
     $(document).ready(function () {
         var theme = getTheme();
         $("#div_Titulo").jqxExpander({theme: theme, width: '100%'});
-        //PARA CARGAR LOS ELEMENTOS DE LA GRILLA
-        var source = {
-            dataType: "json",
-            datafields: [
-                {name: 'usuario', type: "string"},
-                {name: 'areaLaboral', type: "string"},
-                {name: 'Rol', type: "string"},
-                {name: 'brigada', type: "string"},
-                {name: 'paterno', type: "string"},
-                {name: 'materno', type: "string"},
-                {name: 'nombres', type: "string"},
-                {name: 'correo', type: "string"},
-                {name: 'telefono', type: "string"},
-                {name: 'cargo', type: "string"},
-                {name: 'estado', type: "string"}
-            ],
-            id: 'usuario',
-            url: "../UsuariosDetalle?mode=G"
-        };
-        var dataAdapter = new $.jqx.dataAdapter(source);
         //DEFINIMOS LOS CAMPOS Y DATOS DE LA GRILLA
-        $("#div_GrillaUsuario").jqxGrid({
+        $("#div_GrillaPrincipal").jqxGrid({
             width: '99.8%',
             height: ($(window).height() - 65),
-            source: dataAdapter,
             autoheight: false,
             autorowheight: false,
             altrows: true,
@@ -44,10 +23,10 @@
             rendertoolbar: function (toolbar) {
                 // ADICIONAMOS BOTONES A LA BARRA DE ESTADOS
                 var container = $("<div style='overflow: hidden; position: relative; margin: 1px;'></div>");
-                var ButtonNuevo = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='/images/Botones/nuevo42.gif' th:src='@{/images/Botones/nuevo42.gif' width=18 height=18 /><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
-                var ButtonExportar = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='/images/Botones/pauf42.gif' th:src='@{/images/Botones/pauf42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
-                var ButtonRecargar = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='/images/Botones/refresh42.gif' th:src='@{/images/Botones/refresh42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
-                var ButtonSalir = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='/images/Botones/exit42.gif' th:src='@{/images/Botones/exit42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
+                var ButtonNuevo = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='images/Botones/nuevo42.gif' th:src='@{images/Botones/nuevo42.gif' width=18 height=18 /><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
+                var ButtonExportar = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='images/Botones/pauf42.gif' th:src='@{images/Botones/pauf42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
+                var ButtonRecargar = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='images/Botones/refresh42.gif' th:src='@{images/Botones/refresh42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
+                var ButtonSalir = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='images/Botones/exit42.gif' th:src='@{images/Botones/exit42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
                 container.append(ButtonNuevo);
                 container.append(ButtonExportar);
                 container.append(ButtonRecargar);
@@ -67,22 +46,22 @@
                     codigo = '0';
                     $("#txt_CIP").val('');
                     $("#txt_CIP").jqxInput({disabled: false});
-                    $("#cbo_Area_Laboral").jqxDropDownList('setContent', 'Seleccione');
-                    $("#cbo_rol").jqxDropDownList('setContent', 'Seleccione');
-                    $("#cbo_brigada").jqxDropDownList('setContent', 'Seleccione');
-                    $("#txt_paterno").val('');
-                    $("#txt_materno").val('');
-                    $("#txt_nombres").val('');
-                    $("#txt_correo").val('');
-                    $("#txt_telf").val('');
+                    $("#cbo_Brigadas").jqxDropDownList('setContent', 'Seleccione');
+                    $("#txt_Paterno").val('');
+                    $("#txt_Materno").val('');
+                    $("#txt_Nombres").val('');
+                    $("#cbo_AreaLaboral").jqxDropDownList('setContent', 'Seleccione');
                     $("#txt_cargo").val('');
-                    $("#jqxcheckbox").jqxCheckBox({checked: false});
-                    $('#div_UsuarioPrincipal').jqxWindow({isModal: true, modalOpacity: 0.8});
-                    $('#div_UsuarioPrincipal').jqxWindow('open');
+                    $("#txt_Telefono").jqxMaskedInput('clearValue');
+                    $("#txt_Correo").val('');
+                    $("#cbo_Rol").jqxDropDownList('setContent', 'Seleccione');
+                    $("#div_Autorizacion").jqxCheckBox({checked: false});
+                    $('#div_VentanaPrincipal').jqxWindow({isModal: true, modalOpacity: 0.8});
+                    $('#div_VentanaPrincipal').jqxWindow('open');
                 });
                 //ASIGNAMOS LAS FUNCIONES PARA EL BOTON EXPORTAR
                 ButtonExportar.click(function (event) {
-                    $("#div_GrillaUsuario").jqxGrid('exportdata', 'xlsx', 'Usuario');
+                    $("#div_GrillaPrincipal").jqxGrid('exportdata', 'xlsx', 'Usuario');
                 });
                 //ASIGNAMOS LAS FUNCIONES PARA EL BOTON RECARGAR
                 ButtonRecargar.click(function (event) {
@@ -94,28 +73,28 @@
                 });
             },
             columns: [
+                {text: 'BRIGADA', dataField: 'brigada', filtertype: 'checkedlist', width: '10%', align: 'center', cellsAlign: 'center'},
                 {text: 'USUARIO', dataField: 'usuario', width: '10%', align: 'center', cellsAlign: 'center'},
-                {text: 'ÁREA LABORAL', dataField: 'areaLaboral', width: '10%', align: 'center', cellsAlign: 'center'},
-                {text: 'ROL', dataField: 'Rol', width: '10%', align: 'center', cellsAlign: 'center'},
-                {text: 'BRIGADA', dataField: 'brigada', width: '10%', align: 'center', cellsAlign: 'center'},
-                {text: 'APELLIDO PATERNO', dataField: 'paterno', width: '10%', align: 'center', cellsAlign: 'center'},
-                {text: 'APELLIDO MATERNO', dataField: 'materno', width: '10%', align: 'center', cellsAlign: 'center'},
-                {text: 'NOMBRES', dataField: 'nombres', width: '10%', align: 'center', cellsAlign: 'center'},
+                {text: 'AP. PATERNO', dataField: 'paterno', width: '13%', align: 'center'},
+                {text: 'AP. MATERNO', dataField: 'materno', width: '13%', align: 'center'},
+                {text: 'NOMBRES', dataField: 'nombres', width: '11%', align: 'center'},
+                {text: 'ÁREA LABORAL', dataField: 'areaLaboral', filtertype: 'checkedlist', width: '8%', align: 'center', cellsAlign: 'center'},
+                {text: 'CARGO', dataField: 'cargo', width: '9%', align: 'center', cellsAlign: 'center'},
+                {text: 'ROL', dataField: 'rol', filtertype: 'checkedlist', width: '5%', align: 'center', cellsAlign: 'center'},
+                {text: 'TELEFONO', dataField: 'telefono', width: '6%', align: 'center', cellsAlign: 'center'},
                 {text: 'CORREO', dataField: 'correo', width: '10%', align: 'center', cellsAlign: 'center'},
-                {text: 'TELEFONO', dataField: 'telefono', width: '10%', align: 'center', cellsAlign: 'center'},
-                {text: 'CARGO', dataField: 'cargo', width: '5%', align: 'center', cellsAlign: 'center'},
-                {text: 'ESTADO', dataField: 'estado', filtertype: 'list', width: '5%', align: 'center', cellsAlign: 'center'}
+                {text: 'ESTADO', dataField: 'estado', filtertype: 'checkedlist', width: '5%', align: 'center', cellsAlign: 'center'}
             ]
         });
         // DEFINIMOS EL MENU CONTEXTUAL
-        var contextMenu = $("#div_ContextMenu").jqxMenu({width: 180, height: 140, autoOpenPopup: false, mode: 'popup'});
-        $("#div_GrillaUsuario").on('contextmenu', function () {
+        var contextMenu = $("#div_ContextMenu").jqxMenu({width: 180, height: 147, autoOpenPopup: false, mode: 'popup'});
+        $("#div_GrillaPrincipal").on('contextmenu', function () {
             return false;
         });
         // HABILITAMOS LA OPCION DE CLICK DEL MENU CONTEXTUAL.
-        $("#div_GrillaUsuario").on('rowclick', function (event) {
+        $("#div_GrillaPrincipal").on('rowclick', function (event) {
             if (event.args.rightclick) {
-                $("#div_GrillaUsuario").jqxGrid('selectrow', event.args.rowindex);
+                $("#div_GrillaPrincipal").jqxGrid('selectrow', event.args.rowindex);
                 var scrollTop = $(window).scrollTop();
                 var scrollLeft = $(window).scrollLeft();
                 contextMenu.jqxMenu('open', parseInt(event.args.originalEvent.clientX) + 5 + scrollLeft, parseInt(event.args.originalEvent.clientY) + 5 + scrollTop);
@@ -225,36 +204,37 @@
             }
         });
         //SELECCIONAMOS UN REGISTRO DE LA GRILLA
-        $("#div_GrillaUsuario").on('rowselect', function (event) {
+        $("#div_GrillaPrincipal").on('rowselect', function (event) {
             var args = event.args;
-            var row = $("#div_GrillaUsuario").jqxGrid('getrowdata', args.rowindex);
+            var row = $("#div_GrillaPrincipal").jqxGrid('getrowdata', args.rowindex);
             codigo = row['usuario'];
+            $("#txt_CIP").val(codigo);
         });
         //CREA LOS ELEMENTOS DE LAS VENTANAS
         var customButtonsDemo = (function () {
             function _createElements() {
                 //INICIA LOS VALORES DE LA VENTANA
                 var posicionX, posicionY;
-                var ancho = 580;
-                var alto = 315;
+                var ancho = 450;
+                var alto = 365;
                 posicionX = ($(window).width() / 2) - (ancho / 2);
                 posicionY = ($(window).height() / 2) - (alto / 2);
-                $('#div_UsuarioPrincipal').jqxWindow({
+                $('#div_VentanaPrincipal').jqxWindow({
                     position: {x: posicionX, y: posicionY},
                     width: ancho, height: alto, resizable: false,
                     cancelButton: $('#btn_Cancelar'),
                     initContent: function () {
-                        $("#txt_CIP").jqxInput({placeHolder: "CIP", width: 300, height: 20, minLength: 2, maxLength: 20});
-                        $("#cbo_Area_Laboral").jqxDropDownList({width: 300, height: 20, dropDownWidth: 300, promptText: "Seleccione"});
-                        $("#cbo_rol").jqxDropDownList({width: 300, height: 20, dropDownWidth: 300, promptText: "Seleccione"});
-                        $("#cbo_brigada").jqxDropDownList({width: 300, height: 20, dropDownWidth: 300, promptText: "Seleccione"});
-                        $("#txt_paterno").jqxInput({placeHolder: "APELLIDO PATERNO", width: 300, height: 20, minLength: 2, maxLength: 200});
-                        $("#txt_materno").jqxInput({placeHolder: "APELLIDO MATERNO", width: 300, height: 20, minLength: 2, maxLength: 200});
-                        $("#txt_nombres").jqxInput({placeHolder: "NOMBRES", width: 300, height: 20, minLength: 2, maxLength: 200});
-                        $("#txt_correo").jqxInput({placeHolder: "CORREO", width: 300, height: 20, minLength: 2, maxLength: 200});
-                        $("#txt_telf").jqxInput({placeHolder: "TELEFONO", width: 300, height: 20, minLength: 2, maxLength: 200});
-                        $("#txt_cargo").jqxInput({placeHolder: "CARGO", width: 300, height: 20, minLength: 2, maxLength: 200});
-                        $("#jqxcheckbox").jqxCheckBox({width: 120, height: 25});
+                        $("#cbo_Brigadas").jqxDropDownList({width: 300, height: 25, dropDownWidth: 400, promptText: "Seleccione"});
+                        $("#txt_CIP").jqxInput({placeHolder: "CIP", width: 250, height: 25, minLength: 2, maxLength: 25});
+                        $("#txt_Paterno").jqxInput({placeHolder: "APELLIDO PATERNO", width: 300, height: 25, minLength: 2, maxLength: 200});
+                        $("#txt_Materno").jqxInput({placeHolder: "APELLIDO MATERNO", width: 300, height: 25, minLength: 2, maxLength: 200});
+                        $("#txt_Nombres").jqxInput({placeHolder: "NOMBRES", width: 300, height: 25, minLength: 2, maxLength: 200});
+                        $("#cbo_AreaLaboral").jqxDropDownList({width: 300, height: 25, dropDownWidth: 400, promptText: "Seleccione"});
+                        $("#txt_Cargo").jqxInput({placeHolder: "CARGO", width: 300, height: 25, minLength: 2, maxLength: 100});
+                        $("#txt_Telefono").jqxMaskedInput({mask: '###-###-###', width: 250, height: 25});
+                        $("#txt_Correo").jqxInput({placeHolder: "CORREO", width: 300, height: 25, minLength: 2, maxLength: 200});
+                        $("#cbo_Rol").jqxDropDownList({width: 300, height: 25, dropDownWidth: 300, promptText: "Seleccione"});
+                        $("#div_Autorizacion").jqxCheckBox({width: 120, height: 25});
                         $('#btn_Cancelar').jqxButton({width: '65px', height: 30});
                         $('#btn_Guardar').jqxButton({width: '65px', height: 30});
                         $('#btn_Guardar').on('click', function () {
@@ -263,12 +243,13 @@
                         $('#frm_Usuario').jqxValidator({
                             rules: [
                                 {input: '#txt_CIP', message: 'Ingrese el CIP!', action: 'keyup, blur', rule: 'required'},
-                                {input: '#txt_paterno', message: 'Ingrese el Apellido Paterno!', action: 'keyup, blur', rule: 'required'},
-                                {input: '#txt_materno', message: 'Ingrese el Apellido Materno!', action: 'keyup, blur', rule: 'required'},
-                                {input: '#txt_nombres', message: 'Ingrese el Nombre Completo!', action: 'keyup, blur', rule: 'required'},
-                                {input: '#txt_correo', message: 'Ingrese el Correo!', action: 'keyup, blur', rule: 'required'},
-                                {input: '#txt_telf', message: 'Ingrese el Telefono!', action: 'keyup, blur', rule: 'required'},
-                                {input: '#txt_cargo', message: 'Ingrese el Cargo!', action: 'keyup, blur', rule: 'required'}
+                                {input: '#txt_Paterno', message: 'Ingrese el Apellido Paterno!', action: 'keyup, blur', rule: 'required'},
+                                {input: '#txt_Materno', message: 'Ingrese el Apellido Materno!', action: 'keyup, blur', rule: 'required'},
+                                {input: '#txt_Nombres', message: 'Ingrese el Nombre Completo!', action: 'keyup, blur', rule: 'required'},
+                                {input: '#txt_Correo', message: 'Ingrese el Correo Electronico!', action: 'keyup, blur', rule: 'required'},
+                                {input: '#txt_Correo', message: 'Correo Electronico invalido!', action: 'keyup', rule: 'email'},
+                                {input: '#txt_Telefono', message: 'Ingrese el Nro de Celular!', action: 'valuechanged, blur', rule: 'phone'},
+                                {input: '#txt_Cargo', message: 'Ingrese el Cargo!', action: 'keyup, blur', rule: 'required'}
                             ]
                         });
                         $('#frm_Usuario').jqxValidator({
@@ -278,21 +259,20 @@
                         });
                     }
                 });
-
-                ancho = 400;
-                alto = 490;
+                ancho = 500;
+                alto = 595;
                 posicionX = ($(window).width() / 2) - (ancho / 2);
                 posicionY = ($(window).height() / 2) - (alto / 2);
-                $('#div_ModuloMenuPrincipal').jqxWindow({
+                $('#div_VentanaDetalle').jqxWindow({
                     position: {x: posicionX, y: posicionY},
                     width: ancho, height: alto, resizable: false,
-                    cancelButton: $('#btn_Permisos_Cancelar'),
+                    cancelButton: $('#btn_CancelarPermisos'),
                     initContent: function () {
-                        $('#jqxTree').jqxTree({width: 390, height: 400, hasThreeStates: true, checkboxes: true});
-                        $('#jqxTree').css('visibility', 'visible');
-                        $('#btn_Permisos_Cancelar').jqxButton({width: '65px', height: 25});
-                        $('#btn_Permisos_Guardar').jqxButton({width: '65px', height: 25});
-                        $('#btn_Permisos_Guardar').on('click', function () {
+                        $('#div_OpcionesUsuario').jqxTree({width: 488, height: 500, hasThreeStates: true, checkboxes: true});
+                        $('#div_OpcionesUsuario').css('visibility', 'visible');
+                        $('#btn_CancelarPermisos').jqxButton({width: '65px', height: 25});
+                        $('#btn_GuardarPermisos').jqxButton({width: '65px', height: 25});
+                        $('#btn_GuardarPermisos').on('click', function () {
                             fn_GrabarOpciones();
                         });
                     }
@@ -305,12 +285,10 @@
         }());
         $(document).ready(function () {
             customButtonsDemo.init();
-            $("#cbo_Area_Laboral").jqxDropDownList('clear');
-            $("#cbo_rol").jqxDropDownList('clear');
-            $("#cbo_brigada").jqxDropDownList('clear');
-            fn_cargarComboAjax("#cbo_Area_Laboral", {mode: 'areaLaboral'});
-            fn_cargarComboAjax("#cbo_rol", {mode: 'rol'});
-            fn_cargarComboAjax("#cbo_brigada", {mode: 'brigadas'});
+            fn_Refrescar();
+            fn_cargarComboAjax("#cbo_Brigadas", {mode: 'brigadas'});
+            fn_cargarComboAjax("#cbo_AreaLaboral", {mode: 'areaLaboral'});
+            fn_cargarComboAjax("#cbo_Rol", {mode: 'rol'});
         });
     });
     //FUNCION PARA ACTUALIZAR DATOS DE LA GRILLA
@@ -320,7 +298,7 @@
             datafields: [
                 {name: 'usuario', type: "string"},
                 {name: 'areaLaboral', type: "string"},
-                {name: 'Rol', type: "string"},
+                {name: 'rol', type: "string"},
                 {name: 'brigada', type: "string"},
                 {name: 'paterno', type: "string"},
                 {name: 'materno', type: "string"},
@@ -331,74 +309,61 @@
                 {name: 'estado', type: "string"}
             ],
             id: 'usuario',
-            url: "../UsuariosDetalle?mode=G"
+            url: "UsuariosDetalle",
+            data: {mode: 'G'}
         };
         var dataAdapter = new $.jqx.dataAdapter(source);
-        $("#div_GrillaUsuario").jqxGrid({source: dataAdapter});
-        $("#div_GrillaUsuario").jqxGrid('clearselection');
+        $("#div_GrillaPrincipal").jqxGrid({source: dataAdapter});
+        $("#div_GrillaPrincipal").jqxGrid('clearselection');
     }
     //FUNCION PARA CARGAR VENTANA PARA EDITAR REGISTRO
     function fn_EditarRegistro() {
-//        var json = {mode: mode, codigo: codigo};
-//        console.log(json)
         $.ajax({
             type: "GET",
-            url: "../UsuariosDetalle",
+            url: "UsuariosDetalle",
             data: {mode: mode, codigo: codigo},
             success: function (data) {
                 var dato = JSON.parse(data);
                 $("#txt_CIP").val(dato.usuario);
-                $("#cbo_Area_Laboral").jqxDropDownList('selectItem', dato.areaLaboral);
-                $("#cbo_rol").jqxDropDownList('selectItem', dato.Rol);
-                $("#cbo_brigada").jqxDropDownList('selectItem', dato.brigada);
-                $("#txt_paterno").val(dato.paterno);
-                $("#txt_materno").val(dato.materno);
-                $("#txt_nombres").val(dato.nombres);
-                $("#txt_correo").val(dato.correo);
-                $("#txt_telf").val(dato.telefono);
-                $("#txt_cargo").val(dato.cargo);
+                $("#cbo_Brigadas").jqxDropDownList('selectItem', dato.brigada);
+                $("#txt_Paterno").val(dato.paterno);
+                $("#txt_Materno").val(dato.materno);
+                $("#txt_Nombres").val(dato.nombres);
+                $("#cbo_AreaLaboral").jqxDropDownList('selectItem', dato.areaLaboral);
+                $("#txt_Cargo").val(dato.cargo);
+                $("#txt_Telefono").val(dato.telefono);
+                $("#txt_Correo").val(dato.correo);
+                $("#cbo_Rol").jqxDropDownList('selectItem', dato.rol);
                 if (dato.autorizacion === 1) {
-                    $("#jqxcheckbox").jqxCheckBox({checked: true});
+                    $("#div_Autorizacion").jqxCheckBox({checked: true});
                 }
             }
         });
-        $('#div_UsuarioPrincipal').jqxWindow({isModal: true});
-        $('#div_UsuarioPrincipal').jqxWindow('open');
+        $('#div_VentanaPrincipal').jqxWindow({isModal: true});
+        $('#div_VentanaPrincipal').jqxWindow('open');
     }
     //FUNCION PARA GRABAR LOS DATOS DE LA VENTANA PRINCIPAL
     function fn_GrabarDatos() {
+        var brigada = $("#cbo_Brigadas").val();
         var cip = $("#txt_CIP").val();
-        var areaLaboral = $("#cbo_Area_Laboral").val();
-        var rol = $("#cbo_rol").val();
-        var brigada = $("#cbo_brigada").val();
-        var paterno = $("#txt_paterno").val();
-        var materno = $("#txt_materno").val();
-        var nombres = $("#txt_nombres").val();
-        var correo = $("#txt_correo").val();
-        var telf = $("#txt_telf").val();
-        var cargo = $("#txt_cargo").val();
-        var autor = 0;
-        if ($("#jqxcheckbox").jqxCheckBox('checked') === true) {
-            autor = 1;
+        var paterno = $("#txt_Paterno").val();
+        var materno = $("#txt_Materno").val();
+        var nombres = $("#txt_Nombres").val();
+        var areaLaboral = $("#cbo_AreaLaboral").val();
+        var cargo = $("#txt_Cargo").val();
+        var telefono = $("#txt_Telefono").val();
+        var correo = $("#txt_Correo").val();
+        var autorizacion = 0;
+        var rol = $("#cbo_Rol").val();
+        if ($("#div_Autorizacion").jqxCheckBox('checked') === true) {
+            autorizacion = 1;
         }
-        if (mode === 'D' || mode === 'A' || mode === 'R') {
-            cip = codigo;
-            areaLaboral = 0;
-            rol = 0;
-            brigada = 0;
-        }
-        var json = {
-            mode: mode, codigo: cip, areaLaboral: areaLaboral,
-            rol: rol, brigada: brigada, paterno: paterno, materno: materno,
-            nombres: nombres, correo: correo, telf: telf, cargo: cargo, auto: autor
-        };
-        console.log(json);
         $.ajax({
             type: "GET",
-            url: "../IduUsuarios",
+            url: "IduUsuarios",
             data: {mode: mode, codigo: cip, areaLaboral: areaLaboral,
                 rol: rol, brigada: brigada, paterno: paterno, materno: materno,
-                nombres: nombres, correo: correo, telf: telf, cargo: cargo, auto: autor, lista: ''},
+                nombres: nombres, correo: correo, telefono: telefono, cargo: cargo, autorizacion: autorizacion, lista: ''},
             success: function (data) {
                 msg = data;
                 if (msg === "GUARDO") {
@@ -412,7 +377,7 @@
                             cerrarAction: {
                                 text: 'Cerrar',
                                 action: function () {
-                                    $('#div_UsuarioPrincipal').jqxWindow('close');
+                                    $('#div_VentanaPrincipal').jqxWindow('close');
                                     fn_Refrescar();
                                 }
                             }
@@ -432,11 +397,11 @@
             }
         });
     }
-
+    //OPCIONES DEL USUARIO
     function fn_UsuarioOpciones() {
         $.ajax({
             type: "GET",
-            url: "../UsuariosDetalle",
+            url: "UsuariosDetalle",
             data: {mode: 'M'},
             success: function (data) {
                 data = data.replace("[", "");
@@ -479,11 +444,11 @@
                 var dataAdapter = new $.jqx.dataAdapter(source);
                 dataAdapter.dataBind();
                 var records = dataAdapter.getRecordsHierarchy('id', 'parentid', 'items', [{name: 'text', map: 'label'}]);
-                $('#jqxTree').jqxTree({source: records});
-                $('#jqxTree').jqxTree('expandAll');
+                $('#div_OpcionesUsuario').jqxTree({source: records});
+                $('#div_OpcionesUsuario').jqxTree('expandAll');
                 $.ajax({
                     type: "GET",
-                    url: "../UsuariosDetalle",
+                    url: "UsuariosDetalle",
                     data: {mode: 'MU', codigo: codigo},
                     success: function (data) {
                         if (data.length > 2) {
@@ -493,7 +458,7 @@
                             var fila = data.split(",");
                             for (i = 0; i < fila.length; i++) {
                                 var dato = "#" + fila[i].trim();
-                                $("#jqxTree").jqxTree('checkItem', $(dato)[0], true);
+                                $("#div_OpcionesUsuario").jqxTree('checkItem', $(dato)[0], true);
                             }
                         }
 
@@ -501,34 +466,23 @@
                 });
             }
         });
-        $('#div_ModuloMenuPrincipal').jqxWindow({isModal: true, modalOpacity: 0.8});
-        $('#div_ModuloMenuPrincipal').jqxWindow('open');
+        $('#div_VentanaDetalle').jqxWindow({isModal: true, modalOpacity: 0.8});
+        $('#div_VentanaDetalle').jqxWindow('open');
     }
-
     function fn_GrabarOpciones() {
         var lista = new Array();
-        var items = $('#jqxTree').jqxTree('getCheckedItems');
+        var items = $('#div_OpcionesUsuario').jqxTree('getCheckedItems');
         for (var i = 0; i < items.length; i++) {
             var item = items[i];
             lista.push(item.id);
         }
-        var areaLaboral = 0;
-        var rol = 0;
-        var brigada = 0;
-
-//            var json = {mode: 'O', codigo: codigo,areaLaboral: areaLaboral,rol: rol, brigada: brigada,
-//                       lista: JSON.stringify(lista).replaceAll('"','').replaceAll('[','').replaceAll(']',''),
-//                       paterno: null, materno: null, nombres: null, correo: null, telf: null, cargo:null,
-//                       auto: 0};
-//            console.log(json);
-
         $.ajax({
             type: "GET",
-            url: "../IduUsuarios",
-            data: {mode: 'O', codigo: codigo, areaLaboral: areaLaboral, rol: rol, brigada: brigada,
+            url: "IduUsuarios",
+            data: {mode: 'O', codigo: codigo, areaLaboral: 0, rol: 0, brigada: 0,
                 lista: JSON.stringify(lista).replaceAll('"', '').replaceAll('[', '').replaceAll(']', ''),
-                paterno: null, materno: null, nombres: null, correo: null, telf: null, cargo: null,
-                auto: 0},
+                paterno: null, materno: null, nombres: null, correo: null, telefono: null, cargo: null,
+                autorizacion: 0},
             success: function (data) {
                 msg = data;
                 if (msg === "GUARDO") {
@@ -542,7 +496,7 @@
                             cerrarAction: {
                                 text: 'Cerrar',
                                 action: function () {
-                                    $('#div_ModuloMenuPrincipal').jqxWindow('close');
+                                    $('#div_VentanaDetalle').jqxWindow('close');
                                 }
                             }
                         }
@@ -561,7 +515,6 @@
             }
         });
     }
-
 </script>
 <div id='div_Titulo' style="border: none;">
     <div class="jqx-hideborder">LISTADOS DE USUARIOS</div>
@@ -569,8 +522,8 @@
         <div id="div_Detalle" class="maincen"></div>
     </div>
 </div>
-<div id="div_GrillaUsuario"></div>
-<div id="div_UsuarioPrincipal" style="display: none">
+<div id="div_GrillaPrincipal"></div>
+<div id="div_VentanaPrincipal" style="display: none">
     <div>
         <span style="float: left">DATOS DEL USUARIO</span>
     </div>
@@ -578,63 +531,63 @@
         <form id="frm_Usuario" name="frm_Usuario" method="post" >
             <table width="100%" border="0" cellspacing="0" cellpadding="0"> 
                 <tr>
+                    <td class="inputlabel">Brigada : </td>
+                    <td>
+                        <select id="cbo_Brigadas" name="cbo_Brigadas">
+                            <option value="0">Seleccione</option>
+                        </select>
+                    </td> 
+                </tr>
+                <tr>
                     <td class="inputlabel">CIP : </td>
-                    <td><input id="txt_CIP" name="txt_CIP" style="text-transform: uppercase;"/></td> 
+                    <td><input class="text-input" id="txt_CIP" name="txt_CIP" style="text-transform: uppercase;"/></td> 
+                </tr>
+                <tr>
+                    <td class="inputlabel">Apellido Paterno : </td>
+                    <td><input class="text-input" id="txt_Paterno" name="txt_paterno" style="text-transform: uppercase;"/></td>
+                </tr>
+                <tr>
+                    <td class="inputlabel">Apellido Materno : </td>
+                    <td><input class="text-input" id="txt_Materno" name="txt_materno" style="text-transform: uppercase;"/></td>
+                </tr>
+                <tr>
+                    <td class="inputlabel">Nombres : </td>
+                    <td><input class="text-input" id="txt_Nombres" name="txt_nombres" style="text-transform: uppercase;"/></td>
                 </tr>
                 <tr>
                     <td class="inputlabel">Área Laboral : </td>
                     <td>
-                        <select id="cbo_Area_Laboral" name="cbo_Area_Laboral">
+                        <select id="cbo_AreaLaboral" name="cbo_AreaLaboral">
                             <option value="0">Seleccione</option>
                         </select>
                     </td> 
+                </tr>
+                <tr>
+                    <td class="inputlabel">Cargo : </td>
+                    <td><input class="text-input" id="txt_Cargo" name="txt_Cargo" style="text-transform: uppercase;"/></td>
+                </tr>
+                <tr>
+                    <td class="inputlabel">Celular : </td>
+                    <td><div id="txt_Telefono"></div></td>
+                </tr>
+                <tr>
+                    <td class="inputlabel">Correo : </td>
+                    <td><input class="text-input" id="txt_Correo" name="txt_Correo" style="text-transform: uppercase;"/></td>
                 </tr>
                 <tr>
                     <td class="inputlabel">Rol : </td>
                     <td>
-                        <select id="cbo_rol" name="cbo_rol">
+                        <select id="cbo_Rol" name="cbo_Rol">
                             <option value="0">Seleccione</option>
                         </select>
                     </td> 
-                </tr>                
-                <tr>
-                    <td class="inputlabel">Brigada : </td>
-                    <td>
-                        <select id="cbo_brigada" name="cbo_brigada">
-                            <option value="0">Seleccione</option>
-                        </select>
-                    </td> 
-                </tr>
-                <tr>
-                    <td class="inputlabel">Apellido Paterno : </td>
-                    <td><input id="txt_paterno" name="txt_paterno" style="text-transform: uppercase;"/></td>
-                </tr>
-                <tr>
-                    <td class="inputlabel">Apellido Materno : </td>
-                    <td><input id="txt_materno" name="txt_materno" style="text-transform: uppercase;"/></td>
-                </tr>
-                <tr>
-                    <td class="inputlabel">Nombres : </td>
-                    <td><input id="txt_nombres" name="txt_nombres" style="text-transform: uppercase;"/></td>
-                </tr>
-                <tr>
-                    <td class="inputlabel">Correo : </td>
-                    <td><input id="txt_correo" name="txt_correo" style="text-transform: uppercase;"/></td>
-                </tr>
-                <tr>
-                    <td class="inputlabel">Telefono : </td>
-                    <td><input id="txt_telf" name="txt_telf" style="text-transform: uppercase;"/></td>
-                </tr>
-                <tr>
-                    <td class="inputlabel">Cargo : </td>
-                    <td><input id="txt_cargo" name="txt_cargo" style="text-transform: uppercase;"/></td>
                 </tr>
                 <tr>
                     <td class="inputlabel">Autorización : </td>
-                    <td><div id='jqxcheckbox'></div></td>     
+                    <td><div id='div_Autorizacion'></div></td>
                 </tr>
                 <tr>
-                    <td class="Summit" colspan="4">
+                    <td class="Summit" colspan="2">
                         <div>
                             <input type="button" id="btn_Guardar"  value="Guardar" style="margin-right: 20px"/>
                             <input type="button" id="btn_Cancelar" value="Cancelar" style="margin-right: 20px"/>
@@ -645,15 +598,15 @@
         </form>
     </div>
 </div>
-<div id="div_ModuloMenuPrincipal" style="display: none">
+<div id="div_VentanaDetalle" style="display: none">
     <div>
         <span style="float: left">SELECCIONE LAS OPCIONES DEL USUARIO</span>
     </div>
     <div style="overflow: hidden">
-        <div id='jqxTree'></div>
+        <div id='div_OpcionesUsuario'></div>
         <div class="Summit">
-            <input type="button" id="btn_Permisos_Guardar"  value="Guardar" style="margin-right: 20px"/>
-            <input type="button" id="btn_Permisos_Cancelar" value="Cancelar" style="margin-right: 20px"/>
+            <input type="button" id="btn_GuardarPermisos"  value="Guardar" style="margin-right: 20px;margin-top: 10px"/>
+            <input type="button" id="btn_CancelarPermisos" value="Cancelar" style="margin-right: 20px"/>
         </div>
     </div>
 </div>
@@ -661,10 +614,11 @@
     <ul>
         <li style="font-weight: bold;">Editar</li>
         <li type='separator'></li>
-        <li style="color: blue; font-weight: bold;">Activar</li>
-        <li style="color: brown; font-weight: bold;">Desactivar</li>
+        <li style="font-weight: bold; color: blue;">Activar</li>
+        <li style="font-weight: bold; color: brown;">Desactivar</li>
         <li type='separator'></li>
-        <li style="font-weight: bold;">Opciones</li>
-        <li style="font-weight: bold;">Resetear Contraseña</li>
+        <li style="font-weight: bold; color: olive;">Opciones</li>
+        <li type='separator'></li>
+        <li style="font-weight: bold; color: gray;">Resetear Contraseña</li>
     </ul>
 </div>

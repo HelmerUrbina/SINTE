@@ -9,9 +9,7 @@ import mil.sinte.BusinessServices.Beans.BeanVehiculosBrigada;
  */
 public interface VehiculosBrigadasService {
 
-    public List<BeanVehiculosBrigada> getVehiculosBrigadas(Integer brigada, String periodo);
-
-    public BeanVehiculosBrigada getVehiculosBrigada(Integer brigada, String periodo);
+    public List<BeanVehiculosBrigada> getVehiculosBrigadas(String periodo, Integer brigada);
 
     public String guardarVehiculosBrigada(BeanVehiculosBrigada objBeanVehiculosBrigada, String usuario, String modo);
 

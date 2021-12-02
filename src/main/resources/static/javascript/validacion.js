@@ -25,17 +25,17 @@ function fn_CargarMenu(servlet, mode) {
     $("#div_VentanaDetalle").remove();
     $("#div_RegistroDetalle").remove();
     $("#div_ContextMenu").remove();
-    $("#div_VentanaAseguradora").remove();
     $("#div_VentanaTipoCombustible").remove();
-    $("#div_ContextMenu").remove();
+    $("#div_VentanaSoat").remove();
+    //$("#div_ContextMenu").remove();
     /*/
      
      $("#div_ContextMenu").remove();
      $("#div_Reporte").remove();*/
-    var $contenidoAjax = $('#div_Contenido').html('<div style="text-align: center"><img src="/images/Fondos/cargando.gif" th:src="@{/images/Fondos/cargando.gif}"/></div>');
+    var $contenidoAjax = $('#div_Contenido').html('<div style="text-align: center"><img src="images/Fondos/cargando.gif" th:src="@{images/Fondos/cargando.gif}"/></div>');
     $.ajax({
         type: "GET",
-        url: "/" + servlet,
+        url: servlet,
         data: {mode: mode},
         success: function (data) {
             $contenidoAjax.html(data);
@@ -75,7 +75,7 @@ function fn_cargarComboAjax(obj, datos) {
             {name: 'codigo', type: 'string'}
         ],
         id: 'codigo',
-        url: "../CombosAjax",
+        url: "CombosAjax",
         data: datos,
         async: true
     };
@@ -91,7 +91,7 @@ function fn_cargarComboxCabecera(obj, datos) {
             {name: 'codigo', type: 'string'}
         ],
         id: 'codigo',
-        url: "../CombosAjax",
+        url: "CombosAjax",
         data: datos,
         async: true
     };
@@ -102,7 +102,7 @@ function fn_cargarComboxCabecera(obj, datos) {
 function fn_cargarTextoAjax(obj, mode, codigo) {
     $.ajax({
         type: "GET",
-        url: "../TextoAjax",
+        url: "TextoAjax",
         data: {mode: mode, codigo: codigo},
         success: function (data) {
             $(obj).val(data);

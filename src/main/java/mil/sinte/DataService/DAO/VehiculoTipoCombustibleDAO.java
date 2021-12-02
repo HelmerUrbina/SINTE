@@ -16,23 +16,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 public interface VehiculoTipoCombustibleDAO extends JpaRepository<BeanVehiculoTipoCombustible, String> {
 
-    @Query(nativeQuery = true, value = "SELECT UTIL.FUN_TIPO_COMBUSTIBLE(NTIPO_COMBUSTIBLE_CODIGO) NVEHICULO_CODIGO, "
-            + "NTIPO_COMBUSTIBLE_CODIGO NTIPO_COMBUSTIBLE_CODIGO, NVEHICULO_COMBUSTIBLE_CAP, "
+    @Query(nativeQuery = true, value = "SELECT NTIPO_COMBUSTIBLE_CODIGO NTIPO_COMBUSTIBLE_CODIGO, "
+            + "UTIL.FUN_TIPO_COMBUSTIBLE(NTIPO_COMBUSTIBLE_CODIGO) NVEHICULO_CODIGO, NVEHICULO_COMBUSTIBLE_CAP, "
             + "UTIL.FUN_ESTADO_DESCRIPCION(CESTADO_CODIGO) CESTADO_CODIGO "
             + "FROM SINTE_VEHICULOS_TIPO_COMBUSTIB WHERE "
             + "NVEHICULO_CODIGO=?1 "
             + "ORDER BY NTIPO_COMBUSTIBLE_CODIGO")
     List<BeanVehiculoTipoCombustible> findByVehiculo(Integer vehiculo);
-
-    @Query(nativeQuery = true, value = " SELECT "
-            + "''||NTIPO_COMBUSTIBLE_CODIGO NVEHICULO_CODIGO,"
-            + "''||NTIPO_COMBUSTIBLE_CODIGO NTIPO_COMBUSTIBLE_CODIGO, "
-            + "NVEHICULO_COMBUSTIBLE_CAP, "
-            + "UTIL.FUN_ESTADO_DESCRIPCION(CESTADO_CODIGO) CESTADO_CODIGO FROM "
-            + "SINTE_VEHICULOS_TIPO_COMBUSTIB WHERE "
-            + "NVEHICULO_CODIGO=?1 AND "
-            + "NTIPO_COMBUSTIBLE_CODIGO=?2")
-    public BeanVehiculoTipoCombustible findByCodigo(Integer vehiculo, Integer codigo);
 
     @Transactional
     @Modifying

@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class UsuarioServiceImpl implements UsuarioService {
 
-    @Autowired(required = true)
+    @Autowired
     private UsuarioDAO usuarioDAO;
 
     @Override
@@ -34,33 +34,28 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
-    public BeanUsuario findByCodigo(String usuario) {
-        return usuarioDAO.findByCodigo(usuario);
-    }
-
-    @Override
     public String guardarUsuario(BeanUsuario objBeanUsuario, String opciones, String usuario, String modo) {
         String result = "GUARDO";
         try {
             usuarioDAO.sp_usuario(
                     objBeanUsuario.getUsuario(),
                     Utiles.encriptarPassword(objBeanUsuario.getUsuario()),
-                    objBeanUsuario.getAreaLaboral() != null ? Integer.parseInt(objBeanUsuario.getAreaLaboral()) : null,
-                    objBeanUsuario.getRol() != null ? Integer.parseInt(objBeanUsuario.getRol()) : null,
                     objBeanUsuario.getBrigada() != null ? Integer.parseInt(objBeanUsuario.getBrigada()) : null,
                     objBeanUsuario.getPaterno(),
                     objBeanUsuario.getMaterno(),
                     objBeanUsuario.getNombres(),
-                    objBeanUsuario.getCorreo(),
-                    objBeanUsuario.getTelefono(),
+                    objBeanUsuario.getAreaLaboral() != null ? Integer.parseInt(objBeanUsuario.getAreaLaboral()) : null,
                     objBeanUsuario.getCargo(),
+                    objBeanUsuario.getTelefono(),
+                    objBeanUsuario.getCorreo(),
+                    objBeanUsuario.getRol() != null ? Integer.parseInt(objBeanUsuario.getRol()) : null,
                     objBeanUsuario.getAutorizacion(),
                     opciones,
                     usuario,
                     modo
             );
-        } catch (Exception e) {
-           result = Utiles.getErrorSQL((Exception) e);
+        } catch (Exception | Error e) {
+            result = Utiles.getErrorSQL((Exception) e);
         }
         return result;
     }

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mil.sinte.UserServices.Seguridad;
 
 import com.google.gson.Gson;
@@ -48,7 +43,7 @@ public class UsuarioController {
             case "G":
                 return new Gson().toJson(usuarioService.findAll());
             case "U":
-                return new Gson().toJson(usuarioService.findByCodigo(codigo));
+                return new Gson().toJson(usuarioService.findByUsername(codigo));
             case "M":
                 return new Gson().toJson(usuarioMenuService.getOpcionesUsuario());
             case "MU":
@@ -70,9 +65,9 @@ public class UsuarioController {
             @RequestParam("materno") String materno,
             @RequestParam("nombres") String nombres,
             @RequestParam("correo") String correo,
-            @RequestParam("telf") String telf,
+            @RequestParam("telefono") String telefono,
             @RequestParam("cargo") String cargo,
-            @RequestParam("auto") Integer auto,
+            @RequestParam("autorizacion") Integer autorizacion,
             @RequestParam("lista") String lista
     ) {
         BeanUsuario objBeanUsuario = new BeanUsuario();
@@ -84,9 +79,9 @@ public class UsuarioController {
         objBeanUsuario.setMaterno(materno);
         objBeanUsuario.setNombres(nombres);
         objBeanUsuario.setCorreo(correo);
-        objBeanUsuario.setTelefono(telf);
+        objBeanUsuario.setTelefono(telefono);
         objBeanUsuario.setCargo(cargo);
-        objBeanUsuario.setAutorizacion(auto);
+        objBeanUsuario.setAutorizacion(autorizacion);
         return "" + usuarioService.guardarUsuario(objBeanUsuario, lista, Utiles.getUsuario(), mode);
     }
 }

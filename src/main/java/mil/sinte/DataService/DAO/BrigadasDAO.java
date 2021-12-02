@@ -17,25 +17,24 @@ import org.springframework.transaction.annotation.Transactional;
 public interface BrigadasDAO extends JpaRepository<BeanBrigadas, String> {
 
     @Query(nativeQuery = true, value = "SELECT "
-            + "a.NBRIGADA_CODIGO, a.CBRIGADA_CODIGO, "
-            + "a.VBRIGADA_DESCRIPCION, a.VBRIGADA_ABREVIATURA , "
+            + "NBRIGADA_CODIGO, CBRIGADA_CODIGO, "
+            + "VBRIGADA_DESCRIPCION, VBRIGADA_ABREVIATURA, "
             + "UTIL.FUN_DIVISION_EJERCITO_ABREVIAT(NDIVISION_EJERCITO_CODIGO) AS DIVISION_EJERCITO, "
-            + "UTIL.FUN_ESTADO_DESCRIPCION(a.CESTADO_CODIGO) CESTADO_CODIGO, "
+            + "UTIL.FUN_ESTADO_DESCRIPCION(CESTADO_CODIGO) CESTADO_CODIGO, "
             + "UTIL.FUN_DEPARTAMENTO_NOMBRE(SUBSTR(CUBIGEO_CODIGO,1,2)) DEPARTAMENTO, "
             + "UTIL.FUN_PROVINCIA_NOMBRE(SUBSTR(CUBIGEO_CODIGO,1,2), SUBSTR(CUBIGEO_CODIGO,3,2)) PROVINCIA, "
             + "UTIL.FUN_UBIGEO_NOMBRE(CUBIGEO_CODIGO) UBIGEO "
-            + "FROM SINTE_BRIGADAS a "
-            + "ORDER BY a.NBRIGADA_CODIGO")
+            + "FROM SINTE_BRIGADAS "
+            + "ORDER BY CBRIGADA_CODIGO")
     @Override
     List<BeanBrigadas> findAll();
 
-    @Query(nativeQuery = true, value = "SELECT "
-            + "a.NBRIGADA_CODIGO, a.CBRIGADA_CODIGO, "
-            + "a.VBRIGADA_DESCRIPCION, a.VBRIGADA_ABREVIATURA , "
+    @Query(nativeQuery = true, value = "SELECT NBRIGADA_CODIGO, CBRIGADA_CODIGO, "
+            + "VBRIGADA_DESCRIPCION, VBRIGADA_ABREVIATURA, "
             + "''||NDIVISION_EJERCITO_CODIGO AS DIVISION_EJERCITO, CESTADO_CODIGO, "
             + "SUBSTR(CUBIGEO_CODIGO,1,2) DEPARTAMENTO, SUBSTR(CUBIGEO_CODIGO,3,2) PROVINCIA, CUBIGEO_CODIGO UBIGEO "
-            + "FROM SINTE_BRIGADAS a WHERE "
-            + "a.NBRIGADA_CODIGO=?1 ")
+            + "FROM SINTE_BRIGADAS WHERE "
+            + "NBRIGADA_CODIGO=?1 ")
     public BeanBrigadas findByCodigo(Integer codigo);
 
     @Transactional
@@ -51,5 +50,4 @@ public interface BrigadasDAO extends JpaRepository<BeanBrigadas, String> {
             @Param("ubigeo") String ubigeo,
             @Param("usuario") String usuario,
             @Param("modo") String modo);
-
 }

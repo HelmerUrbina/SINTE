@@ -38,8 +38,6 @@ public class VehiculosClaseController {
         switch (mode) {
             case "G":
                 return new Gson().toJson(vehiculosClaseService.getVehiculosClases());
-            case "U":
-                return new Gson().toJson(vehiculosClaseService.getVehiculosClase(codigo));
             default:
                 return "ERROR";
         }

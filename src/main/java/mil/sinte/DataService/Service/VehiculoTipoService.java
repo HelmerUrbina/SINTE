@@ -11,8 +11,6 @@ public interface VehiculoTipoService {
 
     public List<BeanVehiculoTipo> getVehiculoTipos();
 
-    public BeanVehiculoTipo getVehiculoTipo(String codigo);
-
     public String guardarVehiculoTipo(BeanVehiculoTipo objBeanVehiculoTipo, String usuario, String modo);
 
 }

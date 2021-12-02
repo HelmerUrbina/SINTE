@@ -9,9 +9,9 @@
     $(document).ready(function () {
         var theme = getTheme();
         $("#div_Titulo").jqxExpander({theme: theme, width: '100%'});
-        $("#cbo_Periodo").jqxComboBox({theme: theme, autoOpen: true, promptText: "Seleccione", width: 150, height: 20, dropDownWidth: 250});
-        $("#cbo_TipoAsignacion").jqxComboBox({theme: theme, autoOpen: true, promptText: "Seleccione", width: 250, height: 20, dropDownWidth: 350});
-        $("#cbo_Brigadas").jqxComboBox({theme: theme, autoOpen: true, promptText: "Seleccione", width: 250, height: 20, dropDownWidth: 350});
+        $("#cbo_Periodo").jqxComboBox({theme: theme, autoOpen: true, promptText: "Seleccione", width: 150, height: 25, dropDownWidth: 250});
+        $("#cbo_TipoAsignacion").jqxComboBox({theme: theme, autoOpen: true, promptText: "Seleccione", width: 250, height: 25, dropDownWidth: 350});
+        $("#cbo_Brigadas").jqxComboBox({theme: theme, autoOpen: true, promptText: "Seleccione", width: 250, height: 25, dropDownWidth: 350});
         var fecha = new Date();
         $("#cbo_Periodo").jqxComboBox('selectItem', fecha.getFullYear());
         $('#cbo_Periodo').on('change', function () {
@@ -29,7 +29,7 @@
         //DEFINIMOS LOS CAMPOS Y DATOS DE LA GRILLA
         $("#div_GrillaPrincipal").jqxGrid({
             width: '99.8%',
-            height: ($(window).height() - 95),
+            height: ($(window).height() - 90),
             autoheight: false,
             autorowheight: false,
             altrows: true,
@@ -44,8 +44,8 @@
             rendertoolbar: function (toolbar) {
                 // ADICIONAMOS BOTONES A LA BARRA DE ESTADOS
                 var container = $("<div style='overflow: hidden; position: relative; margin: 1px;'></div>");
-                var ButtonNuevo = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='/images/Botones/nuevo42.gif' th:src='@{/images/Botones/nuevo42.gif' width=18 height=18 /><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
-                var ButtonExportar = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='/images/Botones/pauf42.gif' th:src='@{/images/Botones/pauf42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
+                var ButtonNuevo = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='images/Botones/nuevo42.gif' th:src='@{images/Botones/nuevo42.gif' width=18 height=18 /><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
+                var ButtonExportar = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='images/Botones/pauf42.gif' th:src='@{images/Botones/pauf42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
                 container.append(ButtonNuevo);
                 container.append(ButtonExportar);
                 toolbar.append(container);
@@ -86,11 +86,11 @@
                 {text: 'CODIGO', dataField: 'eventoPrincipal', width: '10%', align: 'center', cellsAlign: 'center'},
                 {text: 'EVENTO PRINCIPAL', dataField: 'eventoPrincipalNombre', width: '65%', align: 'center', cellsAlign: 'left'},
                 {text: 'NIVELES', dataField: 'niveles', width: '15%', align: 'center', cellsAlign: 'center'},
-                {text: 'ESTADO', dataField: 'estado', filtertype: 'list', width: '10%', align: 'center', cellsAlign: 'center'}
+                {text: 'ESTADO', dataField: 'estado', filtertype: 'checkedlist', width: '10%', align: 'center', cellsAlign: 'center'}
             ]
         });
         // DEFINIMOS EL MENU CONTEXTUAL
-        var contextMenu = $("#div_ContextMenu").jqxMenu({width: 200, height: 115, autoOpenPopup: false, mode: 'popup'});
+        var contextMenu = $("#div_ContextMenu").jqxMenu({width: 200, height: 120, autoOpenPopup: false, mode: 'popup'});
         $("#div_GrillaPrincipal").on('contextmenu', function () {
             return false;
         });
@@ -257,7 +257,7 @@
                 {name: 'estado', type: "string"}
             ],
             id: 'codigo',
-            url: "../ProgramacionEventoPrincipalDetalle",
+            url: "ProgramacionEventoPrincipalDetalle",
             data: {mode: 'G', periodo: $('#cbo_Periodo').val(), tipoAsignacion: $('#cbo_TipoAsignacion').val(), brigada: $('#cbo_Brigadas').val()}
         };
         var dataAdapter = new $.jqx.dataAdapter(source);
@@ -280,7 +280,7 @@
         var eventoFinal = $("#chk_EventoFinal").jqxCheckBox('checked');
         $.ajax({
             type: "GET",
-            url: "../IduProgramacionEventoPrincipal",
+            url: "IduProgramacionEventoPrincipal",
             data: {mode: mode, periodo: periodo, tipoAsignacion: tipoAsignacion, brigada: brigada,
                 eventoPrincipal: eventoPrincipal, eventoPrincipalNombre: eventoPrincipalNombre,
                 nivel: nivel, niveles: niveles, eventoFinal: eventoFinal},
@@ -321,10 +321,10 @@
         $("#div_GrillaPrincipal").css("display", "none");
         $("#div_GrillaSecundaria").css("display", "block");
         if (niveles === 0) {
-            var $contenidoAjax = $('#div_GrillaSecundaria').html('<img src="../images/Fondos/cargando.gif">');
+            var $contenidoAjax = $('#div_GrillaSecundaria').html('<img src="images/Fondos/cargando.gif">');
             $.ajax({
                 type: "GET",
-                url: "../ProgramacionEventoPrincipal",
+                url: "ProgramacionEventoPrincipal",
                 data: {mode: 'programacionEventoFinal'},
                 success: function (data) {
                     $contenidoAjax.html(data);
@@ -332,10 +332,10 @@
             });
         } else {
             nivel++;
-            var $contenidoAjax = $('#div_GrillaSecundaria').html('<img src="../images/Fondos/cargando.gif">');
+            var $contenidoAjax = $('#div_GrillaSecundaria').html('<img src="images/Fondos/cargando.gif">');
             $.ajax({
                 type: "GET",
-                url: "../ProgramacionEventoPrincipal",
+                url: "ProgramacionEventoPrincipal",
                 data: {mode: 'programacionEventoSecundario'},
                 success: function (data) {
                     $contenidoAjax.html(data);
@@ -373,8 +373,8 @@
                                 </span>
                             </select>
                         </td>
-                        <td><a href="javascript: fn_CargarBusqueda();"><img src="../images/Botones/refresh42.gif" alt="Buscar Datos" name="imgrefresh" width="30" height="28" border="0" id="imgrefresh"></a></td>
-                        <td><a href="javascript: fn_MenuPrincipal();"><img src="../images/Botones/exit42.gif" alt="Salir de pantalla" name="imgexit" width="30" height="28"  border="0" id="imgexit" /></a></td>
+                        <td><a href="javascript: fn_CargarBusqueda();"><img src="images/Botones/refresh42.gif" alt="Buscar Datos" name="imgrefresh" width="30" height="28" border="0" id="imgrefresh"></a></td>
+                        <td><a href="javascript: fn_MenuPrincipal();"><img src="images/Botones/exit42.gif" alt="Salir de pantalla" name="imgexit" width="30" height="28"  border="0" id="imgexit" /></a></td>
                     </tr>
                 </tbody>
             </table>
@@ -392,7 +392,7 @@
             <table width="100%" border="0" cellspacing="0" cellpadding="0"> 
                 <tr>
                     <td class="inputlabel">Evento : </td>
-                    <td><input type="text" id="txt_EventoPrincipal" name="txt_EventoPrincipal" style="text-transform: uppercase;"/></td>
+                    <td><input type="text" class="text-input" id="txt_EventoPrincipal" name="txt_EventoPrincipal" style="text-transform: uppercase;"/></td>
                 </tr> 
                 <tr>
                     <td class="inputlabel"># Niveles : </td>
@@ -418,9 +418,9 @@
     <ul>
         <li style="font-weight: bold;">Editar</li>
         <li type='separator'></li>
-        <li style="color: blue; font-weight: bold;">Activar</li>
-        <li style="color: brown; font-weight: bold;">Desactivar</li>
+        <li style="font-weight: bold; color: blue;">Activar</li>
+        <li style="font-weight: bold; color: brown;">Desactivar</li>
         <li type='separator'></li>
-        <li style="font-weight: bold;">Ver Evento</li>
+        <li style="font-weight: bold;color: green;">Ver Evento</li>
     </ul>
 </div>

@@ -2,6 +2,8 @@ package mil.sinte.UserServices.Configuracion;
 
 import com.google.gson.Gson;
 import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import lombok.extern.slf4j.Slf4j;
 import mil.sinte.BusinessServices.Beans.BeanVehiculoSoat;
 import mil.sinte.BusinessServices.Beans.BeanVehiculoTipoCombustible;
@@ -87,8 +89,6 @@ public class VehiculosController {
         switch (mode) {
             case "G":
                 return new Gson().toJson(vehiculoService.getVehiculoTiposCombustibles(vehiculo));
-            case "U":
-                return new Gson().toJson(vehiculoService.getVehiculoTipoCombustible(vehiculo, codigo));
             default:
                 return "ERROR";
         }
@@ -99,14 +99,13 @@ public class VehiculosController {
     public String setVehiculoTipoCombustible(
             @RequestParam("mode") String mode,
             @RequestParam("vehiculo") String vehiculo,
-            @RequestParam("tipoCombustible") String tipoCombustible,
+            @RequestParam("tipoCombustible") Integer tipoCombustible,
             @RequestParam("capacidad") Double capacidad
     ) {
         BeanVehiculoTipoCombustible objBeanVehiculoTipoCombustible = new BeanVehiculoTipoCombustible();
         objBeanVehiculoTipoCombustible.setVehiculo(vehiculo);
         objBeanVehiculoTipoCombustible.setTipoCombustible(tipoCombustible);
         objBeanVehiculoTipoCombustible.setCapacidad(capacidad);
-
         return "" + vehiculoService.guardarVehiculoTipoCombustible(objBeanVehiculoTipoCombustible, Utiles.getUsuario(), mode);
     }
 
@@ -116,8 +115,6 @@ public class VehiculosController {
         switch (mode) {
             case "G":
                 return new Gson().toJson(vehiculoService.getVehiculoSoats(vehiculo));
-            case "U":
-                return new Gson().toJson(vehiculoService.getVehiculoSoat(vehiculo, codigo));
             default:
                 return "ERROR";
         }
@@ -128,21 +125,25 @@ public class VehiculosController {
     public String setVehiculoSoat(
             @RequestParam("mode") String mode,
             @RequestParam("codigo") Integer codigo,
-            @RequestParam("vehiculo") String vehiculo,
-            @RequestParam("soat") String soat,
+            @RequestParam("vehiculo") Integer vehiculo,
+            @RequestParam("aseguradora") String aseguradora,
+            @RequestParam("tipo") String tipo,
             @RequestParam("certificado") String certificado,
-            @RequestParam("inicio") Date inicio,
-            @RequestParam("fin") Date fin,
-            @RequestParam("tipo") String tipo
-    ) {
+            @RequestParam("inicio") String inicio,
+            @RequestParam("fin") String fin
+    ) throws ParseException {
         BeanVehiculoSoat objBeanVehiculoSoat = new BeanVehiculoSoat();
         objBeanVehiculoSoat.setCodigo(codigo);
-        objBeanVehiculoSoat.setVehiculo(vehiculo);
-        objBeanVehiculoSoat.setSoat(soat);
-        objBeanVehiculoSoat.setCertificado(certificado);
-        objBeanVehiculoSoat.setInicio(inicio);
-        objBeanVehiculoSoat.setFin(fin);
+        objBeanVehiculoSoat.setVehiculo("" + vehiculo);
+        objBeanVehiculoSoat.setAseguradora(aseguradora);
         objBeanVehiculoSoat.setTipo(tipo);
+        objBeanVehiculoSoat.setCertificado(certificado);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        sdf.setLenient(false); //No Complaciente en Fecha
+        java.util.Date fechaInicio = sdf.parse(Utiles.checkFecha(inicio));
+        java.util.Date fechaFin = sdf.parse(Utiles.checkFecha(fin));
+        objBeanVehiculoSoat.setInicio(new java.sql.Date(fechaInicio.getTime()));
+        objBeanVehiculoSoat.setFin(new java.sql.Date(fechaFin.getTime()));
         return "" + vehiculoService.guardarVehiculoSoat(objBeanVehiculoSoat, Utiles.getUsuario(), mode);
     }
 }

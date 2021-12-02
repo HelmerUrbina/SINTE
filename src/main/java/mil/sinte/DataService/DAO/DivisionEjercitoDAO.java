@@ -16,12 +16,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 public interface DivisionEjercitoDAO extends JpaRepository<BeanDivisionEjercito, Integer> {
 
-    @Query(nativeQuery = true, value = "SELECT "
-            + "a.NDIVISION_EJERCITO_CODIGO, a.VDIVISION_EJERCITO_DESCRIPCION, "
-            + "a.VDIVISION_EJERCITO_ABREVIATURA , "
-            + "UTIL.FUN_ESTADO_DESCRIPCION(a.CESTADO_CODIGO) CESTADO_CODIGO "
-            + "FROM SINTE_DIVISION_EJERCITO a "
-            + "ORDER BY a.NDIVISION_EJERCITO_CODIGO")
+    @Query(nativeQuery = true, value = "SELECT NDIVISION_EJERCITO_CODIGO, "
+            + "VDIVISION_EJERCITO_DESCRIPCION, VDIVISION_EJERCITO_ABREVIATURA, "
+            + "UTIL.FUN_ESTADO_DESCRIPCION(CESTADO_CODIGO) CESTADO_CODIGO "
+            + "FROM SINTE_DIVISION_EJERCITO "
+            + "ORDER BY NDIVISION_EJERCITO_CODIGO")
     @Override
     List<BeanDivisionEjercito> findAll();
 

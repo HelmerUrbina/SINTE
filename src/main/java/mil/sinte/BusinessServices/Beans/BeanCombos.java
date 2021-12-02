@@ -16,6 +16,8 @@ import lombok.Data;
 @Data
 public class BeanCombos implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     @Id
     @Column(name = "CODIGO", nullable = false)
     private String codigo;

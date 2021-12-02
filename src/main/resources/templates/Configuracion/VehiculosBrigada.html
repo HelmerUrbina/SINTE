@@ -1,25 +1,33 @@
 <script>
     var codigo = null;
-    var descVehiculo = null;
-    var codigo2 = null;
-    var descDependencia = null;
-    var fechaModal = null;
     var mode = null;
     var msg = "";
     $(document).ready(function () {
         var theme = getTheme();
         $("#div_Titulo").jqxExpander({theme: theme, width: '100%'});
-        $("#cbo_Periodo").jqxComboBox({theme: theme, autoOpen: true, promptText: "Seleccione", width: 150, dropDownWidth: 150, height: 20});
-        $("#cbo_Brigada").jqxComboBox({theme: theme, autoOpen: true, promptText: "Seleccione", width: 300, dropDownWidth: 350, height: 20});
+        $("#cbo_Periodo").jqxComboBox({theme: theme, autoOpen: true, promptText: "Seleccione", width: 150, dropDownWidth: 200, height: 25});
+        $("#cbo_Brigada").jqxComboBox({theme: theme, autoOpen: true, promptText: "Seleccione", width: 300, dropDownWidth: 400, height: 25});
         var fecha = new Date();
         $("#cbo_Periodo").jqxComboBox('selectItem', fecha.getFullYear());
+        $('#cbo_Periodo').on('change', function () {
+            fn_CargarBusqueda();
+        });
         $('#cbo_Brigada').on('change', function () {
             fn_CargarBusqueda();
         });
+        //DEFINIMOS LOS ESTILOS DE LAS GRILLAS
+        var cellclass = function (row, datafield, value, rowdata) {
+            if (datafield === "periodo") {
+                return "RowBlue";
+            }
+            if (datafield === "brigada") {
+                return "RowBold";
+            }
+        };
         //DEFINIMOS LOS CAMPOS Y DATOS DE LA GRILLA
         $("#div_GrillaPrincipal").jqxGrid({
             width: '99.8%',
-            height: ($(window).height() - 95),
+            height: ($(window).height() - 90),
             autoheight: false,
             autorowheight: false,
             altrows: true,
@@ -34,8 +42,8 @@
             rendertoolbar: function (toolbar) {
                 // ADICIONAMOS BOTONES A LA BARRA DE ESTADOS
                 var container = $("<div style='overflow: hidden; position: relative; margin: 1px;'></div>");
-                var ButtonNuevo = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='/images/Botones/nuevo42.gif' th:src='@{/images/Botones/nuevo42.gif' width=18 height=18 /><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
-                var ButtonExportar = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='/images/Botones/pauf42.gif' th:src='@{/images/Botones/pauf42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
+                var ButtonNuevo = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='images/Botones/nuevo42.gif' th:src='@{images/Botones/nuevo42.gif' width=18 height=18 /><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
+                var ButtonExportar = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='images/Botones/pauf42.gif' th:src='@{images/Botones/pauf42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
                 container.append(ButtonNuevo);
                 container.append(ButtonExportar);
                 toolbar.append(container);
@@ -47,11 +55,11 @@
                 ButtonNuevo.click(function (event) {
                     mode = 'I';
                     codigo = '0';
-                    $("#cbo_vehiculo").jqxDropDownList('clear');
-                    fn_cargarComboAjax("#cbo_vehiculo", {mode: 'vehiculosByPeriodo', codigo: $('#cbo_Periodo').val()});
-                    $("#cbo_vehiculo").jqxDropDownList('setContent', 'Seleccione');
-                    $("#cbo_dependencia").jqxDropDownList('setContent', 'Seleccione');
-                    $("#cbo_vehiculo").jqxDropDownList({disabled: false});
+                    fn_cargarComboAjax("#cbo_Vehiculo", {mode: 'vehiculosByPeriodo', codigo: $('#cbo_Periodo').val()});
+                    $("#cbo_Vehiculo").jqxDropDownList('setContent', 'Seleccione');
+                    $("#cbo_Dependencia").jqxDropDownList('setContent', 'Seleccione');
+                    $("#cbo_Vehiculo").jqxDropDownList({disabled: false});
+                    $('#div_Fecha').jqxDateTimeInput('setDate', new Date());
                     $('#div_VentanaPrincipal').jqxWindow({isModal: true, modalOpacity: 0.8});
                     $('#div_VentanaPrincipal').jqxWindow('open');
                 });
@@ -61,14 +69,14 @@
                 });
             },
             columns: [
-                {text: 'VEHICULO', dataField: 'vehiculo', width: '25%', align: 'center', cellsAlign: 'center'},
-                {text: 'DEPENDENCIA', dataField: 'dependencia', width: '25%', align: 'center', cellsAlign: 'center'},
-                {text: 'FECHA', dataField: 'fecha', width: '25%', align: 'center', cellsAlign: 'center'},
-                {text: 'ESTADO', dataField: 'estado', filtertype: 'list', width: '25%', align: 'center', cellsAlign: 'center'}
+                {text: 'VEHÍCULO', dataField: 'periodo', width: '20%', align: 'center', cellsAlign: 'center', cellclassname: cellclass},
+                {text: 'DEPENDENCIA', dataField: 'brigada', filtertype: 'checkedlist', width: '45%', align: 'center', cellsAlign: 'center', cellclassname: cellclass},
+                {text: 'FECH. INICIO', datafield: 'fecha', filtertype: 'date', width: '15%', align: 'center', cellsAlign: 'center', cellsformat: 'dd/MM/yyyy'},
+                {text: 'ESTADO', dataField: 'estado', filtertype: 'checkedlist', width: '20%', align: 'center', cellsAlign: 'center'}
             ]
         });
         // DEFINIMOS EL MENU CONTEXTUAL
-        var contextMenu = $("#div_ContextMenu").jqxMenu({width: 200, height: 87, autoOpenPopup: false, mode: 'popup'});
+        var contextMenu = $("#div_ContextMenu").jqxMenu({width: 200, height: 88, autoOpenPopup: false, mode: 'popup'});
         $("#div_GrillaPrincipal").on('contextmenu', function () {
             return false;
         });
@@ -98,16 +106,13 @@
             } else {
                 if ($.trim($(opcion).text()) === "Editar") {
                     mode = 'U';
-                    $("#cbo_vehiculo").jqxDropDownList('setContent', descVehiculo);
-                    $("#cbo_vehiculo").jqxDropDownList({disabled: true});
-                    $("#cbo_dependencia").jqxDropDownList('selectItem', codigo2);
-                    $('#txt_fecha').jqxDateTimeInput('setDate', new Date(fechaModal));
+                    $("#cbo_Vehiculo").jqxDropDownList({disabled: true});
                     $('#div_VentanaPrincipal').jqxWindow({isModal: true});
                     $('#div_VentanaPrincipal').jqxWindow('open');
                 } else if ($.trim($(opcion).text()) === "Activar") {
                     $.confirm({
                         title: 'AVISO DEL SISTEMA',
-                        content: 'Desea Activar esta asignación de vehiculo!',
+                        content: 'Desea Activar esta asignación del Vehículo!',
                         theme: 'material',
                         animation: 'zoom',
                         closeAnimation: 'zoom',
@@ -130,7 +135,7 @@
                 } else if ($.trim($(opcion).text()) === "Desactivar") {
                     $.confirm({
                         title: 'AVISO DEL SISTEMA',
-                        content: 'Desea Desactivar esta asignación de vehiculo!',
+                        content: 'Desea Desactivar esta asignación del Vehículo!',
                         theme: 'material',
                         animation: 'zoom',
                         closeAnimation: 'zoom',
@@ -167,13 +172,11 @@
         $("#div_GrillaPrincipal").on('rowselect', function (event) {
             var args = event.args;
             var row = $("#div_GrillaPrincipal").jqxGrid('getrowdata', args.rowindex);
-            codigo = row['brigada'];
-            codigo2 = row['periodo'];
-            fechaModal = row['fecha'];
-            descVehiculo = row['vehiculo'];
-            descDependencia = row['dependencia'];
-            $("#cbo_vehiculo").jqxDropDownList('clear');
-            fn_cargarComboAjax("#cbo_vehiculo", {mode: 'vehiculosByPeriodo', codigo: $('#cbo_Periodo').val()});
+            codigo = row['vehiculo'];
+            $("#cbo_Vehiculo").jqxDropDownList('clear');
+            $("#cbo_Vehiculo").jqxDropDownList('setContent', row['periodo']);
+            $("#cbo_Dependencia").jqxDropDownList('selectItem', row['dependencia']);
+            $('#div_Fecha').jqxDateTimeInput('setDate', new Date(row['fecha']));
         });
         //CREA LOS ELEMENTOS DE LAS VENTANAS
         var customButtonsDemo = (function () {
@@ -181,7 +184,7 @@
                 //INICIA LOS VALORES DE LA VENTANA
                 var posicionX, posicionY;
                 var ancho = 500;
-                var alto = 150;
+                var alto = 165;
                 posicionX = ($(window).width() / 2) - (ancho / 2);
                 posicionY = ($(window).height() / 2) - (alto / 2);
                 $('#div_VentanaPrincipal').jqxWindow({
@@ -189,9 +192,9 @@
                     width: ancho, height: alto, resizable: false,
                     cancelButton: $('#btn_Cancelar'),
                     initContent: function () {
-                        $("#cbo_vehiculo").jqxDropDownList({width: 300, height: 20, dropDownWidth: 300, promptText: "Seleccione"});
-                        $("#cbo_dependencia").jqxDropDownList({width: 300, height: 20, dropDownWidth: 300, promptText: "Seleccione"});
-                        $("#txt_fecha").jqxDateTimeInput({culture: 'es-PE', animationType: 'fade', width: '300px', height: '25px'});
+                        $("#cbo_Vehiculo").jqxDropDownList({width: 300, height: 25, dropDownWidth: 400, promptText: "Seleccione"});
+                        $("#cbo_Dependencia").jqxDropDownList({width: 300, height: 25, dropDownWidth: 400, promptText: "Seleccione"});
+                        $("#div_Fecha").jqxDateTimeInput({culture: 'es-PE', animationType: 'fade', width: 120, height: 25});
                         $('#btn_Cancelar').jqxButton({width: '65px', height: 30});
                         $('#btn_Guardar').jqxButton({width: '65px', height: 30});
                         $('#btn_Guardar').on('click', function () {
@@ -215,40 +218,36 @@
         var source = {
             dataType: "json",
             datafields: [
-                {name: 'brigada', type: "String"},
-                {name: 'periodo', type: "String"},
-                {name: 'vehiculo', type: "String"},
-                {name: 'dependencia', type: "String"},
-                {name: 'fecha', type: "String"},
-                {name: 'estado', type: "String"}
+                {name: 'brigada', type: "string"},
+                {name: 'periodo', type: "string"},
+                {name: 'vehiculo', type: "string"},
+                {name: 'dependencia', type: "string"},
+                {name: 'fecha', type: "date"},
+                {name: 'estado', type: "string"}
             ],
             id: 'codigo',
-            url: "../VehiculosBrigadaDetalle",
+            url: "VehiculosBrigadaDetalle",
             data: {mode: 'G', periodo: $('#cbo_Periodo').val(), brigada: $('#cbo_Brigada').val()}
         };
         var dataAdapter = new $.jqx.dataAdapter(source);
         $("#div_GrillaPrincipal").jqxGrid({source: dataAdapter});
-        fn_cargarComboAjax("#cbo_dependencia", {mode: 'dependenciaByBrigada', codigo: $('#cbo_Brigada').val()});
+        $('#div_GrillaPrincipal').jqxGrid('clearselection');
+        fn_cargarComboAjax("#cbo_Dependencia", {mode: 'dependenciaByBrigada', codigo: $('#cbo_Brigada').val()});
     }
-
     //FUNCION PARA GRABAR LOS DATOS DE LA VENTANA PRINCIPAL
     function fn_GrabarDatos() {
         var periodo = $("#cbo_Periodo").val();
         var brigada = $("#cbo_Brigada").val();
-        var vehiculo = codigo;
-        var dependencia = $("#cbo_dependencia").val();
+        var dependencia = $("#cbo_Dependencia").val();
         if (mode === 'I') {
-            vehiculo = $("#cbo_vehiculo").val();
+            codigo = $("#cbo_Vehiculo").val();
         }
-        var fecha = $("#txt_fecha").val();
-        var json = {mode: mode, periodo: periodo, brigada: brigada, dependencia: dependencia,
-            vehiculo: vehiculo, fecha: fecha};
-        console.log(json);
+        var fecha = $("#div_Fecha").val();
         $.ajax({
             type: "GET",
-            url: "../IduVehiculosBrigada",
+            url: "IduVehiculosBrigada",
             data: {mode: mode, periodo: periodo, brigada: brigada, dependencia: dependencia,
-                vehiculo: vehiculo, fecha: fecha},
+                vehiculo: codigo, fecha: fecha},
             success: function (data) {
                 msg = data;
                 if (msg === "GUARDO") {
@@ -284,7 +283,7 @@
     }
 </script>
 <div id='div_Titulo' style="border: none;">
-    <div class="jqx-hideborder">LISTADOS DE VERHICULOS POR BRIGADA</div>
+    <div class="jqx-hideborder">LISTADOS DE VEHÍCULOS POR BRIGADA</div>
     <div>
         <div id="div_Cabecera">
             <table class="navy">
@@ -308,8 +307,8 @@
                                 </span>
                             </select>
                         </td>
-                        <td><a href="javascript: fn_CargarBusqueda();"><img src="../images/Botones/refresh42.gif" alt="Buscar Datos" name="imgrefresh" width="30" height="28" border="0" id="imgrefresh"></a></td>
-                        <td><a href="javascript: fn_MenuPrincipal();"><img src="../images/Botones/exit42.gif" alt="Salir de pantalla" name="imgexit" width="30" height="28"  border="0" id="imgexit" /></a></td>
+                        <td><a href="javascript: fn_CargarBusqueda();"><img src="images/Botones/refresh42.gif" alt="Buscar Datos" name="imgrefresh" width="30" height="28" border="0" id="imgrefresh"></a></td>
+                        <td><a href="javascript: fn_MenuPrincipal();"><img src="images/Botones/exit42.gif" alt="Salir de pantalla" name="imgexit" width="30" height="28"  border="0" id="imgexit" /></a></td>
                     </tr>
                 </tbody>
             </table>
@@ -319,15 +318,15 @@
 </div>
 <div id="div_VentanaPrincipal" style="display: none">
     <div>
-        <span style="float: left">REGISTRO DE VEHICULOS BRIGADA</span>
+        <span style="float: left">REGISTRO DE VEHÍCULOS POR BRIGADA</span>
     </div>
     <div style="overflow: hidden">
         <form id="frm_vehiculos_brigada" name="frm_vehiculos_brigada" method="post" >
             <table width="100%" border="0" cellspacing="0" cellpadding="0"> 
                 <tr>
-                    <td class="inputlabel">Vehiculo : </td>
+                    <td class="inputlabel">Vehículo : </td>
                     <td>
-                        <select id="cbo_vehiculo" name="cbo_vehiculo">
+                        <select id="cbo_Vehiculo" name="cbo_Vehiculo">
                             <option value="0">Seleccione</option>
                         </select>
                     </td>
@@ -335,17 +334,17 @@
                 <tr>
                     <td class="inputlabel">Dependencia : </td>
                     <td>
-                        <select id="cbo_dependencia" name="cbo_dependencia">
+                        <select id="cbo_Dependencia" name="cbo_Dependencia">
                             <option value="0">Seleccione</option>
                         </select>
                     </td>
                 </tr>
                 <tr>
                     <td class="inputlabel">Fecha : </td>
-                    <td><div id="txt_fecha"></div></td>
+                    <td><div id="div_Fecha"></div></td>
                 </tr>
                 <tr>
-                    <td class="Summit" colspan="4">
+                    <td class="Summit" colspan="2">
                         <div>
                             <input type="button" id="btn_Guardar"  value="Guardar" style="margin-right: 20px"/>
                             <input type="button" id="btn_Cancelar" value="Cancelar" style="margin-right: 20px"/>

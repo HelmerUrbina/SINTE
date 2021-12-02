@@ -33,6 +33,9 @@ public class BeanProgramacionClaseIIITechos implements Serializable {
 
     @Column(name = "NPROGRAMACION_CLASE_III_IMPORT")
     private Double importe;
+    
+    @Column(name = "NPROGRAMACION_CLASE_III_CANTID")
+    private Double cantidad;
 
     @Column(name = "CESTADO_CODIGO")
     private String estado;

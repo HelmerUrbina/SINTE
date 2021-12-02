@@ -37,22 +37,22 @@ public class BeanVehiculos implements Serializable {
     @Column(name = "VEHICULO_CLASE", nullable = false)
     private String clase;
 
-    @Column(name = "MARCA", nullable = false)
+    @Column(name = "MARCA")
     private String marca;
 
-    @Column(name = "MODELO", nullable = false)
+    @Column(name = "MODELO")
     private String modelo;
 
-    @Column(name = "CVEHICULO_TRANSMISION", nullable = false)
+    @Column(name = "CVEHICULO_TRANSMISION")
     private String transmision;
 
-    @Column(name = "CVEHICULO_FABRICACION", nullable = false)
+    @Column(name = "CVEHICULO_FABRICACION")
     private String fabricacion;
 
-    @Column(name = "NVEHICULO_PUERTAS", nullable = false)
+    @Column(name = "NVEHICULO_PUERTAS")
     private Integer puertas;
 
-    @Column(name = "COLOR", nullable = false)
+    @Column(name = "COLOR")
     private String color;
 
     @Column(name = "CESTADO_CODIGO")
