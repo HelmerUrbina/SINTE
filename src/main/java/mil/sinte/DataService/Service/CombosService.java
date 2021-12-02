@@ -40,7 +40,9 @@ public interface CombosService {
 
     public List<BeanCombos> getRol();
 
-    public List<BeanCombos> getVehiculosByBrigadaAndPeriodo(String periodo, Integer brigada);
+    public List<BeanCombos> getVehiculosByPeriodoAndBrigadas(String periodo, Integer brigada);
+
+    public List<BeanCombos> getVehiculosByPeriodoAndBrigadasAndDependencia(String periodo, Integer brigada, Integer depedencia);
 
     public List<BeanCombos> getDependenciaByVehiAndBrigAndPeri(String periodo, String brigada, String vehiculo);
 
@@ -62,11 +64,11 @@ public interface CombosService {
     public List<BeanCombos> getTipoAsignacionByPeriodo(String periodo);
 
     public List<BeanCombos> getBrigadasByPeriodoTipoAsignacion(String periodo, Integer TipoAsignacion);
-    
+
     public List<BeanCombos> getMeses();
-    
+
     public List<BeanCombos> getTipoCombustibleByAsignacionCombustible(String anio, Integer brigada, String mes, Integer tipoAsignacion);
-    
-    public List<BeanCombos> getVehiculoByAsignacionCombustible(String anio, Integer brigada, String mes, Integer tipoAsignacion, Integer tipoCombustible,Integer dependencia);
-    
+
+    public List<BeanCombos> getVehiculoByAsignacionCombustible(String anio, Integer brigada, String mes, Integer tipoAsignacion, Integer tipoCombustible, Integer dependencia);
+
 }
