@@ -701,19 +701,16 @@
         });
     });
 
-    function fn_cargarTipoCombustible() {
-
-    }
-
     //FUNCION PARA CARGAR VENTANA DETALLE TIPO COMBUSTIBLE
     function fn_cargarTipoCombustible() {
         flgSelect1 = 0;
         $('#div_tipoCombustibleGrilla').jqxGrid('clear');
+        $("#cbo_TipoCombustible").jqxDropDownList('clear');
         fn_RefrescarTipoCombustible();
         fn_cargarComboAjax("#cbo_TipoCombustible", {mode: 'tipoCombustible'});
         $('#div_VentanaTipoCombustible').jqxWindow({isModal: true});
         $('#div_VentanaTipoCombustible').jqxWindow('open');
-        $("#cbo_TipoCombustible").jqxDropDownList('clear');
+        
     }
 
     //FUNCION PARA CARGAR VENTANA DETALLE ASEGURADORAS
