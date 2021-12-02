@@ -151,4 +151,19 @@ public class CombosServiceImpl implements CombosService {
         return combosDAO.getDependenciaByBrigada(Integer.parseInt(brigada));
     }
 
+    @Override
+    public List<BeanCombos> getMeses() {
+        return combosDAO.getMeses();
+    }
+
+    @Override
+    public List<BeanCombos> getTipoCombustibleByAsignacionCombustible(String anio, Integer brigada, String mes, Integer tipoAsignacion) {
+        return combosDAO.getTipoCombustibleByAsignacionCombustible(anio, brigada, mes, tipoAsignacion);
+    }
+
+    @Override
+    public List<BeanCombos> getVehiculoByAsignacionCombustible(String anio, Integer brigada, String mes, Integer tipoAsignacion, Integer tipoCombustible, Integer dependencia) {
+        return combosDAO.getVehiculoByAsignacionCombustible(anio, brigada, mes, tipoAsignacion, tipoCombustible,dependencia);
+    }
+
 }

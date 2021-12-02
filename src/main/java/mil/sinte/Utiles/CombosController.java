@@ -22,12 +22,14 @@ public class CombosController {
     @RequestMapping(value = "/CombosAjax")
     @ResponseBody
 
-    public String getCombos(String mode, String codigo, String codigo2, Integer codigo3) {
+    public String getCombos(String mode, String codigo, String codigo2, Integer codigo3, String codigo4, String codigo5, String codigo6) {
         switch (mode) {
             case "periodos":
                 return new Gson().toJson(combosService.getPeriodos());
             case "tipoCombustible":
                 return new Gson().toJson(combosService.getTipoCombustible());
+            case "tipoCombustibleByAsignacionCombustible":
+                return new Gson().toJson(combosService.getTipoCombustibleByAsignacionCombustible(codigo, Integer.parseInt(codigo2), String.valueOf(codigo3), Integer.parseInt(codigo4)));
             case "divisionEjercito":
                 return new Gson().toJson(combosService.getDivisionEjercito());
             case "departamentos":
@@ -72,6 +74,10 @@ public class CombosController {
                 return new Gson().toJson(combosService.getDependenciaByBrigada(codigo));
             case "tipoCombustibleByVehiculo":
                 return new Gson().toJson(combosService.getTipoCombustibleByVehiculo(codigo3));
+            case "meses":
+                return new Gson().toJson(combosService.getMeses());    
+            case "vehiculosByAsignacionCombustible":
+                return new Gson().toJson(combosService.getVehiculoByAsignacionCombustible(codigo, Integer.parseInt(codigo2), String.valueOf(codigo3), Integer.parseInt(codigo4), Integer.parseInt(codigo5),Integer.parseInt(codigo6)));        
             default:
                 return "ERROR";
         }

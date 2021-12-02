@@ -135,7 +135,7 @@ public interface CombosDAO extends CrudRepository<BeanCombos, String> {
     @Query(nativeQuery = true, value = "SELECT "
             + "NDEPENDENCIA_CODIGO CODIGO, VDEPENDENCIA_ABREVIATURA DESCRIPCION "
             + "FROM SINTE_DEPENDENCIAS WHERE "
-            + "NBRIGADA_CODIGO=?1 "
+            + "NBRIGADA_CODIGO=?1 AND CESTADO_CODIGO = 'AC' "
             + "ORDER BY CODIGO")
     List<BeanCombos> getDependenciaByBrigada(Integer brigada);
 
@@ -219,4 +219,43 @@ public interface CombosDAO extends CrudRepository<BeanCombos, String> {
             + "NVEHICULO_CODIGO=?1 "
             + "ORDER BY CODIGO")
     List<BeanCombos> getTipoCombustibleByVehiculo(Integer vehiculo);
+    
+    @Query(nativeQuery = true, value =  "SELECT CMES_CODIGO CODIGO,\n" +
+                                        "       VMES_DESCRIPCION DESCRIPCION\n" +
+                                        "  FROM SINTE_MESES\n" +
+                                        " WHERE CESTADO_CODIGO = 'AC'\n" +
+                                        " ORDER BY TO_NUMBER(CODIGO)")
+    List<BeanCombos> getMeses();
+    
+    @Query(nativeQuery = true, value =  " SELECT NTIPO_COMBUSTIBLE_CODIGO CODIGO,\n" +
+                                        "        VTIPO_COMBUSTIBLE_DESCRIPCION DESCRIPCION\n" +
+                                        "   FROM SINTE_TIPO_COMBUSTIBLE  \n" +
+                                        "  WHERE NTIPO_COMBUSTIBLE_CODIGO NOT IN (SELECT NTIPO_COMBUSTIBLE_CODIGO\n" +
+                                        "                                           FROM SINTE_ASIGNACION_COMBUSTIBLE\n" +
+                                        "                                          WHERE CPERIODO_CODIGO =?1\n" +
+                                        "                                            AND NBRIGADA_CODIGO =?2\n" +
+                                        "                                            AND CMES_CODIGO =?3\n" +
+                                        "                                            AND NTIPO_ASIGNACION_CODIGO =?4)\n" +
+                                        "  ORDER BY CODIGO")
+    List<BeanCombos> getTipoCombustibleByAsignacionCombustible(String anio, Integer brigada, String mes, Integer tipoAsignacion);
+    
+    @Query(nativeQuery = true, value =  "SELECT NVEHICULO_CODIGO CODIGO,\n" +
+                                        "       UTIL.FUN_VEHICULO(NVEHICULO_CODIGO) DESCRIPCION\n" +
+                                        "  FROM SINTE_VEHICULOS_BRIGADAS\n" +
+                                        " WHERE CPERIODO_CODIGO =?1\n" +
+                                        "   AND NBRIGADA_CODIGO =?2\n" +
+                                        "   AND NDEPENDENCIA_CODIGO =?6\n" +
+                                        "   AND NVEHICULO_CODIGO NOT IN (SELECT NVEHICULO_CODIGO\n" +
+                                        "                                  FROM SINTE_ASIGNACION_COMBUSTIBLE_D\n" +
+                                        "                                 WHERE CPERIODO_CODIGO =?1\n" +
+                                        "                                   AND NBRIGADA_CODIGO =?2\n" +
+                                        "                                   AND CMES_CODIGO =?3\n" +
+                                        "                                   AND NTIPO_ASIGNACION_CODIGO =?4\n" +
+                                        "                                   AND NTIPO_COMBUSTIBLE_CODIGO =?5\n" +
+                                        "                                   AND NDEPENDENCIA_CODIGO =?6)\n" +
+                                        "   AND NVEHICULO_CODIGO IN (SELECT NVEHICULO_CODIGO  \n" +
+                                        "                                  FROM SINTE_VEHICULOS_TIPO_COMBUSTIB\n" +
+                                        "                                 WHERE NTIPO_COMBUSTIBLE_CODIGO =?5)" +
+                                        "  ORDER BY CODIGO")
+    List<BeanCombos> getVehiculoByAsignacionCombustible(String anio, Integer brigada, String mes, Integer tipoAsignacion, Integer tipoCombustible,Integer dependencia);
 }
