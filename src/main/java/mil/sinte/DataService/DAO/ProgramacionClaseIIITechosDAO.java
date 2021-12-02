@@ -20,11 +20,12 @@ public interface ProgramacionClaseIIITechosDAO extends JpaRepository<BeanProgram
             + "CPERIODO_CODIGO, NTIPO_ASIGNACION_CODIGO, NBRIGADA_CODIGO, "
             + "UTIL.FUN_BRIGADA_ABREVIATURA(NBRIGADA_CODIGO) AS VBRIGADA_ABREVIATURA, "
             + "NPROGRAMACION_CLASE_III_IMPORT, "
+            + "PK_SINTE.FUN_CNV_CANTIDAD(CPERIODO_CODIGO, NBRIGADA_CODIGO, NTIPO_ASIGNACION_CODIGO)  NPROGRAMACION_CLASE_III_CANTID, "
             + "UTIL.FUN_ESTADO_DESCRIPCION(CESTADO_CODIGO) CESTADO_CODIGO "
             + "FROM SINTE_PROG_CLASE_III_TECHOS WHERE "
             + "CPERIODO_CODIGO=?1 AND "
             + "NTIPO_ASIGNACION_CODIGO=?2 "
-            + "ORDER BY NTIPO_ASIGNACION_CODIGO")
+            + "ORDER BY VBRIGADA_ABREVIATURA")
     List<BeanProgramacionClaseIIITechos> findByPeriodoTipoAsignacion(String periodo, String tipoAsignacion);
 
     @Transactional

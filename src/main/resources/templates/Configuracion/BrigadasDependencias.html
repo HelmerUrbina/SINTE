@@ -8,6 +8,15 @@
     $(document).ready(function () {
         var theme = getTheme();
         $("#div_Titulo").jqxExpander({theme: theme, width: '100%'});
+        //DEFINIMOS LOS ESTILOS DE LAS GRILLAS
+        var cellclass = function (row, datafield, value, rowdata) {
+            if (datafield === "brigadaCodigo" || datafield === 'tipoDependencia') {
+                return "RowBold";
+            }
+            if (datafield === "divisionEjercito") {
+                return "RowBlue";
+            }
+        };
         //DEFINIMOS LOS CAMPOS Y DATOS DE LA GRILLA PRINCIPAL
         $("#div_GrillaPrincipal").jqxGrid({
             width: '99.8%',
@@ -26,10 +35,10 @@
             rendertoolbar: function (toolbar) {
                 // ADICIONAMOS BOTONES A LA BARRA DE ESTADOS
                 var container = $("<div style='overflow: hidden; position: relative; margin: 1px;'></div>");
-                var ButtonNuevo = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='/images/Botones/nuevo42.gif' th:src='@{/images/Botones/nuevo42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
-                var ButtonExportar = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='/images/Botones/pauf42.gif' th:src='@{/images/Botones/pauf42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
-                var ButtonRecargar = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='/images/Botones/refresh42.gif' th:src='@{/images/Botones/refresh42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
-                var ButtonSalir = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='/images/Botones/exit42.gif' th:src='@{/images/Botones/exit42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
+                var ButtonNuevo = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='images/Botones/nuevo42.gif' th:src='@{images/Botones/nuevo42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
+                var ButtonExportar = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='images/Botones/pauf42.gif' th:src='@{images/Botones/pauf42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
+                var ButtonRecargar = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='images/Botones/refresh42.gif' th:src='@{images/Botones/refresh42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
+                var ButtonSalir = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='images/Botones/exit42.gif' th:src='@{images/Botones/exit42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
                 container.append(ButtonNuevo);
                 container.append(ButtonExportar);
                 container.append(ButtonRecargar);
@@ -71,18 +80,18 @@
                 });
             },
             columns: [
-                {text: 'CÓDIGO', dataField: 'brigadaCodigo', width: '5%', align: 'center', cellsAlign: 'center'},
+                {text: 'CÓDIGO', dataField: 'brigadaCodigo', width: '5%', align: 'center', cellsAlign: 'center', cellclassname: cellclass},
                 {text: 'DESCRIPCIÓN', dataField: 'descripcion', width: '25%', align: 'center', cellsAlign: 'left'},
-                {text: 'ABREVIATURA', dataField: 'abreviatura', width: '20%', align: 'center', cellsAlign: 'left'},
-                {text: 'DIVISIÓN EJERCITO', dataField: 'divisionEjercito', filtertype: 'list', width: '12%', align: 'center', cellsAlign: 'center'},
-                {text: 'DISTRITO', dataField: "ubigeo", width: '10%', align: 'center', cellsAlign: 'center'},
-                {text: 'PROVINCIA', dataField: 'provincia', width: '10%', align: 'center', cellsAlign: 'center'},
-                {text: 'DEPARTAMENTO', dataField: 'departamento', filtertype: 'list', width: '10%', align: 'center', cellsAlign: 'center'},
-                {text: 'ESTADO', dataField: 'estado', filtertype: 'list', width: '8%', align: 'center', cellsAlign: 'center'}
+                {text: 'ABREVIATURA', dataField: 'abreviatura', width: '20%', align: 'center', cellsAlign: 'center'},
+                {text: 'DIVISIÓN EJERCITO', dataField: 'divisionEjercito', filtertype: 'checkedlist', width: '12%', align: 'center', cellsAlign: 'center', cellclassname: cellclass},
+                {text: 'DISTRITO', dataField: "ubigeo", filtertype: 'checkedlist', width: '10%', align: 'center', cellsAlign: 'center'},
+                {text: 'PROVINCIA', dataField: 'provincia', filtertype: 'checkedlist', width: '10%', align: 'center', cellsAlign: 'center'},
+                {text: 'DEPARTAMENTO', dataField: 'departamento', filtertype: 'checkedlist', width: '10%', align: 'center', cellsAlign: 'center'},
+                {text: 'ESTADO', dataField: 'estado', filtertype: 'checkedlist', width: '8%', align: 'center', cellsAlign: 'center'}
             ]
         });
         // DEFINIMOS EL MENU CONTEXTUAL
-        var contextMenu = $("#div_ContextMenu").jqxMenu({width: 200, height: 115, autoOpenPopup: false, mode: 'popup'});
+        var contextMenu = $("#div_ContextMenu").jqxMenu({width: 200, height: 118, autoOpenPopup: false, mode: 'popup'});
         $("#div_GrillaPrincipal").on('contextmenu', function () {
             return false;
         });
@@ -197,9 +206,9 @@
             rendertoolbar: function (toolbar) {
                 // appends buttons to the status bar.
                 var containerRegistro = $("<div style='overflow: hidden; position: relative; margin: 1px;'></div>");
-                var ButtonNuevoRegistro = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='/images/Botones/nuevo42.gif' th:src='@{/images/Botones/nuevo42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'></span></div>");
-                var ButtonEditarRegistro = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='/images/Botones/update42.gif' th:src='@{/images/Botones/update42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'></span></div>");
-                var ButtonEliminaRegistro = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='/images/Botones/delete42.gif' th:src='@{/images/Botones/delete42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'></span></div>");
+                var ButtonNuevoRegistro = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='images/Botones/nuevo42.gif' th:src='@{images/Botones/nuevo42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'></span></div>");
+                var ButtonEditarRegistro = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='images/Botones/update42.gif' th:src='@{images/Botones/update42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'></span></div>");
+                var ButtonEliminaRegistro = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='images/Botones/delete42.gif' th:src='@{images/Botones/delete42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'></span></div>");
                 containerRegistro.append(ButtonNuevoRegistro);
                 containerRegistro.append(ButtonEditarRegistro);
                 containerRegistro.append(ButtonEliminaRegistro);
@@ -277,10 +286,10 @@
                 });
             },
             columns: [
-                {text: 'TIPO', datafield: 'tipoDependencia', filtertype: 'list', width: '20%', align: 'center', cellsAlign: 'center'},
+                {text: 'TIPO', datafield: 'tipoDependencia', width: '15%', align: 'center', cellsAlign: 'center', cellclassname: cellclass},
                 {text: 'ABREVIATURA', datafield: 'abreviatura', width: '30%', align: 'center', cellsAlign: 'left'},
-                {text: 'DESCRIPCIÓN', dataField: 'descripcion', width: '40%', align: 'center', cellsAlign: 'left'},
-                {text: 'ESTADO', datafield: 'estado', filtertype: 'list', width: '10%', align: 'center', cellsAlign: 'center'}
+                {text: 'DESCRIPCIÓN', dataField: 'descripcion', width: '45%', align: 'center', cellsAlign: 'left'},
+                {text: 'ESTADO', datafield: 'estado', width: '10%', align: 'center', cellsAlign: 'center'}
             ]
         });
         $("#div_GrillaRegistro").on('rowselect', function (event) {
@@ -297,7 +306,7 @@
                 //INICIA LOS VALORES DE LA VENTANA
                 var posicionX, posicionY;
                 var ancho = 600;
-                var alto = 275;
+                var alto = 305;
                 posicionX = ($(window).width() / 2) - (ancho / 2);
                 posicionY = ($(window).height() / 2) - (alto / 2);
                 $('#div_VentanaPrincipal').jqxWindow({
@@ -305,22 +314,22 @@
                     width: ancho, height: alto, resizable: false,
                     cancelButton: $('#btn_Cancelar'),
                     initContent: function () {
-                        $("#txt_Codigo").jqxInput({placeHolder: 'CÓDIGO', width: 400, height: 20, minLength: 4, maxLength: 4});
-                        $("#txt_Abreviatura").jqxInput({placeHolder: 'ABREVIATURA', width: 400, height: 20, minLength: 2, maxLength: 50});
+                        $("#txt_Codigo").jqxInput({placeHolder: 'CÓDIGO', width: 200, height: 25, minLength: 4, maxLength: 4});
+                        $("#txt_Abreviatura").jqxInput({placeHolder: 'ABREVIATURA', width: 490, height: 25, minLength: 2, maxLength: 50});
                         $("#txt_Descripcion").jqxInput({placeHolder: "DESCRIPCIÓN", width: 490, height: 60, minLength: 2, maxLength: 200});
-                        $("#cbo_DivisionEjercito").jqxDropDownList({width: 250, height: 20, dropDownWidth: 300, promptText: "Seleccione"});
-                        $("#cbo_Departamento").jqxDropDownList({width: 200, height: 20, dropDownWidth: 350, promptText: "Seleccione"});
+                        $("#cbo_DivisionEjercito").jqxDropDownList({width: 250, height: 25, dropDownWidth: 400, promptText: "Seleccione"});
+                        $("#cbo_Departamento").jqxDropDownList({width: 200, height: 25, dropDownWidth: 400, promptText: "Seleccione"});
                         $('#cbo_Departamento').on('select', function (event) {
                             $("#cbo_Provincia").jqxDropDownList('clear');
                             $("#cbo_Ubigeo").jqxDropDownList('clear');
                             fn_cargarComboAjax("#cbo_Provincia", {mode: 'provincias', codigo: $("#cbo_Departamento").val()});
                         });
-                        $("#cbo_Provincia").jqxDropDownList({width: 250, height: 20, dropDownWidth: 350, promptText: "Seleccione"});
+                        $("#cbo_Provincia").jqxDropDownList({width: 250, height: 25, dropDownWidth: 400, promptText: "Seleccione"});
                         $('#cbo_Provincia').on('select', function (event) {
                             $("#cbo_Ubigeo").jqxDropDownList('clear');
                             fn_cargarComboAjax("#cbo_Ubigeo", {mode: 'ubigeo', codigo: $("#cbo_Departamento").val(), codigo2: $("#cbo_Provincia").val()});
                         });
-                        $("#cbo_Ubigeo").jqxDropDownList({width: 300, height: 20, dropDownWidth: 350, promptText: "Seleccione"});
+                        $("#cbo_Ubigeo").jqxDropDownList({width: 300, height: 25, dropDownWidth: 400, promptText: "Seleccione"});
                         $('#btn_Cancelar').jqxButton({width: '65px', height: 30});
                         $('#btn_Guardar').jqxButton({width: '65px', height: 30});
                         $('#btn_Guardar').on('click', function () {
@@ -343,7 +352,7 @@
                 });
                 //INICIA VALORES PARA LA VENTA SECUNDARIA
                 ancho = 800;
-                alto = 500;
+                alto = 505;
                 posicionX = ($(window).width() / 2) - (ancho / 2);
                 posicionY = ($(window).height() / 2) - (alto / 2);
                 $('#div_VentanaDetalle').jqxWindow({
@@ -351,13 +360,13 @@
                     width: ancho, height: alto, resizable: false,
                     cancelButton: $('#btn_Cerrar'),
                     initContent: function () {
-                        $("#txt_BrigadaDetalle").jqxInput({placeHolder: 'BRIGADA', width: 700, height: 20, disabled: true});
+                        $("#txt_BrigadaDetalle").jqxInput({placeHolder: 'BRIGADA', width: 700, height: 25, disabled: true});
                         $('#btn_Cerrar').jqxButton({width: '65px', height: 30});
                     }
                 });
                 //INICIA VALORES PARA LA VENTANA REGISTRO DETALLE
                 ancho = 550;
-                alto = 175;
+                alto = 185;
                 posicionX = ($(window).width() / 2) - (ancho / 2);
                 posicionY = ($(window).height() / 2) - (alto / 2);
                 $('#div_RegistroDetalle').jqxWindow({
@@ -365,13 +374,24 @@
                     width: ancho, height: alto, resizable: false,
                     cancelButton: $('#btn_CancelarRegistro'),
                     initContent: function () {
-                        $("#txt_DependenciaAbreviatura").jqxInput({placeHolder: 'ABREVIATURA', width: 450, height: 20, minLength: 2, maxLength: 50});
+                        $("#cbo_TipoDependencia").jqxDropDownList({width: 250, height: 25, dropDownWidth: 300, promptText: "Seleccione"});
+                        $("#txt_DependenciaAbreviatura").jqxInput({placeHolder: 'ABREVIATURA', width: 450, height: 25, minLength: 2, maxLength: 50});
                         $("#txt_DependenciaDescripcion").jqxInput({placeHolder: "DESCRIPCIÓN", width: 450, height: 40, minLength: 2, maxLength: 200});
-                        $("#cbo_TipoDependencia").jqxDropDownList({width: 250, height: 20, dropDownWidth: 300, promptText: "Seleccione"});
                         $('#btn_CancelarRegistro').jqxButton({width: '65px', height: 30});
                         $('#btn_GuardarRegistro').jqxButton({width: '65px', height: 30});
                         $('#btn_GuardarRegistro').on('click', function () {
-                            fn_GrabarDatosDetalle();
+                            $('#frm_Dependencia').jqxValidator('validate');
+                        });
+                        $('#frm_Dependencia').jqxValidator({
+                            rules: [
+                                {input: '#txt_DependenciaAbreviatura', message: 'Ingrese la Abreviatura de la Dependencia!', action: 'keyup, blur', rule: 'required'},
+                                {input: '#txt_DependenciaDescripcion', message: 'Ingrese la Descripción de la Dependencia!', action: 'keyup, blur', rule: 'required'}
+                            ]
+                        });
+                        $('#frm_Dependencia').jqxValidator({
+                            onSuccess: function () {
+                                fn_GrabarDatosDetalle();
+                            }
                         });
                     }
                 });
@@ -385,7 +405,6 @@
             customButtonsDemo.init();
             fn_Refrescar();
             fn_cargarComboAjax("#cbo_DivisionEjercito", {mode: 'divisionEjercito'});
-            $("#cbo_Departamento").jqxDropDownList('clear');
             fn_cargarComboAjax("#cbo_Departamento", {mode: 'departamentos'});
         });
     });
@@ -405,17 +424,18 @@
                 {name: 'estado', type: "string"}
             ],
             id: 'codigo',
-            url: "../BrigadasDetalle",
+            url: "BrigadasDetalle",
             data: {mode: 'G'}
         };
         var dataAdapter = new $.jqx.dataAdapter(source);
         $("#div_GrillaPrincipal").jqxGrid({source: dataAdapter});
+        $("#div_GrillaPrincipal").jqxGrid('clearselection');
     }
     //FUNCION PARA CARGAR VENTANA PARA EDITAR REGISTRO
     function fn_EditarRegistro() {
         $.ajax({
             type: "GET",
-            url: "../BrigadasDetalle",
+            url: "BrigadasDetalle",
             data: {mode: mode, codigo: codigo},
             success: function (data) {
                 var dato = JSON.parse(data);
@@ -468,7 +488,7 @@
         var ubigeo = $("#cbo_Ubigeo").val();
         $.ajax({
             type: "GET",
-            url: "../IduBrigada",
+            url: "IduBrigada",
             data: {mode: mode, codigo: codigo, brigadaCodigo: brigadaCodigo, divisionEjercito: divisionEjercito,
                 abreviatura: abreviatura, descripcion: descripcion, ubigeo: ubigeo},
             success: function (data) {
@@ -516,7 +536,7 @@
                 {name: 'estado', type: "string"}
             ],
             id: 'codigo',
-            url: "../DependenciaDetalle",
+            url: "DependenciaDetalle",
             data: {mode: 'G', brigada: codigo}
         };
         var dataDetalle = new $.jqx.dataAdapter(sourceDetalle);
@@ -537,7 +557,7 @@
         var descripcion = $("#txt_DependenciaDescripcion").val();
         $.ajax({
             type: "GET",
-            url: "../IduDependencia",
+            url: "IduDependencia",
             data: {mode: modeDetalle, codigo: codigoDetalle, brigada: codigo, tipoDependencia: tipoDependencia,
                 abreviatura: abreviatura, descripcion: descripcion},
             success: function (data) {
@@ -590,7 +610,7 @@
             <table width="100%" border="0" cellspacing="0" cellpadding="0"> 
                 <tr>
                     <td class="inputlabel">Código : </td>
-                    <td><input type="text" id="txt_Codigo" name="txt_Codigo"/></td>
+                    <td><input type="text" class="text-input" id="txt_Codigo" name="txt_Codigo"/></td>
                 </tr>
                 <tr>
                     <td class="inputlabel">DD.EE. : </td>
@@ -602,11 +622,11 @@
                 </tr>
                 <tr>
                     <td class="inputlabel">Abreviatura : </td>
-                    <td><input type="text" id="txt_Abreviatura" name="txt_Abreviatura" style='text-transform:uppercase;'/></td>
+                    <td><input type="text" class="text-input" id="txt_Abreviatura" name="txt_Abreviatura" style='text-transform:uppercase;'/></td>
                 </tr>
                 <tr>
                     <td class="inputlabel">Descripción : </td>
-                    <td><textarea id="txt_Descripcion" name="txt_Descripcion" style="text-transform: uppercase;"></textarea></td>
+                    <td><textarea id="txt_Descripcion" class="text-input" name="txt_Descripcion" style="text-transform: uppercase;"></textarea></td>
                 </tr>
                 <tr>
                     <td class="inputlabel">Departamento : </td>
@@ -633,7 +653,7 @@
                     </td> 
                 </tr>
                 <tr>
-                    <td class="Summit" colspan="4">
+                    <td class="Summit" colspan="2">
                         <div>
                             <input type="button" id="btn_Guardar"  value="Guardar" style="margin-right: 20px"/>
                             <input type="button" id="btn_Cancelar" value="Cancelar" style="margin-right: 20px"/>
@@ -652,7 +672,7 @@
         <table width="100%" border="0" cellspacing="0" cellpadding="0">
             <tr>
                 <td class="inputlabel">Brigada : </td>
-                <td><input type="text" id="txt_BrigadaDetalle" name="txt_BrigadaDetalle" style="text-transform: uppercase;"/></td>
+                <td><input type="text" class="text-input" id="txt_BrigadaDetalle" name="txt_BrigadaDetalle" style="text-transform: uppercase;"/></td>
             </tr>
             <tr>
                 <td colspan="2"><div id="div_GrillaRegistro"> </div></td>
@@ -670,32 +690,34 @@
                 <span style="float: left">REGISTRO DE DEPENDENCIAS</span>
             </div>
             <div style="overflow: hidden">
-                <table width="100%" border="0" cellspacing="0" cellpadding="0">
-                    <tr>
-                        <td class="inputlabel">Tipo : </td>
-                        <td>
-                            <select id="cbo_TipoDependencia" name="cbo_TipoDependencia">
-                                <option value="0">Seleccione</option>
-                            </select>
-                        </td> 
-                    </tr>
-                    <tr>
-                        <td class="inputlabel">Abreviatura : </td>
-                        <td><input type="text" id="txt_DependenciaAbreviatura" name="txt_DependenciaAbreviatura" style='text-transform:uppercase;'/></td>
-                    </tr>
-                    <tr>
-                        <td class="inputlabel">Descripción : </td>
-                        <td><textarea id="txt_DependenciaDescripcion" name="txt_DependenciaDescripcion" style="text-transform: uppercase;"></textarea></td>
-                    </tr>
-                    <tr>
-                        <td class="Summit" colspan="4">
-                            <div>
-                                <input type="button" id="btn_GuardarRegistro" value="Guardar" style="margin-right: 20px" />
-                                <input type="button" id="btn_CancelarRegistro"  value="Cancelar" style="margin-right: 20px"/>
-                            </div>
-                        </td>
-                    </tr>
-                </table>
+                <form id="frm_Dependencia" name="frm_Dependencia" method="post" >
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                        <tr>
+                            <td class="inputlabel">Tipo : </td>
+                            <td>
+                                <select id="cbo_TipoDependencia" name="cbo_TipoDependencia">
+                                    <option value="0">Seleccione</option>
+                                </select>
+                            </td> 
+                        </tr>
+                        <tr>
+                            <td class="inputlabel">Abreviatura : </td>
+                            <td><input type="text" class="text-input" id="txt_DependenciaAbreviatura" name="txt_DependenciaAbreviatura" style='text-transform:uppercase;'/></td>
+                        </tr>
+                        <tr>
+                            <td class="inputlabel">Descripción : </td>
+                            <td><textarea class="text-input" id="txt_DependenciaDescripcion" name="txt_DependenciaDescripcion" style="text-transform: uppercase;"></textarea></td>
+                        </tr>
+                        <tr>
+                            <td class="Summit" colspan="2">
+                                <div>
+                                    <input type="button" id="btn_GuardarRegistro" value="Guardar" style="margin-right: 20px" />
+                                    <input type="button" id="btn_CancelarRegistro"  value="Cancelar" style="margin-right: 20px"/>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
             </div>
         </div>
     </div>

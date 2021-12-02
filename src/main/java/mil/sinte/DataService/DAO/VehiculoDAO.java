@@ -40,8 +40,8 @@ public interface VehiculoDAO extends JpaRepository<BeanVehiculos, String> {
 
     @Transactional
     @Modifying
-    @Query(value = "{CALL SP_IDU_VEHICULO(:codigo, :placa, :serieChasis, :serieMotor, :tipoVehiculo,"
-            + ":claseVehiculo,:marca,:modelo,:transmision,:fabricacion,:puertas,:color,:usuario,:modo)}", nativeQuery = true)
+    @Query(value = "{CALL SP_IDU_VEHICULO(:codigo, :placa, :serieChasis, :serieMotor, :tipoVehiculo, "
+            + ":claseVehiculo, :marca, :modelo, :transmision, :fabricacion, :puertas, :color, :usuario, :modo)}", nativeQuery = true)
     void sp_vehiculo(
             @Param("codigo") Integer codigo,
             @Param("placa") String placa,

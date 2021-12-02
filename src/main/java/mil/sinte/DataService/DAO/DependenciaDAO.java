@@ -16,22 +16,22 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 public interface DependenciaDAO extends JpaRepository<BeanDependencia, String> {
 
-    @Query(nativeQuery = true, value = "SELECT "
-            + "a.NDEPENDENCIA_CODIGO, a.NTIPO_DEPENDENCIA_CODIGO AS NBRIGADA_CODIGO, "
-            + "UTIL.FUN_TIPO_DEPENDENCIA_ABREVIATU(a.NTIPO_DEPENDENCIA_CODIGO) TIPO_DEPENDENCIA,"
-            + "a.VDEPENDENCIA_DESCRIPCION, a.VDEPENDENCIA_ABREVIATURA, "
-            + "UTIL.FUN_ESTADO_DESCRIPCION(a.CESTADO_CODIGO) CESTADO_CODIGO "
-            + "FROM SINTE_DEPENDENCIAS a WHERE "
-            + "a.NBRIGADA_CODIGO=?1 "
-            + "ORDER BY a.NDEPENDENCIA_CODIGO")
+    @Query(nativeQuery = true, value = "SELECT NDEPENDENCIA_CODIGO, "
+            + "NTIPO_DEPENDENCIA_CODIGO AS NBRIGADA_CODIGO, "
+            + "UTIL.FUN_TIPO_DEPENDENCIA_ABREVIATU(NTIPO_DEPENDENCIA_CODIGO) TIPO_DEPENDENCIA,"
+            + "VDEPENDENCIA_DESCRIPCION, VDEPENDENCIA_ABREVIATURA, "
+            + "UTIL.FUN_ESTADO_DESCRIPCION(CESTADO_CODIGO) CESTADO_CODIGO "
+            + "FROM SINTE_DEPENDENCIAS  WHERE "
+            + "NBRIGADA_CODIGO=?1 "
+            + "ORDER BY NDEPENDENCIA_CODIGO")
     List<BeanDependencia> findByBrigada(Integer brigada);
 
     @Query(nativeQuery = true, value = "SELECT NDEPENDENCIA_CODIGO, "
-            + "VDEPENDENCIA_DESCRIPCION, a.VDEPENDENCIA_ABREVIATURA, CESTADO_CODIGO "
+            + "VDEPENDENCIA_DESCRIPCION, VDEPENDENCIA_ABREVIATURA, CESTADO_CODIGO "
             + "FROM SINTE_DEPENDENCIAS WHERE "
             + "NBRIGADA_CODIGO=?1 AND "
             + "NDEPENDENCIA_CODIGO=?2 ")
-    public BeanDependencia findByCodigo(Integer brigada, Integer codigo);
+    public BeanDependencia findByBrigadaAndCodigo(Integer brigada, Integer codigo);
 
     @Transactional
     @Modifying

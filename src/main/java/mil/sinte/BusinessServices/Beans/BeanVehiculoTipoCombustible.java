@@ -23,10 +23,10 @@ public class BeanVehiculoTipoCombustible implements Serializable {
 
     @Id
     @Column(name = "NTIPO_COMBUSTIBLE_CODIGO", nullable = false)
-    private String tipoCombustible;
+    private Integer tipoCombustible;
 
     @Column(name = "NVEHICULO_COMBUSTIBLE_CAP")
-    private double capacidad;
+    private Double capacidad;
 
     @Column(name = "CESTADO_CODIGO")
     private String estado;

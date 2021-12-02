@@ -27,30 +27,28 @@ public class SoatAseguradoraController {
     @Autowired
     private SoatAseguradoService soatAseguradoService;
 
-    @RequestMapping(value = "/Aseguradora")
+    @RequestMapping(value = "/SoatAseguradora")
     public String getAseguradora(String mode) {
         switch (mode) {
-            case "aseguradora":
-                return "Configuracion/Aseguradora";
+            case "soatAseguradora":
+                return "Configuracion/SoatAseguradora";
             default:
                 return "redirect:/";
         }
     }
 
-    @RequestMapping(value = "/AseguradoraDetalle")
+    @RequestMapping(value = "/SoatAseguradoraDetalle")
     @ResponseBody
     public String getAseguradoraDetalle(String mode, String codigo) {
         switch (mode) {
             case "G":
                 return new Gson().toJson(soatAseguradoService.getSoatAseguradoras());
-            case "U":
-                return new Gson().toJson(soatAseguradoService.getSoatAseguradora(codigo));
             default:
                 return "ERROR";
         }
     }
 
-    @RequestMapping(value = "/IduAseguradora")
+    @RequestMapping(value = "/IduSoatAseguradora")
     @ResponseBody
     public String setAseguradora(
             @RequestParam("mode") String mode,

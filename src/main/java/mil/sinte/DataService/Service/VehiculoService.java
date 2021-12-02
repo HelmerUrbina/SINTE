@@ -19,13 +19,9 @@ public interface VehiculoService {
 
     public List<BeanVehiculoTipoCombustible> getVehiculoTiposCombustibles(Integer vehiculo);
 
-    public BeanVehiculoTipoCombustible getVehiculoTipoCombustible(Integer vehiculo, Integer codigo);
-
     public String guardarVehiculoTipoCombustible(BeanVehiculoTipoCombustible objBeanVehiculoTipoCombustible, String usuario, String modo);
 
     public List<BeanVehiculoSoat> getVehiculoSoats(Integer vehiculo);
-
-    public BeanVehiculoSoat getVehiculoSoat(Integer vehiculo, Integer codigo);
 
     public String guardarVehiculoSoat(BeanVehiculoSoat objBeanVehiculoSoat, String usuario, String modo);
 }

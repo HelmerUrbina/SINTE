@@ -29,11 +29,6 @@ public class VehiculoTipoServiceImpl implements VehiculoTipoService {
     }
 
     @Override
-    public BeanVehiculoTipo getVehiculoTipo(String codigo) {
-        return VehiculoTipoDAO.findByCodigo(Integer.parseInt(codigo));
-    }
-
-    @Override
     public String guardarVehiculoTipo(BeanVehiculoTipo objBeanVehiculoTipo, String usuario, String modo) {
         String result = "GUARDO";
         try {

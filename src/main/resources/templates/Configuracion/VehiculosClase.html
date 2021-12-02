@@ -5,24 +5,10 @@
     $(document).ready(function () {
         var theme = getTheme();
         $("#div_Titulo").jqxExpander({theme: theme, width: '100%'});
-        //PARA CARGAR LOS ELEMENTOS DE LA GRILLA
-        var source = {
-            dataType: "json",
-            datafields: [
-                {name: 'codigo', type: "string"},
-                {name: 'descripcion', type: "string"},
-                {name: 'abreviatura', type: "string"},
-                {name: 'estado', type: "string"}
-            ],
-            id: 'codigo',
-            url: "../VehiculosClaseDetalle?mode=G"
-        };
-        var dataAdapter = new $.jqx.dataAdapter(source);
         //DEFINIMOS LOS CAMPOS Y DATOS DE LA GRILLA
         $("#div_GrillaPrincipal").jqxGrid({
             width: '99.8%',
             height: ($(window).height() - 65),
-            source: dataAdapter,
             autoheight: false,
             autorowheight: false,
             altrows: true,
@@ -37,10 +23,10 @@
             rendertoolbar: function (toolbar) {
                 // ADICIONAMOS BOTONES A LA BARRA DE ESTADOS
                 var container = $("<div style='overflow: hidden; position: relative; margin: 1px;'></div>");
-                var ButtonNuevo = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='/images/Botones/nuevo42.gif' th:src='@{/images/Botones/nuevo42.gif' width=18 height=18 /><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
-                var ButtonExportar = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='/images/Botones/pauf42.gif' th:src='@{/images/Botones/pauf42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
-                var ButtonRecargar = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='/images/Botones/refresh42.gif' th:src='@{/images/Botones/refresh42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
-                var ButtonSalir = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='/images/Botones/exit42.gif' th:src='@{/images/Botones/exit42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
+                var ButtonNuevo = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='images/Botones/nuevo42.gif' th:src='@{images/Botones/nuevo42.gif' width=18 height=18 /><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
+                var ButtonExportar = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='images/Botones/pauf42.gif' th:src='@{images/Botones/pauf42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
+                var ButtonRecargar = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='images/Botones/refresh42.gif' th:src='@{images/Botones/refresh42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
+                var ButtonSalir = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='images/Botones/exit42.gif' th:src='@{images/Botones/exit42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
                 container.append(ButtonNuevo);
                 container.append(ButtonExportar);
                 container.append(ButtonRecargar);
@@ -77,13 +63,13 @@
                 });
             },
             columns: [
-                {text: 'DESCRIPCIÓN', dataField: 'descripcion', width: '40%', align: 'center', cellsAlign: 'center'},
-                {text: 'ABREVIATURA', dataField: 'abreviatura', width: '40%', align: 'center', cellsAlign: 'center'},
-                {text: 'ESTADO', dataField: 'estado', filtertype: 'list', width: '20%', align: 'center', cellsAlign: 'center'}
+                {text: 'DESCRIPCIÓN', dataField: 'descripcion', width: '50%', align: 'center', cellsAlign: 'center'},
+                {text: 'ABREVIATURA', dataField: 'abreviatura', width: '35%', align: 'center', cellsAlign: 'center'},
+                {text: 'ESTADO', dataField: 'estado', filtertype: 'checkedlist', width: '15%', align: 'center', cellsAlign: 'center'}
             ]
         });
         // DEFINIMOS EL MENU CONTEXTUAL
-        var contextMenu = $("#div_ContextMenu").jqxMenu({width: 200, height: 83, autoOpenPopup: false, mode: 'popup'});
+        var contextMenu = $("#div_ContextMenu").jqxMenu({width: 200, height: 88, autoOpenPopup: false, mode: 'popup'});
         $("#div_GrillaPrincipal").on('contextmenu', function () {
             return false;
         });
@@ -118,7 +104,7 @@
                 } else if ($.trim($(opcion).text()) === "Activar") {
                     $.confirm({
                         title: 'AVISO DEL SISTEMA',
-                        content: 'Desea Activar esta Clase de Vehiculo!',
+                        content: 'Desea Activar esta Clase de Vehículo!',
                         theme: 'material',
                         animation: 'zoom',
                         closeAnimation: 'zoom',
@@ -141,7 +127,7 @@
                 } else if ($.trim($(opcion).text()) === "Desactivar") {
                     $.confirm({
                         title: 'AVISO DEL SISTEMA',
-                        content: 'Desea Desactivar esta Clase de Vehiculo!',
+                        content: 'Desea Desactivar esta Clase de Vehículo!',
                         theme: 'material',
                         animation: 'zoom',
                         closeAnimation: 'zoom',
@@ -188,7 +174,7 @@
                 //INICIA LOS VALORES DE LA VENTANA
                 var posicionX, posicionY;
                 var ancho = 400;
-                var alto = 120;
+                var alto = 140;
                 posicionX = ($(window).width() / 2) - (ancho / 2);
                 posicionY = ($(window).height() / 2) - (alto / 2);
                 $('#div_VentanaPrincipal').jqxWindow({
@@ -196,8 +182,8 @@
                     width: ancho, height: alto, resizable: false,
                     cancelButton: $('#btn_Cancelar'),
                     initContent: function () {
-                        $("#txt_Descripcion").jqxInput({placeHolder: 'DESCRIPCIÓN', width: 300, height: 20, minLength: 2, maxLength: 20});
-                        $("#txt_Abreviatura").jqxInput({placeHolder: 'ABREVIATURA', width: 300, height: 20, minLength: 2, maxLength: 20});
+                        $("#txt_Descripcion").jqxInput({placeHolder: 'DESCRIPCIÓN', width: 300, height: 25, minLength: 2, maxLength: 200});
+                        $("#txt_Abreviatura").jqxInput({placeHolder: 'ABREVIATURA', width: 300, height: 25, minLength: 2, maxLength: 50});
                         $('#btn_Cancelar').jqxButton({width: '65px', height: 30});
                         $('#btn_Guardar').jqxButton({width: '65px', height: 30});
                         $('#btn_Guardar').on('click', function () {
@@ -205,8 +191,8 @@
                         });
                         $('#frm_vehiculos_clase').jqxValidator({
                             rules: [
-                                {input: '#txt_Descripcion', message: 'Ingrese la Descripción de la Clase Vehiculo!', action: 'keyup, blur', rule: 'required'},
-                                {input: '#txt_Abreviatura', message: 'Ingrese la Abreviatura de la Clase Vehiculo!', action: 'keyup, blur', rule: 'required'}
+                                {input: '#txt_Descripcion', message: 'Ingrese la Descripción de la Clase Vehículo!', action: 'keyup, blur', rule: 'required'},
+                                {input: '#txt_Abreviatura', message: 'Ingrese la Abreviatura de la Clase Vehículo!', action: 'keyup, blur', rule: 'required'}
                             ]
                         });
                         $('#frm_vehiculos_clase').jqxValidator({
@@ -224,6 +210,7 @@
         }());
         $(document).ready(function () {
             customButtonsDemo.init();
+            fn_Refrescar();
         });
     });
     //FUNCION PARA ACTUALIZAR DATOS DE LA GRILLA
@@ -237,20 +224,20 @@
                 {name: 'estado', type: "string"}
             ],
             id: 'codigo',
-            url: "../VehiculosClaseDetalle?mode=G"
+            url: "VehiculosClaseDetalle",
+            data: {mode: 'G'}
         };
         var dataAdapter = new $.jqx.dataAdapter(source);
         $("#div_GrillaPrincipal").jqxGrid({source: dataAdapter});
         $('#div_GrillaPrincipal').jqxGrid('clearselection');
     }
-
     //FUNCION PARA GRABAR LOS DATOS DE LA VENTANA PRINCIPAL
     function fn_GrabarDatos() {
         var descripcion = $("#txt_Descripcion").val();
         var abreviatura = $("#txt_Abreviatura").val();
         $.ajax({
             type: "GET",
-            url: "../IduVehiculosClase",
+            url: "IduVehiculosClase",
             data: {mode: mode, codigo: codigo, descripcion: descripcion,
                 abreviatura: abreviatura},
             success: function (data) {
@@ -288,7 +275,7 @@
     }
 </script>
 <div id='div_Titulo' style="border: none;">
-    <div class="jqx-hideborder">LISTADOS DE CLASES DE VEHICULOS</div>
+    <div class="jqx-hideborder">LISTADOS DE CLASES DE VEHÍCULOS</div>
     <div>
         <div id="div_Detalle" class="maincen"></div>
     </div>
@@ -296,21 +283,21 @@
 <div id="div_GrillaPrincipal"></div>
 <div id="div_VentanaPrincipal" style="display: none">
     <div>
-        <span style="float: left">DATOS DE CLASE VEHICULO</span>
+        <span style="float: left">DATOS DE CLASE DE VEHÍCULOS</span>
     </div>
     <div style="overflow: hidden">
         <form id="frm_vehiculos_clase" name="frm_vehiculos_clase" method="post" >
             <table width="100%" border="0" cellspacing="0" cellpadding="0"> 
                 <tr>
                     <td class="inputlabel">Descripción : </td>
-                    <td><input id="txt_Descripcion" name="txt_Descripcion" style="text-transform: uppercase;"/></td>
+                    <td><input type="text" class="text-input" id="txt_Descripcion" name="txt_Descripcion" style="text-transform: uppercase;"/></td>
                 </tr>
                 <tr>
                     <td class="inputlabel">Abreviatura : </td>
-                    <td><input id="txt_Abreviatura" name="txt_Abreviatura" style="text-transform: uppercase;"/></td>
+                    <td><input type="text" class="text-input" id="txt_Abreviatura" name="txt_Abreviatura" style="text-transform: uppercase;"/></td>
                 </tr>
                 <tr>
-                    <td class="Summit" colspan="4">
+                    <td class="Summit" colspan="2">
                         <div>
                             <input type="button" id="btn_Guardar"  value="Guardar" style="margin-right: 20px"/>
                             <input type="button" id="btn_Cancelar" value="Cancelar" style="margin-right: 20px"/>

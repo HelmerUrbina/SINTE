@@ -26,8 +26,11 @@ public class BeanVehiculoSoat implements Serializable {
     @Column(name = "NVEHICULO_SOAT_CODIGO", nullable = false)
     private Integer codigo;
 
+    @Column(name = "CVEHICULO_SOAT_TIPO")
+    private String tipo;
+
     @Column(name = "NSOAT_ASEGURADORA_CODIGO", nullable = false)
-    private String soat;
+    private String aseguradora;
 
     @Column(name = "VVEHICULO_SOAT_CERTIFICADO")
     private String certificado;
@@ -37,9 +40,6 @@ public class BeanVehiculoSoat implements Serializable {
 
     @Column(name = "DVEHICULO_SOAT_FIN")
     private Date fin;
-
-    @Column(name = "CVEHICULO_SOAT_TIPO")
-    private String tipo;
 
     @Column(name = "CESTADO_CODIGO")
     private String estado;

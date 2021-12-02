@@ -53,7 +53,7 @@ public class BeanUsuario implements Serializable {
     private String brigada;
 
     @Column(name = "NUSUARIO_ROL_CODIGO")
-    private String Rol;
+    private String rol;
 
     @Column(name = "NUSUARIO_AUTORIZACION")
     private Integer autorizacion;

@@ -1,6 +1,8 @@
 package mil.sinte.UserServices.Configuracion;
 
 import com.google.gson.Gson;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import lombok.extern.slf4j.Slf4j;
 import mil.sinte.BusinessServices.Beans.BeanVehiculosBrigada;
 import mil.sinte.DataService.Service.VehiculosBrigadasService;
@@ -37,9 +39,7 @@ public class VehiculosBrigadaController {
     public String getVehiculosBrigadaDetalle(String mode, Integer brigada, String periodo) {
         switch (mode) {
             case "G":
-                return new Gson().toJson(vehiculosBrigadasService.getVehiculosBrigadas(brigada, periodo));
-            case "U":
-                return new Gson().toJson(vehiculosBrigadasService.getVehiculosBrigada(brigada, periodo));
+                return new Gson().toJson(vehiculosBrigadasService.getVehiculosBrigadas(periodo, brigada));
             default:
                 return "ERROR";
         }
@@ -50,17 +50,20 @@ public class VehiculosBrigadaController {
     public String setVehiculosBrigada(
             @RequestParam("periodo") String periodo,
             @RequestParam("brigada") String brigada,
-            @RequestParam("dependencia") String dependencia,
-            @RequestParam("vehiculo") String vehiculo,
+            @RequestParam("dependencia") Integer dependencia,
+            @RequestParam("vehiculo") Integer vehiculo,
             @RequestParam("fecha") String fecha,
             @RequestParam("mode") String mode
-    ) {
+    ) throws ParseException {
         BeanVehiculosBrigada objBeanVehiculosBrigada = new BeanVehiculosBrigada();
         objBeanVehiculosBrigada.setPeriodo(periodo);
         objBeanVehiculosBrigada.setBrigada(brigada);
         objBeanVehiculosBrigada.setDependencia(dependencia);
         objBeanVehiculosBrigada.setVehiculo(vehiculo);
-        objBeanVehiculosBrigada.setFecha(fecha);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        sdf.setLenient(false); //No Complaciente en Fecha
+        java.util.Date dfecha = sdf.parse(Utiles.checkFecha(fecha));
+        objBeanVehiculosBrigada.setFecha(new java.sql.Date(dfecha.getTime()));
         return "" + vehiculosBrigadasService.guardarVehiculosBrigada(objBeanVehiculosBrigada, Utiles.getUsuario(), mode);
     }
 

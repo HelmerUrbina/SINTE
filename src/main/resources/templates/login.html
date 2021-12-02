@@ -37,7 +37,7 @@
                 var password = $("#txt_Password").val();
                 $.ajax({
                     type: "POST",
-                    url: "/login",
+                    url: "login",
                     data: {accion: "LOGIN", usuario: usuario, password: password},
                     success: function (data) {
                         if (data === "VerificaSession") {
@@ -73,7 +73,7 @@
                                     <tr>
                                         <td colspan="2" >
                                             <div style="text-align: center">
-                                                <img src="../resources/images/Logos/logo.png" width="150px" height="150px" th:src="@{images/Logos/logo.png}"/>
+                                                <img src="images/Logos/logo.png" width="150px" height="150px" th:src="@{images/Logos/logo.png}"/>
                                             </div>
                                         </td>
                                     </tr>
@@ -82,14 +82,14 @@
                                     </tr>
                                     <tr>
                                         <td><label for="usuario">Usuario </label></td>
-                                        <td><input type="text" name="username" id="username" autocomplete="off"/></td>
+                                        <td><input type="text" class="text-input" name="username" id="username" autocomplete="off"/></td>
                                     </tr>
                                     <tr>
                                         <td colspan="2">&nbsp;</td>
                                     </tr>
                                     <tr>
                                         <td><label for="password">Password </label></td>
-                                        <td><input type="password" name="password" id="password" autocomplete="off"/></td>
+                                        <td><input type="password" class="text-input" name="password" id="password" autocomplete="off"/></td>
                                     </tr>
                                     <tr>
                                         <td colspan="2">&nbsp;</td>

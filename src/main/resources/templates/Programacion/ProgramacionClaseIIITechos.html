@@ -5,8 +5,8 @@
     $(document).ready(function () {
         var theme = getTheme();
         $("#div_Titulo").jqxExpander({theme: theme, width: '100%'});
-        $("#cbo_Periodo").jqxComboBox({theme: theme, autoOpen: true, promptText: "Seleccione", width: 150, height: 20, dropDownWidth: 250});
-        $("#cbo_TipoAsignacion").jqxComboBox({theme: theme, autoOpen: true, promptText: "Seleccione", width: 250, height: 20, dropDownWidth: 350});
+        $("#cbo_Periodo").jqxComboBox({theme: theme, autoOpen: true, promptText: "Seleccione", width: 150, height: 25, dropDownWidth: 250});
+        $("#cbo_TipoAsignacion").jqxComboBox({theme: theme, autoOpen: true, promptText: "Seleccione", width: 250, height: 25, dropDownWidth: 350});
         var fecha = new Date();
         $("#cbo_Periodo").jqxComboBox('selectItem', fecha.getFullYear());
         $('#cbo_Periodo').on('change', function () {
@@ -24,11 +24,14 @@
             if (datafield === "brigadaNombre") {
                 return "RowBlue";
             }
+            if (datafield === "cantidad") {
+                return "RowGreen";
+            }
         };
         //DEFINIMOS LOS CAMPOS Y DATOS DE LA GRILLA
         $("#div_GrillaPrincipal").jqxGrid({
             width: '99.8%',
-            height: ($(window).height() - 95),
+            height: ($(window).height() - 90),
             autoheight: false,
             autorowheight: false,
             altrows: true,
@@ -43,8 +46,8 @@
             rendertoolbar: function (toolbar) {
                 // ADICIONAMOS BOTONES A LA BARRA DE ESTADOS
                 var container = $("<div style='overflow: hidden; position: relative; margin: 1px;'></div>");
-                var ButtonNuevo = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='/images/Botones/nuevo42.gif' th:src='@{/images/Botones/nuevo42.gif' width=18 height=18 /><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
-                var ButtonExportar = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='/images/Botones/pauf42.gif' th:src='@{/images/Botones/pauf42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
+                var ButtonNuevo = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='images/Botones/nuevo42.gif' th:src='@{images/Botones/nuevo42.gif' width=18 height=18 /><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
+                var ButtonExportar = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='images/Botones/pauf42.gif' th:src='@{images/Botones/pauf42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
                 container.append(ButtonNuevo);
                 container.append(ButtonExportar);
                 toolbar.append(container);
@@ -86,13 +89,14 @@
                         return "<div style='margin: 6px; text-align: center;'>" + (value + 1) + "</div>";
                     }
                 },
-                {text: 'BRIGADA', dataField: 'brigadaNombre', width: '50%', align: 'center', cellsAlign: 'left', cellclassname: cellclass},
-                {text: 'IMPORTE', dataField: 'importe', width: '30%', align: 'center', cellsAlign: 'right', cellsFormat: 'f2', cellclassname: cellclass},
-                {text: 'ESTADO', dataField: 'estado', filtertype: 'list', width: '20%', align: 'center', cellsAlign: 'center'}
+                {text: 'BRIGADA', dataField: 'brigadaNombre', width: '48%', align: 'center', cellsAlign: 'left', cellclassname: cellclass},
+                {text: 'CANTIDAD (GAL)', dataField: 'cantidad', width: '20%', align: 'center', cellsAlign: 'right', cellsFormat: 'f2', cellclassname: cellclass},
+                {text: 'IMPORTE', dataField: 'importe', width: '20%', align: 'center', cellsAlign: 'right', cellsFormat: 'f2', cellclassname: cellclass},
+                {text: 'ESTADO', dataField: 'estado', filtertype: 'checkedlist', width: '10%', align: 'center', cellsAlign: 'center'}
             ]
         });
         // DEFINIMOS EL MENU CONTEXTUAL
-        var contextMenu = $("#div_ContextMenu").jqxMenu({width: 200, height: 85, autoOpenPopup: false, mode: 'popup'});
+        var contextMenu = $("#div_ContextMenu").jqxMenu({width: 200, height: 90, autoOpenPopup: false, mode: 'popup'});
         $("#div_GrillaPrincipal").on('contextmenu', function () {
             return false;
         });
@@ -197,7 +201,7 @@
                 //INICIA LOS VALORES DE LA VENTANA
                 var posicionX, posicionY;
                 var ancho = 500;
-                var alto = 130;
+                var alto = 140;
                 posicionX = ($(window).width() / 2) - (ancho / 2);
                 posicionY = ($(window).height() / 2) - (alto / 2);
                 $('#div_VentanaPrincipal').jqxWindow({
@@ -205,8 +209,8 @@
                     width: ancho, height: alto, resizable: false,
                     cancelButton: $('#btn_Cancelar'),
                     initContent: function () {
-                        $("#cbo_Brigadas").jqxDropDownList({animationType: 'fade', width: 380, dropDownWidth: 450, height: 20});
-                        $("#div_Importe").jqxNumberInput({width: 120, height: 20, max: 999999999, digits: 9, decimalDigits: 2});
+                        $("#cbo_Brigadas").jqxDropDownList({animationType: 'fade', width: 380, dropDownWidth: 450, height: 25});
+                        $("#div_Importe").jqxNumberInput({width: 120, height: 25, max: 999999999, digits: 9, decimalDigits: 2});
                         $('#btn_Cancelar').jqxButton({width: '65px', height: 30});
                         $('#btn_Guardar').jqxButton({width: '65px', height: 30});
                         $('#btn_Guardar').on('click', function () {
@@ -232,11 +236,12 @@
             datafields: [
                 {name: 'brigada', type: "string"},
                 {name: 'brigadaNombre', type: "string"},
+                {name: 'cantidad', type: "number"},
                 {name: 'importe', type: "number"},
                 {name: 'estado', type: "string"}
             ],
             id: 'codigo',
-            url: "../ProgramacionClaseIIITechosDetalle",
+            url: "ProgramacionClaseIIITechosDetalle",
             data: {mode: 'G', periodo: $('#cbo_Periodo').val(), tipoAsignacion: $('#cbo_TipoAsignacion').val()}
         };
         var dataAdapter = new $.jqx.dataAdapter(source);
@@ -257,7 +262,7 @@
         var importe = $("#div_Importe").val();
         $.ajax({
             type: "GET",
-            url: "../IduProgramacionClaseIIITechos",
+            url: "IduProgramacionClaseIIITechos",
             data: {mode: mode, periodo: periodo, tipoAsignacion: tipoAsignacion, brigada: codigo, importe: importe},
             success: function (data) {
                 msg = data;
@@ -314,8 +319,8 @@
                                 <option value="0">Seleccione</option>
                             </select>
                         </td>
-                        <td><a href="javascript: fn_CargarBusqueda();"><img src="../images/Botones/refresh42.gif" alt="Buscar Datos" name="imgrefresh" width="30" height="28" border="0" id="imgrefresh"></a></td>
-                        <td><a href="javascript: fn_MenuPrincipal();"><img src="../images/Botones/exit42.gif" alt="Salir de pantalla" name="imgexit" width="30" height="28"  border="0" id="imgexit" /></a></td>
+                        <td><a href="javascript: fn_CargarBusqueda();"><img src="images/Botones/refresh42.gif" alt="Buscar Datos" name="imgrefresh" width="30" height="28" border="0" id="imgrefresh"></a></td>
+                        <td><a href="javascript: fn_MenuPrincipal();"><img src="images/Botones/exit42.gif" alt="Salir de pantalla" name="imgexit" width="30" height="28"  border="0" id="imgexit" /></a></td>
                     </tr>
                 </tbody>
             </table>

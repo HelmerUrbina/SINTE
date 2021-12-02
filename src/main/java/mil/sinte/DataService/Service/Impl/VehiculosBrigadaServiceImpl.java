@@ -19,30 +19,25 @@ public class VehiculosBrigadaServiceImpl implements VehiculosBrigadasService {
     private VehiculosBrigadaDAO vehiculosBrigadaDAO;
 
     @Override
-    public List<BeanVehiculosBrigada> getVehiculosBrigadas(Integer brigada, String periodo) {
-        return vehiculosBrigadaDAO.findAll(brigada, periodo);
-    }
-
-    @Override
-    public BeanVehiculosBrigada getVehiculosBrigada(Integer brigada, String periodo) {
-        return vehiculosBrigadaDAO.findByDetalle(brigada, periodo);
+    public List<BeanVehiculosBrigada> getVehiculosBrigadas(String periodo, Integer brigada) {
+        return vehiculosBrigadaDAO.findAll(periodo, brigada);
     }
 
     @Override
     public String guardarVehiculosBrigada(BeanVehiculosBrigada objBeanVehiculosBrigada, String usuario, String modo) {
         String result = "GUARDO";
         try {
-            vehiculosBrigadaDAO.sp_vehiculos_brigadas(
+            vehiculosBrigadaDAO.sp_vehiculosBrigadas(
                     objBeanVehiculosBrigada.getPeriodo(),
-                    Integer.parseInt(objBeanVehiculosBrigada.getBrigada()),
-                    Integer.parseInt(objBeanVehiculosBrigada.getDependencia()),
-                    Integer.parseInt(objBeanVehiculosBrigada.getVehiculo()),
+                    objBeanVehiculosBrigada.getBrigada(),
+                    objBeanVehiculosBrigada.getDependencia(),
+                    objBeanVehiculosBrigada.getVehiculo(),
                     objBeanVehiculosBrigada.getFecha(),
                     usuario,
                     modo
             );
-        } catch (Exception e) {
-            result = Utiles.getErrorSQL(e);
+        } catch (Exception | Error e) {
+            result = Utiles.getErrorSQL((Exception) e);
         }
         return result;
     }
