@@ -643,6 +643,7 @@
                 type: 'orange',
                 typeAnimated: true
             });
+            return;
         } else if ($("#txt_CantidadAprobada").val() === '0') {
             $.alert({
                 theme: 'material',
@@ -653,6 +654,7 @@
                 type: 'red',
                 typeAnimated: true
             });
+            return;
         } else if ($("#txt_CantidadAprobada").val() < total) {
             $.alert({
                 theme: 'material',
@@ -663,6 +665,7 @@
                 type: 'red',
                 typeAnimated: true
             });
+            return;
         } else {
             var json = {mode: 'U', periodo: periodoG, brigada: brigadaG, mes: mesG,
                 tipoAsignacion: tipoAsignacionG, tipoCombustible: tipoCombustibleG,

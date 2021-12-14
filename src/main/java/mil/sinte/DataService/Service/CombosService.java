@@ -70,5 +70,10 @@ public interface CombosService {
     public List<BeanCombos> getTipoCombustibleByAsignacionCombustible(String anio, Integer brigada, String mes, Integer tipoAsignacion);
 
     public List<BeanCombos> getVehiculoByAsignacionCombustible(String anio, Integer brigada, String mes, Integer tipoAsignacion, Integer tipoCombustible, Integer dependencia);
-
+    
+    public List<BeanCombos> getCombsutibleByVariacion(String periodo, Integer brigada, String mes, Integer tipoAsignacion);
+    
+    public List<BeanCombos> getVehiculoByVariacion (String periodo, Integer brigada, String mes, Integer tipoAsignacion, Integer tipoCombustible, Integer dependencia);
+    
+    public List<BeanCombos> getDependenciaByVariacion (String periodo, Integer brigada, String mes, Integer tipoAsignacion, Integer tipoCombustible);
 }
