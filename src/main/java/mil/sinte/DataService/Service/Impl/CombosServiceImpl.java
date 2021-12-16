@@ -126,8 +126,13 @@ public class CombosServiceImpl implements CombosService {
     }
 
     @Override
-    public List<BeanCombos> getVehiculosByBrigadaAndPeriodo(String periodo, Integer brigada) {
-        return combosDAO.getVehiculosByBrigadaAndPeriodo(periodo, brigada);
+    public List<BeanCombos> getVehiculosByPeriodoAndBrigadas(String periodo, Integer brigada) {
+        return combosDAO.getVehiculosByPeriodoAndBrigada(periodo, brigada);
+    }
+
+    @Override
+    public List<BeanCombos> getVehiculosByPeriodoAndBrigadasAndDependencia(String periodo, Integer brigada, Integer dependencia) {
+        return combosDAO.getVehiculosByPeriodoAndBrigadaAndDependencia(periodo, brigada, dependencia);
     }
 
     @Override
@@ -163,7 +168,22 @@ public class CombosServiceImpl implements CombosService {
 
     @Override
     public List<BeanCombos> getVehiculoByAsignacionCombustible(String anio, Integer brigada, String mes, Integer tipoAsignacion, Integer tipoCombustible, Integer dependencia) {
-        return combosDAO.getVehiculoByAsignacionCombustible(anio, brigada, mes, tipoAsignacion, tipoCombustible,dependencia);
+        return combosDAO.getVehiculoByAsignacionCombustible(anio, brigada, mes, tipoAsignacion, tipoCombustible, dependencia);
+    }
+
+    @Override
+    public List<BeanCombos> getCombsutibleByVariacion(String periodo, Integer brigada, String mes, Integer tipoAsignacion) {
+        return combosDAO.getCombsutibleByVariacion(periodo, brigada, mes, tipoAsignacion);
+    }
+
+    @Override
+    public List<BeanCombos> getVehiculoByVariacion(String periodo, Integer brigada, String mes, Integer tipoAsignacion, Integer tipoCombustible, Integer dependencia) {
+        return combosDAO.getVehiculoByVariacion(periodo, brigada, mes, tipoAsignacion, tipoCombustible, dependencia);
+    }
+
+    @Override
+    public List<BeanCombos> getDependenciaByVariacion(String periodo, Integer brigada, String mes, Integer tipoAsignacion, Integer tipoCombustible) {
+        return combosDAO.getDependenciaByVariacion(periodo, brigada, mes, tipoAsignacion, tipoCombustible);
     }
 
 }

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mil.sinte.BusinessServices.Beans;
 
 import java.io.Serializable;
@@ -26,16 +21,16 @@ public class BeanMatrizAsignacion implements Serializable {
     @Id
     @Column(name = "BRIGADA", nullable = false)
     private String brigada;
-    
+
     @Column(name = "NBRIGADA_CODIGO", nullable = false)
     private String brigadaCodigo;
-    
+
     @Column(name = "ESTADO", nullable = false)
     private String estado;
-    
+
     @Column(name = "CESTADO_CODIGO", nullable = false)
     private String estadoCodigo;
-    
+
     @Column(name = "COMBUSTIBLE_1_S", nullable = false)
     private String solicitado1;
 
@@ -50,19 +45,19 @@ public class BeanMatrizAsignacion implements Serializable {
 
     @Column(name = "COMBUSTIBLE_3_S", nullable = false)
     private String solicitado3;
-    
+
     @Column(name = "COMBUSTIBLE_3_C", nullable = false)
     private String cantidad3;
-    
+
     @Column(name = "COMBUSTIBLE_4_S", nullable = false)
     private String solicitado4;
-    
+
     @Column(name = "COMBUSTIBLE_4_C", nullable = false)
     private String cantidad4;
-    
+
     @Column(name = "COMBUSTIBLE_5_S", nullable = false)
     private String solicitado5;
-    
+
     @Column(name = "COMBUSTIBLE_5_C", nullable = false)
     private String cantidad5;
 

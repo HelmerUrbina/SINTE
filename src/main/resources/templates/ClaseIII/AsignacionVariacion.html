@@ -1,0 +1,1038 @@
+<script>
+    var codigo = null;
+    var mode = null;
+    var mode2 = null;
+    var select1 = 0;
+    var select2 = 0;
+    var periodoG = null;
+    var brigadaG = null;
+    var mesG = null;
+    var tipoAsignacionG=null;
+    var tipoCombustibleG=null;
+    var tipoG=null;
+    var dependenciaG=null;
+    var vehiculoG=null;
+    var msg = "";
+    
+    var dataLocalVariacion = [];
+    var autorizacion = validarBoolean('[[${session.objAutorizacion}]]');
+    $(document).ready(function () {
+        var theme = getTheme();
+        $("#div_Titulo").jqxExpander({theme: theme, width: '100%'});
+        var cellclass = function (row, datafield, value, rowdata) {
+            if (datafield === "capacidad" || datafield === "certificado") {
+                return "RowBold";
+            }
+            if (datafield === "placa" || datafield === "vehiculo" || datafield === "aseguradora") {
+                return "RowBlue";
+            }
+            if (datafield === "tipo") {
+                return "RowBrown";
+            }
+            if (datafield === "clase") {
+                return "RowGreen";
+            }
+        };
+        $("#cbo_Periodo").jqxComboBox({theme: theme, autoOpen: true, promptText: "Seleccione", width: 150, dropDownWidth: 150, height: 20});
+        $("#cbo_Mes").jqxComboBox({theme: theme, autoOpen: true, promptText: "Seleccione", width: 150, dropDownWidth: 150, height: 20});
+        $("#cbo_Brigada").jqxComboBox({theme: theme, autoOpen: true, promptText: "Seleccione", width: 150, dropDownWidth: 150, height: 20});
+        var fecha = new Date();
+        $("#cbo_Mes").jqxComboBox('selectItem', fecha.getMonth()+1);
+        $("#cbo_Periodo").jqxComboBox('selectItem', fecha.getFullYear());
+        $('#cbo_Periodo').on('change', function () {
+            fn_CargarBusqueda();
+        });
+        $('#cbo_Brigada').on('change', function () {
+            fn_CargarBusqueda();
+        });
+        $('#cbo_Mes').on('change', function () {
+            fn_CargarBusqueda();
+        });
+        
+        //DEFINIMOS LOS CAMPOS Y DATOS DE LA GRILLA
+        $("#div_GrillaPrincipal").jqxGrid({
+            width: '99.8%',
+            height: ($(window).height() - 95),
+            pageable: true,
+            columnsresize: true,
+            enabletooltips: true,
+            altrows: false,
+            editable: true,
+            autoheight: false,
+            autorowheight: false,
+            showstatusbar: true,
+            showaggregates: true,
+            statusbarheight: 20,
+            sortable: true,
+            filterable: true,
+            showtoolbar: true,
+            rendertoolbar: function (toolbar) {
+                // ADICIONAMOS BOTONES A LA BARRA DE ESTADOS
+                var container = $("<div style='overflow: hidden; position: relative; margin: 1px;'></div>");
+                var ButtonGuardar = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='images/Botones/nuevo42.gif' th:src='@{images/Botones/nuevo42.gif' width=18 height=18 /><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
+                var ButtonExportar = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='images/Botones/pauf42.gif' th:src='@{images/Botones/pauf42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
+                container.append(ButtonGuardar);
+                container.append(ButtonExportar);
+                toolbar.append(container);
+                ButtonGuardar.jqxButton({width: 30, height: 22});
+                ButtonGuardar.jqxTooltip({position: 'bottom', content: "Nueva Asignación"});
+                ButtonExportar.jqxButton({width: 30, height: 22});
+                ButtonExportar.jqxTooltip({position: 'bottom', content: "Exportar Datos"});
+                //ASIGNAMOS LAS FUNCIONES PARA EL BOTON NUEVO
+                ButtonGuardar.click(function (event) {
+                    mode = 'I';
+                    mode2 = null;
+                    codigo = 0;
+                    dataLocalVariacion=[];
+                    fn_cargarDetalleCuota();
+                    fn_CargarBusquedaDetalle();
+                });
+                //ASIGNAMOS LAS FUNCIONES PARA EL BOTON EXPORTAR
+                ButtonExportar.click(function (event) {
+                    $("#div_GrillaPrincipal").jqxGrid('exportdata', 'xlsx', 'AsignacionCombustible');
+                });
+            },
+            columns: [
+                {text: 'CODIGO', datafield: 'codigo', editable: false, width: '10%', align: 'center', cellsAlign: 'center'},
+                {text: 'ASIGNACIÓN', datafield: 'asignacion', editable: false, width: '10%', align: 'center', cellsAlign: 'center'},
+                {text: 'COMBUSTIBLE', datafield: 'combustible', editable: false, width: '10%', align: 'center', cellsAlign: 'center'},
+                {text: 'FECHA', datafield: 'fecha', editable: false, width: '10%', align: 'center', cellsAlign: 'center', cellsformat: 'dd/MM/yyyy'},
+                {text: 'JUSTI.', datafield: 'justificacion', editable: false, width: '25%', align: 'center', cellsAlign: 'center'},
+                {text: 'RECHAZO', datafield: 'rechazo', editable: false, width: '25%', align: 'center', cellsAlign: 'center'},
+                {text: 'ESTADO', datafield: 'estado', editable: false, width: '10%', align: 'center', cellsAlign: 'center'}
+                
+            ]
+        });
+        // DEFINIMOS EL MENU CONTEXTUAL
+        var contextMenu = $("#div_ContextMenu").jqxMenu({width: 200, height: 116, autoOpenPopup: false, mode: 'popup'});
+        $("#div_GrillaPrincipal").on('contextmenu', function () {
+            return false;
+        });
+        // HABILITAMOS LA OPCION DE CLICK DEL MENU CONTEXTUAL.
+        $("#div_GrillaPrincipal").on('rowclick', function (event) {
+            if (event.args.rightclick) {
+                $("#div_GrillaPrincipal").jqxGrid('selectrow', event.args.rowindex);
+                var scrollTop = $(window).scrollTop();
+                var scrollLeft = $(window).scrollLeft();
+                contextMenu.jqxMenu('open', parseInt(event.args.originalEvent.clientX) + 5 + scrollLeft, parseInt(event.args.originalEvent.clientY) + 5 + scrollTop);
+                return false;
+            }
+        });
+        
+        //DEFINIMOS LOS EVENTOS SEGUN LA OPCION DEL MENU CONTEXTUAL
+        $("#div_ContextMenu").on('itemclick', function (event) {
+            var opcion = event.args;
+            if (codigo === null || codigo === '') {
+                $.alert({
+                    theme: 'material',
+                    title: 'AVISO DEL SISTEMA',
+                    content: 'Debe Seleccionar un Registro',
+                    animation: 'zoom',
+                    closeAnimation: 'zoom',
+                    type: 'orange',
+                    typeAnimated: true
+                });
+            } else {
+                if ($.trim($(opcion).text()) === "Editar") {
+                    mode = 'U';
+                    mode2 = null;
+                    fn_CargarBusquedaDetalle();
+                    $('#div_VariacionDetalle').jqxWindow({isModal: true});
+                    $('#div_VariacionDetalle').jqxWindow('open');
+                } else if ($.trim($(opcion).text()) === "Rechazar") {
+                    if (autorizacion === true) {
+                        $.confirm({
+                            theme: 'material',
+                            title: 'RECHAZAR VARIACIÓN',
+                            content: '' +
+                                    '<form action="" class="formName">' +
+                                    '<div class="form-group">' +
+                                    '<label>Motivo : </label>' +
+                                    '<input type="text" placeholder="Ingrese Motivo de Rechazo" class="motivo form-control" required />' +
+                                    '</div>' +
+                                    '</form>',
+                            animation: 'zoom',
+                            closeAnimation: 'zoom',
+                            type: 'blue',
+                            typeAnimated: true,
+                            buttons: {
+                                aceptar: {
+                                    text: 'Aceptar',
+                                    btnClass: 'btn-primary',
+                                    keys: ['enter', 'shift'],
+                                    action: function () {
+                                        var motivo = this.$content.find('.motivo').val();
+                                        if (!motivo) {
+                                            $.alert('Ingrese el Motivo del Rechazo');
+                                            return false;
+                                        }
+                                        mode = 'R';
+                                        fn_GrabarDatosEstados(motivo);
+                                    }
+                                },
+                                cancelar: function () {
+                                }
+                            }
+                        });
+                    } else {
+                        $.alert({
+                            theme: 'material',
+                            title: 'AVISO DEL SISTEMA',
+                            content: 'Usuario no Autorizado para realizar este Tipo de Operación',
+                            animation: 'zoom',
+                            closeAnimation: 'zoom',
+                            type: 'red',
+                            typeAnimated: true
+                        });
+                    }
+                } else if ($.trim($(opcion).text()) === "Aprobar") {
+                    if (autorizacion === true) {
+                        $.confirm({
+                            title: 'AVISO DEL SISTEMA',
+                            content: 'Desea Aprobar esta Variación!',
+                            theme: 'material',
+                            animation: 'zoom',
+                            closeAnimation: 'zoom',
+                            type: 'blue',
+                            typeAnimated: true,
+                            buttons: {
+                                aceptar: {
+                                    text: 'Aceptar',
+                                    btnClass: 'btn-primary',
+                                    keys: ['enter', 'shift'],
+                                    action: function () {
+                                        mode = 'A';
+                                        fn_GrabarDatosEstados('');
+                                    }
+                                },
+                                cancelar: function () {
+                                }
+                            }
+                        });
+                    } else {
+                        $.alert({
+                            theme: 'material',
+                            title: 'AVISO DEL SISTEMA',
+                            content: 'Usuario no Autorizado para realizar este Tipo de Operación',
+                            animation: 'zoom',
+                            closeAnimation: 'zoom',
+                            type: 'red',
+                            typeAnimated: true
+                        });
+                    }
+                    
+                } else if ($.trim($(opcion).text()) === "Anular") {
+                    $.confirm({
+                        title: 'AVISO DEL SISTEMA',
+                        content: 'Desea Anular esta Variación!',
+                        theme: 'material',
+                        animation: 'zoom',
+                        closeAnimation: 'zoom',
+                        type: 'red',
+                        typeAnimated: true,
+                        buttons: {
+                            aceptar: {
+                                text: 'Aceptar',
+                                btnClass: 'btn-primary',
+                                keys: ['enter', 'shift'],
+                                action: function () {
+                                    mode = 'F';
+                                    fn_GrabarDatosEstados('');
+                                }
+                            },
+                            cancelar: function () {
+                            }
+                        }
+                    });
+                }else {
+                    $.alert({
+                        theme: 'material',
+                        title: 'AVISO DEL SISTEMA',
+                        content: 'Opción NO VALIDA!!',
+                        animation: 'zoom',
+                        closeAnimation: 'zoom',
+                        type: 'red',
+                        typeAnimated: true
+                    });
+                }
+            }
+            
+        });
+//        SELECCIONAMOS UN REGISTRO DE LA GRILLA
+        $("#div_GrillaPrincipal").on('rowselect', function (event) {
+            var args = event.args;
+            var row = $("#div_GrillaPrincipal").jqxGrid('getrowdata', args.rowindex);
+            console.log(row);
+            
+            codigo = row.codigo;
+            tipoAsignacionG = row.codigoAsignacion;
+            tipoCombustibleG = row.codigoCombustible;
+
+            $("#cbo_TipoAsignacion").jqxDropDownList('clear');
+            $("#cbo_TipoAsignacion").jqxDropDownList('setContent', row.asignacion);
+            $("#cbo_TipoAsignacion").jqxDropDownList({disabled: true});
+
+            $("#cbo_Combustible").jqxDropDownList('clear');
+            $("#cbo_Combustible").jqxDropDownList('setContent', row.combustible);
+            $("#cbo_Combustible").jqxDropDownList({disabled: true});
+            
+            $("#div_fecVari").jqxDateTimeInput('setDate', new Date());
+//            $("#div_fecVari").jqxDateTimeInput('setDate', new Date(row.fecha));
+            $("#txt_Justificacion").val(row.justificacion);
+            
+        });
+        //CREA LOS ELEMENTOS DE LAS VENTANAS
+        var customButtonsDemo = (function () {
+            function _createElements() {
+                ancho = 800;
+                alto = 590;
+                posicionX = ($(window).width() / 2) - (ancho / 2);
+                posicionY = ($(window).height() / 2) - (alto / 2);
+                $('#div_VariacionDetalle').jqxWindow({
+                    position: {x: posicionX, y: posicionY},
+                    width: ancho, height: alto, resizable: false,
+                    cancelButton: $('#btn_Cerrar'),
+                    initContent: function () {
+                        $("#cbo_TipoAsignacion").jqxDropDownList({width: 300, height: 25, dropDownWidth: 300, promptText: "Seleccione"});
+                        $("#cbo_Combustible").jqxDropDownList({width: 150, height: 25, dropDownWidth: 300, promptText: "Seleccione"});
+                        $("#div_fecVari").jqxDateTimeInput({culture: 'es-PE', animationType: 'fade', width: 150, height: 25});
+                        $("#txt_Justificacion").jqxInput({placeHolder: "JUSTIFICACIÓN", width: 620, height: 60, minLength: 2, maxLength: 200});
+                        $('#btn_GuardarVariacionDetalle').jqxButton({width: '65px', height: 30});
+                        $('#btn_GuardarVariacionDetalle').on('click', function () {
+                            fn_GrabarDatos();
+                        });
+                        $('#btn_Cerrar').jqxButton({width: '65px', height: 30});
+                        $('#btn_Cerrar').on('click', function () {
+                            select=0;
+                            $('#div_GrillaPrincipal').jqxGrid('clearselection');
+                        });
+                    }
+                });
+                
+                ancho = 550;
+                alto = 260;
+                posicionX = ($(window).width() / 2) - (ancho / 2);
+                posicionY = ($(window).height() / 2) - (alto / 2);
+                $('#div_VariacionDetalleTipo').jqxWindow({
+                    position: {x: posicionX, y: posicionY},
+                    width: ancho, height: alto, resizable: false,
+                    cancelButton: $('#btn_CancelarCuotaDetalle'),
+                    initContent: function () {
+                        $("#cbo_Cuota").jqxDropDownList({width: 300, height: 25, dropDownWidth: 300, promptText: "Seleccione"});
+                        $('#cbo_Cuota').on('select', function (event) {
+                            $("#cbo_Dependencia").jqxDropDownList('clear');
+                            $("#cbo_Vehiculo").jqxDropDownList('clear');
+                            if($("#cbo_Cuota").val()==='2'){
+                                fn_cargarComboAjax("#cbo_Dependencia", {mode: 'dependenciaByBrigada', codigo: brigadaG});
+                            }else if($("#cbo_Cuota").val()==='1'){
+                                fn_cargarComboAjax("#cbo_Dependencia", {mode: 'dependenciaByVariacion', codigo: periodoG, codigo2: brigadaG, codigo3: mesG, 
+                                                                                codigo4: tipoAsignacionG, codigo5: tipoCombustibleG});
+                            }
+                            $("#cbo_Dependencia").jqxDropDownList('setContent', 'Seleccione');
+                            $("#cbo_Vehiculo").jqxDropDownList('setContent', 'Seleccione');
+                        });
+                        $("#cbo_Dependencia").jqxDropDownList({width: 300, height: 25, dropDownWidth: 300, promptText: "Seleccione"});
+                        $('#cbo_Dependencia').on('select', function (event) {
+                            $("#cbo_Vehiculo").jqxDropDownList('clear');
+                            if($("#cbo_Cuota").val()==='2'){
+                                fn_cargarComboAjax("#cbo_Vehiculo", {mode: 'vehiculosByPeriodoAndBrigadaAndDependencia', codigo: periodoG, codigo2:brigadaG, codigo3: $("#cbo_Dependencia").val()});
+                            }else if($("#cbo_Cuota").val()==='1'){
+                                fn_cargarComboAjax("#cbo_Vehiculo", {mode: 'vehiculoByVariacion', codigo: periodoG, codigo2: brigadaG, codigo3: mesG, 
+                                                                     codigo4: tipoAsignacionG, codigo5: tipoCombustibleG, codigo6: $("#cbo_Dependencia").val()});
+                            }
+                            $("#cbo_Vehiculo").jqxDropDownList('setContent', 'Seleccione');
+                        });
+                        $("#cbo_Vehiculo").jqxDropDownList({width: 300, height: 25, dropDownWidth: 300, promptText: "Seleccione"});
+                        $("#div_Cantidad").jqxNumberInput({width: 90, height: 25, max: 9999999999, digits: 15, decimalDigits: 0, inputMode: 'simple'});
+                        $("#txt_Justificacion_d").jqxInput({placeHolder: "JUSTIFICACIÓN", width: 400, height: 60, minLength: 2, maxLength: 200});
+                        $('#btn_GuardarCuotaDetalle').jqxButton({width: '65px', height: 30});
+                        $('#btn_CancelarCuotaDetalle').jqxButton({width: '65px', height: 30});
+                        $('#btn_GuardarCuotaDetalle').on('click', function () {
+                            $('#frm_VariacionDetalleTipo').jqxValidator('validate');
+                        });
+                        $('#btn_CancelarCuotaDetalle').on('click', function () {
+                            select2=0;
+                            $('#div_GrillaVariacionDetalle').jqxGrid('clearselection');
+                        });
+                        $('#frm_VariacionDetalleTipo').jqxValidator({
+                            rules: [
+                                {input: '#div_Cantidad', message: 'Ingrese solo numeros!', action: 'keyup, blur', rule: 'number'},
+                                {input: '#txt_Justificacion_d', message: 'Ingrese una justificacion', action: 'keyup, blur', rule: 'required'}
+                            ]
+                        });
+                        $('#frm_VariacionDetalleTipo').jqxValidator({
+                            onSuccess: function () {
+                                fn_GrabarDatosCuotasDetalle();
+                            }
+                        });
+                    }
+                }); 
+            }
+            return {init: function () {
+                    _createElements();
+                }
+            };
+        }());
+        $(document).ready(function () {
+            customButtonsDemo.init();
+        });
+        
+        $("#div_GrillaVariacionDetalle").jqxGrid({
+            width: '100%',
+            height: 380,
+            pageable: true,
+            columnsresize: true,
+            showtoolbar: true,
+            altrows: false,
+            editable: false,
+            autoheight: false,
+            autorowheight: false,
+            sortable: true,
+            rendertoolbar: function (toolbar) {
+                // appends buttons to the status bar.
+                var containerRegistro = $("<div style='overflow: hidden; position: relative; margin: 1px;'></div>");
+                var ButtonNuevoRegistro = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='images/Botones/nuevo42.gif' th:src='@{images/Botones/nuevo42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'></span></div>");
+                var ButtonEditarRegistro = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='images/Botones/update42.gif' th:src='@{images/Botones/update42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'></span></div>");
+                var ButtonEliminaRegistro = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='images/Botones/delete42.gif' th:src='@{images/Botones/delete42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'></span></div>");
+                containerRegistro.append(ButtonNuevoRegistro);
+                containerRegistro.append(ButtonEditarRegistro);
+                containerRegistro.append(ButtonEliminaRegistro);
+                toolbar.append(containerRegistro);
+                ButtonNuevoRegistro.jqxButton({width: 30, height: 22});
+                ButtonNuevoRegistro.jqxTooltip({position: 'bottom', content: "Nuevo Registro"});
+                ButtonEditarRegistro.jqxButton({width: 30, height: 22});
+                ButtonEditarRegistro.jqxTooltip({position: 'bottom', content: "Editar Registro"});
+                ButtonEliminaRegistro.jqxButton({width: 30, height: 22});
+                ButtonEliminaRegistro.jqxTooltip({position: 'bottom', content: "Eliminar Registro"});
+                // add new row.
+                ButtonNuevoRegistro.click(function (event) {
+                    mode2='I';
+                    select2=0;
+                    fn_cargarDetalleCuotaDetalle()
+                });
+                // edit new row.
+                ButtonEditarRegistro.click(function (event) {
+                    if (select2 !== 0) {
+                        mode2 = 'U';
+                        $('#div_VariacionDetalleTipo').jqxWindow({isModal: true});
+                        $('#div_VariacionDetalleTipo').jqxWindow('open');
+                    } else {
+                        $.alert({
+                            theme: 'material',
+                            title: 'AVISO DEL SISTEMA',
+                            content: 'DEBE SELECCIONAR UN REGISTRO',
+                            animation: 'zoom',
+                            closeAnimation: 'zoom',
+                            type: 'orange',
+                            typeAnimated: true
+                        });
+                    }
+                });
+                // desactiva selected row.
+                ButtonEliminaRegistro.click(function (event) {
+                    if (select2 !== 0) {
+                        $.confirm({
+                            title: 'AVISO DEL SISTEMA',
+                            content: 'Desea Eliminar este Registro!',
+                            theme: 'material',
+                            animation: 'zoom',
+                            closeAnimation: 'zoom',
+                            type: 'red',
+                            typeAnimated: true,
+                            buttons: {
+                                aceptar: {
+                                    text: 'Aceptar',
+                                    btnClass: 'btn-primary',
+                                    keys: ['enter', 'shift'],
+                                    action: function () {
+                                        mode2='D';
+                                        fn_GrabarDatosCuotasDetalle();
+                                    }
+                                },
+                                cancelar: function () {
+                                }
+                            }
+                        });
+                    } else {
+                        $.alert({
+                            theme: 'material',
+                            title: 'AVISO DEL SISTEMA',
+                            content: 'DEBE SELECCIONAR UN REGISTRO',
+                            animation: 'zoom',
+                            closeAnimation: 'zoom',
+                            type: 'orange',
+                            typeAnimated: true
+                        });
+                    }
+                });
+            },
+            columns: [
+                {text: 'TIPO', datafield: 'tipoVariacion', width: '20%', align: 'center', cellsAlign: 'center'},
+                {text: 'DEPENDENCIA', datafield: 'dependencia', width: '20%', align: 'center', cellsAlign: 'center', cellclassname: cellclass},
+                {text: 'VEHICULO', datafield: 'vehiculo', width: '20%', align: 'center', cellsAlign: 'center', cellclassname: cellclass},
+                {text: 'CANTIDAD', datafield: 'cantidad', width: '20%', align: 'center', cellsAlign: 'center'},
+                {text: 'JUSTIFICACIÓN', datafield: 'justificacion', width: '20%', align: 'center', cellsAlign: 'center'}
+            ]
+        });
+        $("#div_GrillaVariacionDetalle").on('rowselect', function (event) {
+            var args = event.args;
+            var rowDet = $("#div_GrillaVariacionDetalle").jqxGrid('getrowdata', args.rowindex);
+            console.log(rowDet);
+            select2=1;
+            tipoG=rowDet.codigoTipoVariacion;
+            dependenciaG=rowDet.codigoDependencia;
+            vehiculoG=rowDet.codigoVehiculo;
+            
+            $("#cbo_Cuota").jqxDropDownList('setContent', rowDet.tipoVariacion);
+            $("#cbo_Cuota").jqxDropDownList({disabled: true});
+            $("#cbo_Dependencia").jqxDropDownList('setContent', rowDet.dependencia);
+            $("#cbo_Dependencia").jqxDropDownList({disabled: true});
+            $("#cbo_Vehiculo").jqxDropDownList('setContent', rowDet.vehiculo);
+            $("#cbo_Vehiculo").jqxDropDownList({disabled: true});
+            $("#div_Cantidad").val(rowDet.cantidad)
+            $("#txt_Justificacion_d").val(rowDet.justificacion)
+            
+        });
+    });
+
+    function fn_cargarDetalleCuota() {
+        
+        if(periodoG!==null && brigadaG!==null && mesG!==null){
+            codigo=0;
+            select2=0;
+            tipoAsignacionG=0;
+            tipoCombustibleG=0;
+            
+            $("#cbo_TipoAsignacion").jqxDropDownList('clear');
+            fn_cargarComboAjax("#cbo_TipoAsignacion", {mode: 'tipoAsignacionByPeriodo', codigo: $('#cbo_Periodo').val()});
+            $("#cbo_TipoAsignacion").jqxDropDownList('setContent', 'Seleccione');
+            $("#cbo_TipoAsignacion").jqxDropDownList({disabled: false});
+            
+            $("#cbo_Combustible").jqxDropDownList('clear');
+            fn_cargarComboAjax("#cbo_Combustible", {mode: 'tipoCombustible'});
+            $("#cbo_Combustible").jqxDropDownList('setContent', 'Seleccione');
+            $("#cbo_Combustible").jqxDropDownList({disabled: false});
+
+            $("#div_fecVari").jqxDateTimeInput('setDate', new Date());
+            $("#txt_Justificacion").val('');
+
+            $('#div_GrillaVariacionDetalle').jqxGrid('clear');
+            $('#div_VariacionDetalle').jqxWindow({isModal: true});
+            $('#div_VariacionDetalle').jqxWindow('open');
+        }else{
+            $.alert({
+                theme: 'material',
+                title: 'AVISO DEL SISTEMA',
+                content: 'DEBE REALIZAR UN BUSQUEDA PARA CREAR UN NUEVO REGISTRO',
+                animation: 'zoom',
+                closeAnimation: 'zoom',
+                type: 'orange',
+                typeAnimated: true
+            });
+        }
+        
+        
+    }
+    
+    function fn_cargarDetalleCuotaDetalle() {
+        
+        if( $('#cbo_TipoAsignacion').val()>0 && $('#cbo_Combustible').val()>0){
+            tipoAsignacionG = $('#cbo_TipoAsignacion').val();
+            tipoCombustibleG= $('#cbo_Combustible').val();
+            $("#cbo_Cuota").val(0);
+            $("#cbo_Cuota").jqxDropDownList({disabled: false});
+            
+            $("#cbo_Dependencia").jqxDropDownList('clear');
+            $("#cbo_Dependencia").jqxDropDownList('setContent', 'Seleccione');
+            $("#cbo_Dependencia").jqxDropDownList({disabled: false});
+            
+            $("#cbo_Vehiculo").jqxDropDownList('clear');
+            $("#cbo_Vehiculo").jqxDropDownList('setContent', 'Seleccione');
+            $("#cbo_Vehiculo").jqxDropDownList({disabled: false});
+            
+            
+            $("#div_Cantidad").val('')
+            $("#txt_Justificacion_d").val('')
+            
+            
+            $('#div_VariacionDetalleTipo').jqxWindow({isModal: true});
+            $('#div_VariacionDetalleTipo').jqxWindow('open');
+        }else{
+          if(mode === 'I'){
+            $.alert({
+                theme: 'material',
+                title: 'AVISO DEL SISTEMA',
+                content: 'DEBE SELECCIONAR UN TIPO DE ASIGNACION Y TIPO DE COMBUSTIBLE PARA GENERAR UN NUEVO REGISTRO',
+                animation: 'zoom',
+                closeAnimation: 'zoom',
+                type: 'orange',
+                typeAnimated: true
+            });  
+          }else{
+            $("#cbo_Cuota").val(0);
+            $("#cbo_Cuota").jqxDropDownList({disabled: false});
+            
+            $("#cbo_Dependencia").jqxDropDownList('clear');
+            $("#cbo_Dependencia").jqxDropDownList('setContent', 'Seleccione');
+            $("#cbo_Dependencia").jqxDropDownList({disabled: false});
+            
+            $("#cbo_Vehiculo").jqxDropDownList('clear');
+            $("#cbo_Vehiculo").jqxDropDownList('setContent', 'Seleccione');
+            $("#cbo_Vehiculo").jqxDropDownList({disabled: false});
+            
+            
+            $("#div_Cantidad").val('')
+            $("#txt_Justificacion_d").val('')
+            
+            
+            $('#div_VariacionDetalleTipo').jqxWindow({isModal: true});
+            $('#div_VariacionDetalleTipo').jqxWindow('open'); 
+          }  
+          
+        }
+        
+        
+    }
+    
+    
+    //FUNCION PARA ACTUALIZAR DATOS DE LA GRILLA
+    function fn_CargarBusqueda() {
+        var source = {
+            dataType: "json",
+            datafields: [
+                {name: 'codigo', type: "string"},
+                {name: 'codigoPeriodo', type: "string"},
+                {name: 'brigada', type: "string"},
+                {name: 'codigoBrigada', type: "string"},
+                {name: 'mes', type: "string"},
+                {name: 'codigoMes', type: "string"},
+                {name: 'asignacion', type: "string"},
+                {name: 'codigoAsignacion', type: "string"},
+                {name: 'combustible', type: "string"},
+                {name: 'codigoCombustible', type: "string"},
+                {name: 'fecha', type: "string"},
+                {name: 'justificacion', type: "string"},
+                {name: 'rechazo', type: "string"},
+                {name: 'estado', type: "string"}
+            ],
+            id: 'codigo',
+            url: "VariacionDetalle",
+            data: {mode: 'G', periodo: $('#cbo_Periodo').val(), mes: $('#cbo_Mes').val(), brigada: $('#cbo_Brigada').val()}
+        };
+        periodoG= $('#cbo_Periodo').val();
+        brigadaG= $('#cbo_Brigada').val();
+        mesG= $('#cbo_Mes').val();
+        var dataAdapter = new $.jqx.dataAdapter(source);
+        $("#div_GrillaPrincipal").jqxGrid({source: dataAdapter});
+        if ($('#div_GrillaPrincipal').jqxGrid('getselectedrowindex') >= 0)
+            $('#div_GrillaPrincipal').jqxGrid('clearselection');
+    }
+    
+    function fn_CargarBusquedaDetalle() {
+        var source = null;
+        if(mode !== 'I' && mode2 === null){
+            
+            $.ajax({
+                type: "GET",
+                url: "VariacionDetDetalle",
+                data: {mode: 'G', codigo: codigo},
+                success: function (data) {
+                    dataLocalVariacion = JSON.parse(data);
+                    source = {
+                        dataType: "json",
+                        datafields: [
+                            {name: 'dependencia', type: "string"},
+                            {name: 'codigoDependencia', type: "string"},
+                            {name: 'vehiculo', type: "string"},
+                            {name: 'codigoVehiculo', type: "string"},
+                            {name: 'tipoVariacion', type: "string"},
+                            {name: 'codigoTipoVariacion', type: "string"},
+                            {name: 'cantidad', type: "string"},
+                            {name: 'justificacion', type: "string"}
+                        ],
+                        id: 'vehiculo',
+                        localdata: dataLocalVariacion
+                    };
+                    var dataAdapter = new $.jqx.dataAdapter(source);
+                    $("#div_GrillaVariacionDetalle").jqxGrid({source: dataAdapter});
+                    if ($('#div_GrillaVariacionDetalle').jqxGrid('getselectedrowindex') >= 0)
+                        $('#div_GrillaVariacionDetalle').jqxGrid('clearselection');
+                    
+                }
+            });
+            
+        }else {
+          source = {
+                dataType: "json",
+                datafields: [
+                    {name: 'dependencia', type: "string"},
+                    {name: 'codigoDependencia', type: "string"},
+                    {name: 'vehiculo', type: "string"},
+                    {name: 'codigoVehiculo', type: "string"},
+                    {name: 'tipoVariacion', type: "string"},
+                    {name: 'codigoTipoVariacion', type: "string"},
+                    {name: 'cantidad', type: "string"},
+                    {name: 'justificacion', type: "string"}
+                ],
+                id: 'vehiculo',
+                localdata: dataLocalVariacion
+            };
+            var dataAdapter = new $.jqx.dataAdapter(source);
+            $("#div_GrillaVariacionDetalle").jqxGrid({source: dataAdapter});
+            if ($('#div_GrillaVariacionDetalle').jqxGrid('getselectedrowindex') >= 0)
+                $('#div_GrillaVariacionDetalle').jqxGrid('clearselection');
+        }
+        
+    }
+
+    //FUNCION PARA GRABAR LOS DATOS DE LA VENTANA PRINCIPAL
+    function fn_GrabarDatos() {
+        
+        var rows = $('#div_GrillaVariacionDetalle').jqxGrid('getrows');
+        var total = null;
+        if(rows.length > 0){
+            total = 0;
+        }
+        
+        for (var i = 0; i < rows.length; i++) {
+            var row = rows[i];
+            if(row.codigoTipoVariacion === '1'){
+                total = total - parseInt(row.cantidad);
+            }else{
+                total = total + parseInt(row.cantidad);
+            }
+        }
+        
+        if(total===null || total!==0){
+            $.alert({
+                theme: 'material',
+                title: 'AVISO DEL SISTEMA',
+                content: 'LOS TIPOS DE VARIACIÓN DEBEN TOTALIZAR 0',
+                animation: 'zoom',
+                closeAnimation: 'zoom',
+                type: 'orange',
+                typeAnimated: true
+            });
+            return;
+        }else{
+            var lista = [];
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+                var result = row.codigoDependencia+"-"+row.codigoVehiculo+"-"+row.codigoTipoVariacion+"-"+row.cantidad+"-"+row.justificacion;
+                lista.push(result);
+            }
+
+            var listFinal = JSON.stringify(lista).replaceAll('"', '').replaceAll('[', '').replaceAll(']', '');
+        }
+        
+        var json2 = {mode: mode, codigo: codigo, periodo: periodoG, brigada: brigadaG, mes: mesG,
+                   asignacion: tipoAsignacionG, combustible: tipoCombustibleG, fecha: $('#div_fecVari').val(), justificacion: $('#txt_Justificacion').val(),
+                   rechazo: '', lista: listFinal };
+        console.log(json2);       
+        
+        $.ajax({
+            type: "GET",
+            url: "IduVariacion",
+            data: {mode: mode, codigo: codigo, periodo: periodoG, brigada: brigadaG, mes: mesG,
+                   asignacion: tipoAsignacionG, combustible: tipoCombustibleG, fecha: $('#div_fecVari').val(), justificacion: $('#txt_Justificacion').val(),
+                   rechazo: '', lista: listFinal },
+            success: function (data) {
+                msg = data;
+                if (msg === "GUARDO") {
+                    $.confirm({
+                        title: 'AVISO DEL SISTEMA',
+                        content: 'Datos procesados correctamente!!',
+                        type: 'green',
+                        typeAnimated: true,
+                        autoClose: 'cerrarAction|1000',
+                        buttons: {
+                            cerrarAction: {
+                                text: 'Cerrar',
+                                action: function () {
+                                    $('#div_VariacionDetalle').jqxWindow('close');
+                                    fn_CargarBusqueda();
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    $.alert({
+                        theme: 'material',
+                        title: 'AVISO DEL SISTEMA',
+                        content: msg,
+                        animation: 'zoom',
+                        closeAnimation: 'zoom',
+                        type: 'red',
+                        typeAnimated: true
+                    });
+                }
+            }
+        });
+    }
+    
+    function fn_GrabarDatosEstados(txtRechazar) {
+        
+        var json2 = {mode: mode, codigo: codigo, periodo: periodoG, brigada: brigadaG, mes: mesG,
+                   asignacion: tipoAsignacionG, combustible: tipoCombustibleG, fecha: null, justificacion: null,
+                   rechazo: txtRechazar, lista: null};
+        console.log(json2);       
+        
+        $.ajax({
+            type: "GET",
+            url: "IduVariacion",
+            data: {mode: mode, codigo: codigo, periodo: periodoG, brigada: brigadaG, mes: mesG,
+                   asignacion: tipoAsignacionG, combustible: tipoCombustibleG, fecha: null, justificacion: null,
+                   rechazo: txtRechazar, lista: null},
+            success: function (data) {
+                msg = data;
+                if (msg === "GUARDO") {
+                    $.confirm({
+                        title: 'AVISO DEL SISTEMA',
+                        content: 'Datos procesados correctamente!!',
+                        type: 'green',
+                        typeAnimated: true,
+                        autoClose: 'cerrarAction|1000',
+                        buttons: {
+                            cerrarAction: {
+                                text: 'Cerrar',
+                                action: function () {
+                                    fn_CargarBusqueda();
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    $.alert({
+                        theme: 'material',
+                        title: 'AVISO DEL SISTEMA',
+                        content: msg,
+                        animation: 'zoom',
+                        closeAnimation: 'zoom',
+                        type: 'red',
+                        typeAnimated: true
+                    });
+                }
+            }
+        });
+    }
+    
+    function fn_GrabarDatosCuotasDetalle(){
+        var json = null;
+        
+        if(mode2 === 'I'){
+           var vali=0; 
+           for(var i=0 ; i < dataLocalVariacion.length ; i++){
+                if(dataLocalVariacion[i].codigoVehiculo === $('#cbo_Vehiculo').val()){
+                    vali=1;
+                   break; 
+                }
+            }
+            
+           if(vali !== 1){
+                var placa = $('#cbo_Vehiculo').text().replaceAll('Seleccione', '').toUpperCase().split('-');
+                json     = { 
+                             dependencia: $('#cbo_Dependencia').text().replaceAll('Seleccione', '').toUpperCase(),
+                             codigoDependencia: $('#cbo_Dependencia').val(),
+                             vehiculo: placa[0]+'-'+placa[1],
+                             codigoVehiculo: $('#cbo_Vehiculo').val(),
+                             tipoVariacion: $('#cbo_Cuota').text().replaceAll('Seleccione', '').toUpperCase(),
+                             codigoTipoVariacion: $('#cbo_Cuota').val(),
+                             cantidad: $('#div_Cantidad').val(),
+                             justificacion: $('#txt_Justificacion_d').val().toUpperCase()
+                         } 
+                 dataLocalVariacion[dataLocalVariacion.length] = json;        
+                 $('#div_VariacionDetalleTipo').jqxWindow('close');
+                 fn_CargarBusquedaDetalle();
+           } else{
+                $.alert({
+                        theme: 'material',
+                        title: 'AVISO DEL SISTEMA',
+                        content: 'ESTE VEHICULO YA ESTA INGRESADO',
+                        animation: 'zoom',
+                        closeAnimation: 'zoom',
+                        type: 'red',
+                        typeAnimated: true
+                    });
+           }
+           
+        }else if (mode2 === 'U'){
+           json     = { 
+                        dependencia: $('#cbo_Dependencia').text().replaceAll('Seleccione', '').toUpperCase(),
+                        codigoDependencia: dependenciaG,
+                        vehiculo: $('#cbo_Vehiculo').text().replaceAll('Seleccione', '').toUpperCase(),
+                        codigoVehiculo: vehiculoG,
+                        tipoVariacion: $('#cbo_Cuota').text().replaceAll('Seleccione', '').toUpperCase(),
+                        codigoTipoVariacion: tipoG,
+                        cantidad: $('#div_Cantidad').val(),
+                        justificacion: $('#txt_Justificacion_d').val().toUpperCase()
+                    }
+            for(var i=0 ; i < dataLocalVariacion.length ; i++){
+                if(dataLocalVariacion[i].codigoVehiculo === vehiculoG){
+                   dataLocalVariacion[i]=json; 
+                   break; 
+                }
+            }        
+            $('#div_VariacionDetalleTipo').jqxWindow('close');
+            fn_CargarBusquedaDetalle();
+        }else {
+            for(var i=0 ; i < dataLocalVariacion.length ; i++){
+                if(dataLocalVariacion[i].codigoVehiculo === vehiculoG){
+                   dataLocalVariacion.splice(i, 1);
+                   break; 
+                }
+            }
+            fn_CargarBusquedaDetalle();
+        }
+        
+    }
+   
+</script>
+<div id='div_Titulo' style="border: none;">
+    <div class="jqx-hideborder">LISTADOS DE ASIGNACIÓN DE COMBUSTIBLE</div>
+    <div>
+        <div id="div_Cabecera">
+            <table class="navy">
+                <tbody>
+                    <tr> 
+                        <td class="Titulo">Período : </td>
+                        <td>
+                            <select id="cbo_Periodo" name="cbo_Periodo">
+                                <option value="0">Seleccione</option>
+                                <span th:each="periodo : ${session.objPeriodos}">
+                                    <option th:value="${periodo.codigo}"><span th:text="${periodo.codigo}"> </span></option>
+                                </span>
+                            </select>
+                        </td>
+                        <td class="Titulo">Brigada : </td>
+                        <td>
+                            <select id="cbo_Brigada" name="cbo_Brigada">
+                                <option value="0">Seleccione</option>
+                                <span th:each="mes : ${session.objBrigadas}">
+                                    <option th:value="${mes.codigo}"><span th:text="${mes.descripcion}"> </span></option>
+                                </span>
+                            </select>
+                        </td>
+                        <td class="Titulo">Mes : </td>
+                        <td>
+                            <select id="cbo_Mes" name="cbo_Mes">
+                                <option value="0">Seleccione</option>
+                                <span th:each="mes : ${session.objMeses}">
+                                    <option th:value="${mes.codigo}"><span th:text="${mes.descripcion}"> </span></option>
+                                </span>
+                            </select>
+                        </td>
+                        <td><a href="javascript: fn_CargarBusqueda();"><img src="images/Botones/refresh42.gif" alt="Buscar Datos" name="imgrefresh" width="30" height="28" border="0" id="imgrefresh"></a></td>
+                        <td><a href="javascript: fn_MenuPrincipal();"><img src="images/Botones/exit42.gif" alt="Salir de pantalla" name="imgexit" width="30" height="28"  border="0" id="imgexit" /></a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div id="div_GrillaPrincipal"></div>
+    </div>
+</div>
+<div id="div_VariacionDetalle" style="display: none">
+    <div>
+        <span style="float: left">ASIGNACIÓN DE VARIACIÓN DETALLE</span>
+    </div>
+    <div style="overflow: hidden">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+                <td class="inputlabel">TIPO ASIGNACIÓN : </td>
+                <td colspan="3">
+                    <select id="cbo_TipoAsignacion" name="cbo_TipoAsignacion">
+                        <option value="0">Seleccione</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="inputlabel">TIPO COMBUSTIBLE : </td>
+                <td>
+                    <select id="cbo_Combustible" name="cbo_Combustible">
+                        <option value="0">Seleccione</option>
+                    </select>
+                </td>
+                <td class="inputlabel">FECHA : </td>
+                <td><div id="div_fecVari"></div></td>
+            </tr>
+            <tr>
+                <td class="inputlabel">JUSTIFICACIÓN : </td>
+                <td colspan="3"><textarea id="txt_Justificacion" class="text-input" name="txt_Justificacion" style="text-transform: uppercase;"></textarea></td>
+            </tr>
+            <tr>
+                <td colspan="4"><div id="div_GrillaVariacionDetalle"> </div></td>
+            </tr>
+            <tr>
+                <td class="Summit" colspan="4">
+                    <div>
+                        <input type="button" id="btn_GuardarVariacionDetalle" value="Guardar" style="margin-right: 20px" />
+                        <input type="button" id="btn_Cerrar" value="Cerrar" style="margin-right: 20px"/>
+                    </div>
+                </td>
+            </tr>
+        </table> 
+        <div style="display: none" id="div_VariacionDetalleTipo">
+            <div>
+                <span style="float: left">Datos de Tipo de Asignación</span>
+            </div>
+            <div style="overflow: hidden">
+                <form id="frm_VariacionDetalleTipo" name="frm_VariacionDetalleTipo" method="post" >
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                        <tr>
+                            <td class="inputlabel">TIPO : </td>
+                            <td colspan="3">
+                                <select id="cbo_Cuota" name="cbo_Cuota">
+                                    <option value="0">Seleccione</option>
+                                    <option value="1">Anulación</option>
+                                    <option value="2">Credito</option>
+                                </select>
+                            </td> 
+                        </tr>
+                        <tr>
+                            <td class="inputlabel">DEPENDENCIA : </td>
+                            <td colspan="3">
+                                <select id="cbo_Dependencia" name="cbo_Dependencia">
+                                    <option value="0">Seleccione</option>
+                                </select>
+                            </td> 
+                        </tr>
+                        <tr>
+                            <td class="inputlabel">VEHICULO : </td>
+                            <td colspan="3">
+                                <select id="cbo_Vehiculo" name="cbo_Vehiculo">
+                                    <option value="0">Seleccione</option>
+                                </select>
+                            </td> 
+                            
+                        </tr>
+                        <tr>
+                            <td class="inputlabel">Cantidad : </td>
+                            <td><div id="div_Cantidad"></div></td>
+                        </tr>
+                        <tr>
+                            <td class="inputlabel">JUSTIFICACIÓN : </td>
+                            <td><textarea id="txt_Justificacion_d" class="text-input" name="txt_Justificacion_d" style="text-transform: uppercase;"></textarea></td>
+                        </tr>
+                        <tr>
+                            <td class="Summit" colspan="4">
+                                <div>
+                                    <input type="button" id="btn_GuardarCuotaDetalle" value="Guardar" style="margin-right: 20px" />
+                                    <input type="button" id="btn_CancelarCuotaDetalle"  value="Cancelar" style="margin-right: 20px"/>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div id='div_ContextMenu' style='display: none;'>
+    <ul>
+        <li style="font-weight: bold;">Editar</li>
+        <li style="color: brown; font-weight: bold;">Rechazar</li>
+        <li style="color: blue; font-weight: bold;">Aprobar</li>
+        <li style="font-weight: bold;">Anular</li>
+    </ul>
+</div>
+
+

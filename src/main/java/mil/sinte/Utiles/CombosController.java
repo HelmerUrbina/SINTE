@@ -65,7 +65,9 @@ public class CombosController {
             case "rol":
                 return new Gson().toJson(combosService.getRol());
             case "vehiculosByBrigada":
-                return new Gson().toJson(combosService.getVehiculosByBrigadaAndPeriodo(codigo, Utiles.checkNum(codigo2)));
+                return new Gson().toJson(combosService.getVehiculosByPeriodoAndBrigadas(codigo, Utiles.checkNum(codigo2)));
+            case "vehiculosByPeriodoAndBrigadaAndDependencia":
+                return new Gson().toJson(combosService.getVehiculosByPeriodoAndBrigadasAndDependencia(codigo, Utiles.checkNum(codigo2), codigo3));
             case "vehiculosByPeriodo":
                 return new Gson().toJson(combosService.getVehiculosByPeriodo(codigo));
             case "vehiculosByPeriodoBrigada":
@@ -75,9 +77,16 @@ public class CombosController {
             case "tipoCombustibleByVehiculo":
                 return new Gson().toJson(combosService.getTipoCombustibleByVehiculo(codigo3));
             case "meses":
-                return new Gson().toJson(combosService.getMeses());    
+                return new Gson().toJson(combosService.getMeses());
             case "vehiculosByAsignacionCombustible":
-                return new Gson().toJson(combosService.getVehiculoByAsignacionCombustible(codigo, Integer.parseInt(codigo2), String.valueOf(codigo3), Integer.parseInt(codigo4), Integer.parseInt(codigo5),Integer.parseInt(codigo6)));        
+                return new Gson().toJson(combosService.getVehiculoByAsignacionCombustible(codigo, Integer.parseInt(codigo2), String.valueOf(codigo3), Integer.parseInt(codigo4), Integer.parseInt(codigo5), Integer.parseInt(codigo6)));
+            case "combsutibleByVariacion":
+                return new Gson().toJson(combosService.getCombsutibleByVariacion(codigo, Integer.parseInt(codigo2), String.valueOf(codigo3), Integer.parseInt(codigo4)));    
+            case "vehiculoByVariacion":
+                return new Gson().toJson(combosService.getVehiculoByVariacion(codigo, Integer.parseInt(codigo2), String.valueOf(codigo3), Integer.parseInt(codigo4),Integer.parseInt(codigo5),Integer.parseInt(codigo6)));    
+            case "dependenciaByVariacion":
+                return new Gson().toJson(combosService.getDependenciaByVariacion(codigo, Integer.parseInt(codigo2), String.valueOf(codigo3), Integer.parseInt(codigo4),Integer.parseInt(codigo5)));    
+                
             default:
                 return "ERROR";
         }

@@ -9,9 +9,8 @@ import com.google.gson.Gson;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import mil.sinte.BusinessServices.Beans.BeanAsignacionCombustible;
-import mil.sinte.BusinessServices.Beans.BeanAsignacionCombustibleD;
+import mil.sinte.BusinessServices.Beans.BeanAsignacionCombustibleDetalle;
 import mil.sinte.BusinessServices.Beans.BeanMatrizAsignacion;
-import mil.sinte.DataService.Service.AsignacionCombustibleDService;
 import mil.sinte.DataService.Service.AsignacionCombustibleService;
 import mil.sinte.Utiles.Utiles;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +18,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import mil.sinte.DataService.Service.AsignacionCombustibleDetalleService;
 
 /**
  *
@@ -32,7 +32,7 @@ public class AsignacionCombustibleController {
     private AsignacionCombustibleService asignacionCombustibleService;
     
     @Autowired
-    private AsignacionCombustibleDService asignacionCombustibleDService;
+    private AsignacionCombustibleDetalleService asignacionCombustibleDService;
     
     @RequestMapping(value = "/AsignacionCombustible")
     public String getAsignacionCombustible(String mode) {
@@ -50,7 +50,7 @@ public class AsignacionCombustibleController {
             case "asignacionCombustibleAprobacion":
                 return "ClaseIII/AsignacionCombustibleAprobacion";
             case "asignacionCombustibleAprobacionII":
-                return "ClaseIII/AsignacionCombustibleAprobacionII";    
+                return "ClaseIII/AsignacionCombustibleAprobacionII";
             default:
                 return "redirect:/";
         }
@@ -147,7 +147,7 @@ public class AsignacionCombustibleController {
             @RequestParam("cantidad") Integer cantidad,
             @RequestParam("solicitado") Integer solicitado
             ) {
-        BeanAsignacionCombustibleD objAsignacionCombustibleD = new BeanAsignacionCombustibleD();
+        BeanAsignacionCombustibleDetalle objAsignacionCombustibleD = new BeanAsignacionCombustibleDetalle();
         objAsignacionCombustibleD.setPeriodo(periodo);
         objAsignacionCombustibleD.setBrigada(brigada);
         objAsignacionCombustibleD.setMes(mes);
@@ -183,7 +183,7 @@ public class AsignacionCombustibleController {
             @RequestParam("tipoCombustible") String tipoCombustible,
             @RequestParam("arrayDetalle") String arrayDetalle
             ) {
-        BeanAsignacionCombustibleD objAsignacionCombustibleD = new BeanAsignacionCombustibleD();
+        BeanAsignacionCombustibleDetalle objAsignacionCombustibleD = new BeanAsignacionCombustibleDetalle();
         objAsignacionCombustibleD.setPeriodo(periodo);
         objAsignacionCombustibleD.setBrigada(brigada);
         objAsignacionCombustibleD.setMes(mes);

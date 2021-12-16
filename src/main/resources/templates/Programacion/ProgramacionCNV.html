@@ -202,6 +202,9 @@
                     cancelButton: $('#btn_CancelarFinal'),
                     initContent: function () {
                         $("#cbo_Dependencia").jqxDropDownList({animationType: 'fade', width: 380, dropDownWidth: 450, height: 25});
+                        $('#cbo_Dependencia').on('change', function () {
+                            fn_cargarComboAjax("#cbo_Vehiculo", {mode: 'vehiculosByPeriodoAndBrigadaAndDependencia', codigo: periodo, codigo2: brigada, codigo3: $('#cbo_Dependencia').val()});
+                        });
                         $("#cbo_Vehiculo").jqxDropDownList({animationType: 'fade', width: 380, dropDownWidth: 450, height: 25});
                         $('#cbo_Vehiculo').on('change', function () {
                             fn_cargarComboAjax("#cbo_TipoCombustible", {mode: 'tipoCombustibleByVehiculo', codigo3: $('#cbo_Vehiculo').val()});
@@ -285,7 +288,6 @@
             customButtonsDemo.init();
             fn_RefrescarCNV();
             fn_cargarComboAjax("#cbo_Dependencia", {mode: 'dependenciaByBrigada', codigo: brigada});
-            fn_cargarComboAjax("#cbo_Vehiculo", {mode: 'vehiculosByPeriodoBrigada', codigo: periodo, codigo3: brigada});
         });
         //FUNCION PARA REFRESCAR LA PANTALLA
         function fn_RefrescarCNV() {

@@ -57,9 +57,9 @@
             rendertoolbar: function (toolbar) {
                 // ADICIONAMOS BOTONES A LA BARRA DE ESTADOS
                 var container = $("<div style='overflow: hidden; position: relative; margin: 1px;'></div>");
-                var ButtonGuardar = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='/images/Botones/save42.gif' th:src='@{/images/Botones/save42.gif' width=18 height=18 /><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
-                var ButtonExportar = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='/images/Botones/pauf42.gif' th:src='@{/images/Botones/pauf42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
-                var ButtonCerrar = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='/images/Botones/bien42.gif' th:src='@{/images/Botones/bien42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
+                var ButtonGuardar = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='images/Botones/save42.gif' th:src='@{images/Botones/save42.gif' width=18 height=18 /><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
+                var ButtonExportar = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='images/Botones/pauf42.gif' th:src='@{images/Botones/pauf42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
+                var ButtonCerrar = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='images/Botones/bien42.gif' th:src='@{images/Botones/bien42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
                 container.append(ButtonGuardar);
                 container.append(ButtonExportar);
                 container.append(ButtonCerrar);
@@ -266,7 +266,7 @@
                     commit(true);
             },*/
             id: 'brigadaCodigo',
-            url: "../AsignacionCombustibleAIIDetalle",
+            url: "AsignacionCombustibleAIIDetalle",
             data: {mode: 'G', periodo: $('#cbo_Periodo').val(), mes: $('#cbo_Mes').val(), tipoAsignacion: $('#cbo_TipoAsignacion').val()}
         };
         var dataAdapter = new $.jqx.dataAdapter(source);
@@ -301,7 +301,7 @@
         
         $.ajax({
             type: "GET",
-            url: "../IduAsignacionCombustibleAprobacion2",
+            url: "IduAsignacionCombustibleAprobacion2",
             data: {mode: mode, periodo: periodoS, mes: mesS,
                 tipoAsignacion: tipoAsignacionS, arrayDetalle: listFinal},
             success: function (data) {
@@ -369,8 +369,8 @@
                                 <option value="0">Seleccione</option>
                             </select>
                         </td>
-                        <td><a href="javascript: fn_CargarBusqueda();"><img src="../images/Botones/refresh42.gif" alt="Buscar Datos" name="imgrefresh" width="30" height="28" border="0" id="imgrefresh"></a></td>
-                        <td><a href="javascript: fn_MenuPrincipal();"><img src="../images/Botones/exit42.gif" alt="Salir de pantalla" name="imgexit" width="30" height="28"  border="0" id="imgexit" /></a></td>
+                        <td><a href="javascript: fn_CargarBusqueda();"><img src="images/Botones/refresh42.gif" alt="Buscar Datos" name="imgrefresh" width="30" height="28" border="0" id="imgrefresh"></a></td>
+                        <td><a href="javascript: fn_MenuPrincipal();"><img src="images/Botones/exit42.gif" alt="Salir de pantalla" name="imgexit" width="30" height="28"  border="0" id="imgexit" /></a></td>
                     </tr>
                 </tbody>
             </table>

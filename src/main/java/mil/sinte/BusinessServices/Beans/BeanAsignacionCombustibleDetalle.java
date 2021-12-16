@@ -12,9 +12,9 @@ import lombok.Data;
  * @author MERCANTIL GROUP SAC
  */
 @Entity
-@Table(name = "SINTE_ASIGNACION_COMBUSTIBLE")
+@Table(name = "SINTE_ASIGNACION_DETALLE")
 @Data
-public class BeanAsignacionCombustible implements Serializable {
+public class BeanAsignacionCombustibleDetalle implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -30,18 +30,21 @@ public class BeanAsignacionCombustible implements Serializable {
     @Column(name = "NTIPO_ASIGNACION_CODIGO")
     private String tipoAsignacion;
 
-    @Id
     @Column(name = "NTIPO_COMBUSTIBLE_CODIGO")
     private String tipoCombustible;
 
-    @Column(name = "NASIGNACION_CANTIDAD")
+    @Column(name = "NDEPENDENCIA_CODIGO")
+    private String dependencia;
+
+    @Id
+    @Column(name = "NVEHICULO_CODIGO")
+    private String vehiculo;
+
+    @Column(name = "NASIGNACION_DETALLE_CANTIDAD")
     private Integer cantidad;
 
-    @Column(name = "NASIGNACION_SOLICITADO")
+    @Column(name = "NASIGNACION_DETALLE_SOLICITADO")
     private Integer solicitado;
-
-    @Column(name = "CESTADO_CODIGO")
-    private String estado;
 
     @Column(name = "VUSUARIO_CREADOR")
     private String usuarioCreador;
@@ -51,8 +54,5 @@ public class BeanAsignacionCombustible implements Serializable {
 
     @Column(name = "VUSUARIO_CODIGO")
     private String usuarioCodigo;
-
-    @Column(name = "DUSUARIO_FECHA")
-    private String usuarioFecha;
 
 }
