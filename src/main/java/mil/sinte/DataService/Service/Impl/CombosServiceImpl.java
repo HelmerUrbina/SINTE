@@ -186,4 +186,19 @@ public class CombosServiceImpl implements CombosService {
         return combosDAO.getDependenciaByVariacion(periodo, brigada, mes, tipoAsignacion, tipoCombustible);
     }
 
+    @Override
+    public List<BeanCombos> getDependenciaByComision(String periodo, Integer brigada, String mes, Integer tipoAsignacion) {
+        return combosDAO.getDependenciaByComision(periodo, brigada, mes, tipoAsignacion);
+    }
+
+    @Override
+    public List<BeanCombos> getVehiculoByComision(String periodo, Integer brigada, String mes, Integer tipoAsignacion, Integer dependencia) {
+        return combosDAO.getVehiculoByComision(periodo, brigada, mes, tipoAsignacion, dependencia);
+    }
+
+    @Override
+    public List<BeanCombos> getCombustibleByComision(String periodo, Integer brigada, String mes, Integer tipoAsignacion, Integer dependencia, Integer vehiculo) {
+        return combosDAO.getCombustibleByComision(periodo, brigada, mes, tipoAsignacion, dependencia, vehiculo);
+    }
+
 }
