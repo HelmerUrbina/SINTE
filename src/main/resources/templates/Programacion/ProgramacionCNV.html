@@ -35,6 +35,8 @@
             showfilterrow: true,
             editable: false,
             showtoolbar: true,
+            showstatusbar: true,
+            showaggregates: true,
             statusbarheight: 25,
             rendertoolbar: function (toolbar) {
                 // appends buttons to the status bar.
@@ -94,12 +96,15 @@
                 },
                 {text: 'DEPENDENCIA', dataField: 'dependencia', columngroup: 'Titulo', filtertype: 'checkedlist', width: '10%', align: 'center', cellsAlign: 'left'},
                 {text: 'VEHÍCULO', dataField: 'vehiculo', columngroup: 'Titulo', width: '12%', align: 'center', cellsAlign: 'center'},
-                {text: 'TIPO COMBUSTIBLE', dataField: 'tipoCombustible', columngroup: 'Titulo', filtertype: 'checkedlist', width: '15%', align: 'center', cellsAlign: 'left'},
-                {text: 'PRECIO', dataField: 'precio', columngroup: 'Titulo', width: '10%', align: 'center', cellsAlign: 'right', cellsFormat: 'f2', cellclassname: cellclass},
-                {text: 'CANTIDAD', dataField: 'cantidad', columngroup: 'Titulo', width: '9%', align: 'center', cellsAlign: 'right', cellsFormat: 'f2', cellclassname: cellclass},
-                {text: 'TOTAL', dataField: 'total', columngroup: 'Titulo', width: '13%', align: 'center', cellsAlign: 'right', cellsFormat: 'f2', cellclassname: cellclass},
-                {text: 'D GLOBAL', dataField: 'demandaGlobal', columngroup: 'Titulo', width: '9%', align: 'center', cellsAlign: 'right', cellsFormat: 'f2', cellclassname: cellclass},
-                {text: 'TOTAL D GLOBAL', dataField: 'totalDemandaGlobal', columngroup: 'Titulo', width: '13%', align: 'center', cellsAlign: 'right', cellsFormat: 'f2', cellclassname: cellclass},
+                {text: 'TIPO COMBUSTIBLE', dataField: 'tipoCombustible', columngroup: 'Titulo', filtertype: 'checkedlist', width: '15%', align: 'center', cellsAlign: 'left', aggregates: [{'<b>Totales : </b>':
+                                    function () {
+                                        return "";
+                                    }}]},
+                {text: 'PRECIO', dataField: 'precio', columngroup: 'Titulo', width: '10%', align: 'center', cellsAlign: 'right', cellsFormat: 'f2', cellclassname: cellclass, aggregates: ['sum']},
+                {text: 'CANTIDAD', dataField: 'cantidad', columngroup: 'Titulo', width: '9%', align: 'center', cellsAlign: 'right', cellsFormat: 'f2', cellclassname: cellclass, aggregates: ['sum']},
+                {text: 'TOTAL', dataField: 'total', columngroup: 'Titulo', width: '13%', align: 'center', cellsAlign: 'right', cellsFormat: 'f2', cellclassname: cellclass, aggregates: ['sum']},
+                {text: 'D GLOBAL', dataField: 'demandaGlobal', columngroup: 'Titulo', width: '9%', align: 'center', cellsAlign: 'right', cellsFormat: 'f2', cellclassname: cellclass, aggregates: ['sum']},
+                {text: 'TOTAL D GLOBAL', dataField: 'totalDemandaGlobal', columngroup: 'Titulo', width: '13%', align: 'center', cellsAlign: 'right', cellsFormat: 'f2', cellclassname: cellclass, aggregates: ['sum']},
                 {text: 'ESTADO', dataField: 'estado', columngroup: 'Titulo', filtertype: 'checkedlist', width: '6%', align: 'center', cellsAlign: 'center'}
             ],
             columngroups: [
@@ -311,6 +316,7 @@
             };
             var dataAdapter = new $.jqx.dataAdapter(source);
             $("#div_GrillaCNV").jqxGrid({source: dataAdapter});
+            $('#div_GrillaCNV').jqxGrid('clearselection');
         }
         //FUNCION PARA CARGAR VENTANA PARA EDITAR REGISTRO
         function fn_EditarCNV() {

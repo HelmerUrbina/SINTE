@@ -97,11 +97,11 @@
                 {text: 'SERIE MOTOR', dataField: 'serieMotor', width: '13%', align: 'center', cellsAlign: 'center'},
                 {text: 'TIPO', dataField: 'tipo', filtertype: 'checkedlist', width: '10%', align: 'center', cellsAlign: 'center', cellclassname: cellclass},
                 {text: 'CLASE', dataField: 'clase', filtertype: 'checkedlist', width: '10%', align: 'center', cellsAlign: 'center', cellclassname: cellclass},
-                {text: 'MARCA', dataField: 'marca', filtertype: 'checkedlist', width: '10%', align: 'center', cellsAlign: 'center'},
-                {text: 'MODELO', dataField: 'modelo', filtertype: 'checkedlist', width: '10%', align: 'center', cellsAlign: 'center'},
+                {text: 'MARCA', dataField: 'marca', filtertype: 'checkedlist', width: '10%', align: 'center', cellsAlign: 'center', cellclassname: cellclass},
+                {text: 'MODELO', dataField: 'modelo', filtertype: 'checkedlist', width: '10%', align: 'center', cellsAlign: 'center', cellclassname: cellclass},
                 {text: 'TRANSMISIÓN', dataField: 'transmision', filtertype: 'checkedlist', width: '6%', align: 'center', cellsAlign: 'center'},
-                {text: 'AÑO FAB.', dataField: 'fabricacion', filtertype: 'checkedlist', width: '6%', align: 'center', cellsAlign: 'center'},
-                {text: 'COLOR', dataField: 'color', filtertype: 'checkedlist', width: '8%', align: 'center', cellsAlign: 'center'},
+                {text: 'AÑO FAB.', dataField: 'fabricacion', width: '6%', align: 'center', cellsAlign: 'center'},
+                {text: 'COLOR', dataField: 'color', width: '8%', align: 'center', cellsAlign: 'center'},
                 {text: 'ESTADO', dataField: 'estado', filtertype: 'checkedlist', width: '5%', align: 'center', cellsAlign: 'center'}
             ]
         });
@@ -457,7 +457,7 @@
                         });
                     }
                 });
-                 // activa selected row.
+                // activa selected row.
                 ButtonActivarRegistro.click(function (event) {
                     if (codigoCombustible !== 0) {
                         $.confirm({
@@ -498,7 +498,7 @@
             columns: [
                 {text: 'TIPO COMBUSTIBLE', datafield: 'vehiculo', width: '50%', align: 'center', cellsAlign: 'center', cellclassname: cellclass},
                 {text: 'CAPACIDAD', dataField: 'capacidad', width: '30%', align: 'center', cellsAlign: 'center', cellsFormat: 'f1', cellclassname: cellclass},
-                {text: 'ESTADO', datafield: 'estado', filtertype: 'checkedlist', width: '20%', align: 'center', cellsAlign: 'center'}
+                {text: 'ESTADO', datafield: 'estado',  width: '20%', align: 'center', cellsAlign: 'center'}
             ]
         });
         $("#div_GrillaTipoCombustible").on('rowselect', function (event) {
@@ -654,7 +654,7 @@
                 {text: 'FECH. INICIO', datafield: 'inicio', width: '15%', align: 'center', cellsAlign: 'center', cellsformat: 'dd/MM/yyyy'},
                 {text: 'FECH. FIN', datafield: 'fin', width: '15%', align: 'center', cellsAlign: 'center', cellsformat: 'dd/MM/yyyy'},
                 {text: 'TIPO', datafield: 'tipo', width: '10%', align: 'center', cellsAlign: 'center'},
-                {text: 'ESTADO', datafield: 'estado', filtertype: 'checkedlist', width: '10%', align: 'center', cellsAlign: 'center'}
+                {text: 'ESTADO', datafield: 'estado', width: '10%', align: 'center', cellsAlign: 'center'}
             ]
         });
         $("#div_GrillaSoat").on('rowselect', function (event) {

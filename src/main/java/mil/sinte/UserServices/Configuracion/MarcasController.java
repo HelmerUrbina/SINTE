@@ -25,7 +25,7 @@ public class MarcasController {
     @RequestMapping(value = "/Marcas")
     public String getMarcas(String mode) {
         switch (mode) {
-            case "marcas":
+            case "Marcas":
                 return "Configuracion/Marcas";
             default:
                 return "redirect:/";

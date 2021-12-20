@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mil.sinte.UserServices.ClaseIII;
 
 import com.google.gson.Gson;
@@ -26,13 +21,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @Slf4j
 public class AsignacionVariacionController {
-    
+
     @Autowired
     private VariacionService variacionService;
-    
+
     @Autowired
     private VariacionDetService variacionDetService;
-    
+
     @RequestMapping(value = "/AsignacionVariacion")
     public String getAsignacionVariacion(String mode) {
         switch (mode) {
@@ -42,7 +37,7 @@ public class AsignacionVariacionController {
                 return "redirect:/";
         }
     }
-    
+
     @RequestMapping(value = "/VariacionDetalle")
     @ResponseBody
     public String getVariacionDetalle(String mode, String periodo, String brigada, String mes) {
@@ -83,10 +78,10 @@ public class AsignacionVariacionController {
         sdf.setLenient(false); //No Complaciente en Fecha
         java.util.Date fechaInicio = sdf.parse(Utiles.checkFecha(fecha));
         obj.setFecha(new java.sql.Date(fechaInicio.getTime()));
-        
+
         return "" + variacionService.guardarVariacion(obj, Utiles.getUsuario(), mode);
     }
-    
+
     @RequestMapping(value = "/VariacionDetDetalle")
     @ResponseBody
     public String getVariacionDetDetalle(String mode, String codigo) {
@@ -97,5 +92,5 @@ public class AsignacionVariacionController {
                 return "ERROR";
         }
     }
-    
+
 }

@@ -26,6 +26,12 @@
             fn_CargarBusqueda();
         });
         fn_cargarComboxCabecera("#cbo_TipoAsignacion", {mode: 'tipoAsignacionByPeriodo', codigo: $('#cbo_Periodo').val()});
+        //DEFINIMOS LOS ESTILOS DE LAS GRILLAS
+        var cellclass = function (row, datafield, value, rowdata) {
+            if (datafield === "total") {
+                return "RowBlue";
+            }
+        };
         //DEFINIMOS LOS CAMPOS Y DATOS DE LA GRILLA
         $("#div_GrillaPrincipal").jqxGrid({
             width: '99.8%',
@@ -41,6 +47,9 @@
             showfilterrow: true,
             showtoolbar: true,
             editable: false,
+            showstatusbar: true,
+            showaggregates: true,
+            statusbarheight: 25,
             rendertoolbar: function (toolbar) {
                 // ADICIONAMOS BOTONES A LA BARRA DE ESTADOS
                 var container = $("<div style='overflow: hidden; position: relative; margin: 1px;'></div>");
@@ -84,7 +93,11 @@
             },
             columns: [
                 {text: 'CODIGO', dataField: 'eventoPrincipal', width: '10%', align: 'center', cellsAlign: 'center'},
-                {text: 'EVENTO PRINCIPAL', dataField: 'eventoPrincipalNombre', width: '65%', align: 'center', cellsAlign: 'left'},
+                {text: 'EVENTO PRINCIPAL', dataField: 'eventoPrincipalNombre', width: '50%', align: 'center', cellsAlign: 'left', aggregates: [{'<b>Totales : </b>':
+                                    function () {
+                                        return "";
+                                    }}]},
+                {text: 'TOTAL', dataField: 'total', width: '15%', align: 'center', cellsAlign: 'right', cellsFormat: 'f2', cellclassname: cellclass, aggregates: ['sum']},
                 {text: 'NIVELES', dataField: 'niveles', width: '15%', align: 'center', cellsAlign: 'center'},
                 {text: 'ESTADO', dataField: 'estado', filtertype: 'checkedlist', width: '10%', align: 'center', cellsAlign: 'center'}
             ]
@@ -254,6 +267,7 @@
                 {name: 'eventoPrincipalNombre', type: "string"},
                 {name: 'nivel', type: "string"},
                 {name: 'niveles', type: "string"},
+                {name: 'total', type: "number"},
                 {name: 'estado', type: "string"}
             ],
             id: 'codigo',

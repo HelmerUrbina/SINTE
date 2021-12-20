@@ -43,6 +43,9 @@
             showfilterrow: true,
             showtoolbar: true,
             editable: false,
+            showstatusbar: true,
+            showaggregates: true,
+            statusbarheight: 25,
             rendertoolbar: function (toolbar) {
                 // ADICIONAMOS BOTONES A LA BARRA DE ESTADOS
                 var container = $("<div style='overflow: hidden; position: relative; margin: 1px;'></div>");
@@ -89,9 +92,12 @@
                         return "<div style='margin: 6px; text-align: center;'>" + (value + 1) + "</div>";
                     }
                 },
-                {text: 'BRIGADA', dataField: 'brigadaNombre', width: '48%', align: 'center', cellsAlign: 'left', cellclassname: cellclass},
-                {text: 'CANTIDAD (GAL)', dataField: 'cantidad', width: '20%', align: 'center', cellsAlign: 'right', cellsFormat: 'f2', cellclassname: cellclass},
-                {text: 'IMPORTE', dataField: 'importe', width: '20%', align: 'center', cellsAlign: 'right', cellsFormat: 'f2', cellclassname: cellclass},
+                {text: 'BRIGADA', dataField: 'brigadaNombre', width: '48%', align: 'center', cellsAlign: 'left', cellclassname: cellclass, aggregates: [{'<b>Totales : </b>':
+                                    function () {
+                                        return "";
+                                    }}]},
+                {text: 'CANTIDAD (GAL)', dataField: 'cantidad', width: '20%', align: 'center', cellsAlign: 'right', cellsFormat: 'f2', cellclassname: cellclass, aggregates: ['sum']},
+                {text: 'IMPORTE', dataField: 'importe', width: '20%', align: 'center', cellsAlign: 'right', cellsFormat: 'f2', cellclassname: cellclass, aggregates: ['sum']},
                 {text: 'ESTADO', dataField: 'estado', filtertype: 'checkedlist', width: '10%', align: 'center', cellsAlign: 'center'}
             ]
         });

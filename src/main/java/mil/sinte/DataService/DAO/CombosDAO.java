@@ -236,7 +236,7 @@ public interface CombosDAO extends CrudRepository<BeanCombos, String> {
             + "FROM SINTE_ASIGNACION_COMBUSTIBLE WHERE "
             + "CPERIODO_CODIGO=?1 AND "
             + "NBRIGADA_CODIGO=?2 AND CMES_CODIGO =?3\n"
-            + "                                            AND NTIPO_ASIGNACION_CODIGO =?4)\n"
+            + "        AND NTIPO_ASIGNACION_CODIGO =?4)\n"
             + "  ORDER BY CODIGO")
     List<BeanCombos> getTipoCombustibleByAsignacionCombustible(String anio, Integer brigada, String mes, Integer tipoAsignacion);
 
@@ -247,68 +247,67 @@ public interface CombosDAO extends CrudRepository<BeanCombos, String> {
             + "   AND NBRIGADA_CODIGO =?2\n "
             + "   AND NDEPENDENCIA_CODIGO =?6\n "
             + "   AND NVEHICULO_CODIGO NOT IN (SELECT NVEHICULO_CODIGO\n"
-            + "                                  FROM SINTE_ASIGNACION_DETALLE \n"
-            + "                                 WHERE CPERIODO_CODIGO =?1\n"
-            + "                                   AND NBRIGADA_CODIGO =?2\n"
-            + "                                   AND CMES_CODIGO =?3\n"
-            + "                                   AND NTIPO_ASIGNACION_CODIGO =?4\n"
-            + "                                   AND NTIPO_COMBUSTIBLE_CODIGO =?5\n"
-            + "                                   AND NDEPENDENCIA_CODIGO =?6)\n"
+            + "           FROM SINTE_ASIGNACION_DETALLE \n"
+            + "         WHERE CPERIODO_CODIGO =?1\n"
+            + "      AND NBRIGADA_CODIGO =?2\n"
+            + "     AND CMES_CODIGO =?3\n"
+            + "          AND NTIPO_ASIGNACION_CODIGO =?4\n"
+            + "         AND NTIPO_COMBUSTIBLE_CODIGO =?5\n"
+            + "         AND NDEPENDENCIA_CODIGO =?6)\n"
             + "   AND NVEHICULO_CODIGO IN (SELECT NVEHICULO_CODIGO  \n"
-            + "                                  FROM SINTE_VEHICULOS_TIPO_COMBUSTIB\n"
-            + "                                 WHERE NTIPO_COMBUSTIBLE_CODIGO =?5)"
+            + "       FROM SINTE_VEHICULOS_TIPO_COMBUSTIB\n"
+            + "         WHERE NTIPO_COMBUSTIBLE_CODIGO =?5)"
             + "  ORDER BY CODIGO")
     List<BeanCombos> getVehiculoByAsignacionCombustible(String anio, Integer brigada, String mes, Integer tipoAsignacion, Integer tipoCombustible, Integer dependencia);
-    
-    @Query(nativeQuery = true, value =  "SELECT NTIPO_COMBUSTIBLE_CODIGO CODIGO,\n" +
-                                        "       VTIPO_COMBUSTIBLE_DESCRIPCION DESCRIPCION\n" +
-                                        "  FROM SINTE_TIPO_COMBUSTIBLE\n" +
-                                        " WHERE NTIPO_COMBUSTIBLE_CODIGO NOT IN (SELECT NTIPO_COMBUSTIBLE_CODIGO\n" +
-                                        "                                           FROM SINTE_ASIGNACION_VARIACION\n" +
-                                        "                                          WHERE CPERIODO_CODIGO =?1\n" +
-                                        "                                            AND NBRIGADA_CODIGO = ?2\n" +
-                                        "                                            AND CMES_CODIGO = ?3\n" +
-                                        "                                            AND NTIPO_ASIGNACION_CODIGO = ?4)\n" +
-                                        "   AND CESTADO_CODIGO='AC'                                              \n" +
-                                        " ORDER BY CODIGO")
+
+    @Query(nativeQuery = true, value = "SELECT NTIPO_COMBUSTIBLE_CODIGO CODIGO,\n"
+            + "       VTIPO_COMBUSTIBLE_DESCRIPCION DESCRIPCION\n"
+            + "  FROM SINTE_TIPO_COMBUSTIBLE\n"
+            + " WHERE NTIPO_COMBUSTIBLE_CODIGO NOT IN (SELECT NTIPO_COMBUSTIBLE_CODIGO\n"
+            + "            FROM SINTE_ASIGNACION_VARIACION\n"
+            + "    WHERE CPERIODO_CODIGO =?1\n"
+            + "       AND NBRIGADA_CODIGO = ?2\n"
+            + "           AND CMES_CODIGO = ?3\n"
+            + "           AND NTIPO_ASIGNACION_CODIGO = ?4)\n"
+            + "   AND CESTADO_CODIGO='AC'            \n"
+            + " ORDER BY CODIGO")
     List<BeanCombos> getCombsutibleByVariacion(String periodo, Integer brigada, String mes, Integer tipoAsignacion);
-    
-    @Query(nativeQuery = true, value =  "SELECT UTIL.FUN_VEHICULO(AD.NVEHICULO_CODIGO) \n" +
-                                        "       ||' - Gal.' || \n" +
-                                        "(TO_NUMBER(AD.NASIGNACION_DETALLE_CANTIDAD) - \n" +
-                                        "  UTIL.FUN_COMISIONES_VEHICULO(AD.CPERIODO_CODIGO, AD.NBRIGADA_CODIGO, \n" +
-                                        "                       	  AD.CMES_CODIGO,AD.NTIPO_ASIGNACION_CODIGO, AD.NTIPO_COMBUSTIBLE_CODIGO,\n" +
-                                        "       			  AD.NDEPENDENCIA_CODIGO, AD.NVEHICULO_CODIGO) -\n" +
-                                        "  UTIL.FUN_VAR_ANULACION_VEHICULO(AD.CPERIODO_CODIGO, AD.NBRIGADA_CODIGO, \n" +
-                                        "                      		  AD.CMES_CODIGO,AD.NTIPO_ASIGNACION_CODIGO, AD.NTIPO_COMBUSTIBLE_CODIGO,\n" +
-                                        "           			  AD.NDEPENDENCIA_CODIGO, AD.NVEHICULO_CODIGO)\n" +
-                                        "                        ) DESCRIPCION,\n" +
-                                        "       AD.NVEHICULO_CODIGO CODIGO\n" +
-                                        "  FROM SINTE_ASIGNACION_DETALLE AD\n" +
-                                        " WHERE AD.CPERIODO_CODIGO = ?1\n" +
-                                        "   AND AD.NBRIGADA_CODIGO = ?2\n" +
-                                        "   AND AD.CMES_CODIGO = ?3\n" +
-                                        "   AND AD.NTIPO_ASIGNACION_CODIGO = ?4\n" +
-                                        "   AND AD.NTIPO_COMBUSTIBLE_CODIGO = ?5\n" +
-                                        "   AND AD.NDEPENDENCIA_CODIGO = ?6")
+
+    @Query(nativeQuery = true, value = "SELECT UTIL.FUN_VEHICULO(AD.NVEHICULO_CODIGO) \n"
+            + "       ||' - Gal.' || \n"
+            + "(TO_NUMBER(AD.NASIGNACION_DETALLE_CANTIDAD) - \n"
+            + "  PK_SINTE.FUN_COMISIONES_VEHICULO(AD.CPERIODO_CODIGO, AD.NBRIGADA_CODIGO, \n"
+            + "      AD.CMES_CODIGO,AD.NTIPO_ASIGNACION_CODIGO, AD.NTIPO_COMBUSTIBLE_CODIGO,\n"
+            + "     AD.NDEPENDENCIA_CODIGO, AD.NVEHICULO_CODIGO) -\n"
+            + "  PK_SINTE.FUN_VAR_ANULACION_VEHICULO(AD.CPERIODO_CODIGO, AD.NBRIGADA_CODIGO, \n"
+            + "     AD.CMES_CODIGO,AD.NTIPO_ASIGNACION_CODIGO, AD.NTIPO_COMBUSTIBLE_CODIGO,\n"
+            + "          AD.NDEPENDENCIA_CODIGO, AD.NVEHICULO_CODIGO)\n"
+            + "      ) DESCRIPCION,\n"
+            + "       AD.NVEHICULO_CODIGO CODIGO\n"
+            + "  FROM SINTE_ASIGNACION_DETALLE AD\n"
+            + " WHERE AD.CPERIODO_CODIGO = ?1\n"
+            + "   AND AD.NBRIGADA_CODIGO = ?2\n"
+            + "   AND AD.CMES_CODIGO = ?3\n"
+            + "   AND AD.NTIPO_ASIGNACION_CODIGO = ?4\n"
+            + "   AND AD.NTIPO_COMBUSTIBLE_CODIGO = ?5\n"
+            + "   AND AD.NDEPENDENCIA_CODIGO = ?6")
     List<BeanCombos> getVehiculoByVariacion(String periodo, Integer brigada, String mes, Integer tipoAsignacion, Integer tipoCombustible, Integer dependencia);
-    
-    @Query(nativeQuery = true, value =  "SELECT NDEPENDENCIA_CODIGO CODIGO,\n" +
-                                        "      VDEPENDENCIA_ABREVIATURA DESCRIPCION\n" +
-                                        " FROM SINTE_DEPENDENCIAS\n" +
-                                        "WHERE CESTADO_CODIGO = 'AC'\n" +
-                                        "  AND NBRIGADA_CODIGO = ?2\n" +
-                                        "  AND NDEPENDENCIA_CODIGO IN (SELECT NDEPENDENCIA_CODIGO\n" +
-                                        "                              FROM SINTE_ASIGNACION_DETALLE\n" +
-                                        "                             WHERE CPERIODO_CODIGO = ?1\n" +
-                                        "                               AND NBRIGADA_CODIGO = ?2\n" +
-                                        "                               AND CMES_CODIGO = ?3\n" +
-                                        "                               AND NTIPO_ASIGNACION_CODIGO = ?4\n" +
-                                        "                               AND NTIPO_COMBUSTIBLE_CODIGO = ?5\n" +
-                                        "                               AND NASIGNACION_DETALLE_CANTIDAD > 0\n" +
-                                        "                             GROUP BY NDEPENDENCIA_CODIGO)\n" +
-                                        "ORDER BY CODIGO")
+
+    @Query(nativeQuery = true, value = "SELECT NDEPENDENCIA_CODIGO CODIGO,\n"
+            + "      VDEPENDENCIA_ABREVIATURA DESCRIPCION\n"
+            + " FROM SINTE_DEPENDENCIAS\n"
+            + "WHERE CESTADO_CODIGO = 'AC'\n"
+            + "  AND NBRIGADA_CODIGO = ?2\n"
+            + "  AND NDEPENDENCIA_CODIGO IN (SELECT NDEPENDENCIA_CODIGO\n"
+            + "                              FROM SINTE_ASIGNACION_DETALLE\n"
+            + "                             WHERE CPERIODO_CODIGO = ?1\n"
+            + "                               AND NBRIGADA_CODIGO = ?2\n"
+            + "                               AND CMES_CODIGO = ?3\n"
+            + "                               AND NTIPO_ASIGNACION_CODIGO = ?4\n"
+            + "                               AND NTIPO_COMBUSTIBLE_CODIGO = ?5\n"
+            + "                               AND NASIGNACION_DETALLE_CANTIDAD > 0\n"
+            + "                             GROUP BY NDEPENDENCIA_CODIGO)\n"
+            + "ORDER BY CODIGO")
     List<BeanCombos> getDependenciaByVariacion(String periodo, Integer brigada, String mes, Integer tipoAsignacion, Integer tipoCombustible);
-    
-    
+
 }

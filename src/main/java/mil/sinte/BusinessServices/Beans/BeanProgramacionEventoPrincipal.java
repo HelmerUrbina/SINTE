@@ -43,6 +43,9 @@ public class BeanProgramacionEventoPrincipal implements Serializable {
     @Column(name = "NEVENTO_PRINCIPAL_NIVELES")
     private Integer niveles;
 
+    @Column(name = "NEVENTO_PRINCIPAL_TOTAL")
+    private Double total;
+
     @Column(name = "CEVENTO_PRINCIPAL_FINAL")
     private String isFinal;
 

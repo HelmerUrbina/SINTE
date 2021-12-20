@@ -33,9 +33,9 @@
                 return "RowGreen";
             }
         };
-        $("#cbo_Periodo").jqxComboBox({theme: theme, autoOpen: true, promptText: "Seleccione", width: 150, dropDownWidth: 150, height: 20});
-        $("#cbo_Mes").jqxComboBox({theme: theme, autoOpen: true, promptText: "Seleccione", width: 150, dropDownWidth: 150, height: 20});
-        $("#cbo_Brigada").jqxComboBox({theme: theme, autoOpen: true, promptText: "Seleccione", width: 150, dropDownWidth: 150, height: 20});
+        $("#cbo_Periodo").jqxComboBox({theme: theme, autoOpen: true, promptText: "Seleccione", width: 150, dropDownWidth: 180, height: 25});
+        $("#cbo_Mes").jqxComboBox({theme: theme, autoOpen: true, promptText: "Seleccione", width: 150, dropDownWidth: 180, height: 25});
+        $("#cbo_Brigada").jqxComboBox({theme: theme, autoOpen: true, promptText: "Seleccione", width: 150, dropDownWidth: 250, height: 25});
         var fecha = new Date();
         $("#cbo_Mes").jqxComboBox('selectItem', fecha.getMonth()+1);
         $("#cbo_Periodo").jqxComboBox('selectItem', fecha.getFullYear());
@@ -52,7 +52,7 @@
         //DEFINIMOS LOS CAMPOS Y DATOS DE LA GRILLA
         $("#div_GrillaPrincipal").jqxGrid({
             width: '99.8%',
-            height: ($(window).height() - 95),
+            height: ($(window).height() - 90),
             pageable: true,
             columnsresize: true,
             enabletooltips: true,
@@ -907,8 +907,8 @@
                         <td>
                             <select id="cbo_Brigada" name="cbo_Brigada">
                                 <option value="0">Seleccione</option>
-                                <span th:each="mes : ${session.objBrigadas}">
-                                    <option th:value="${mes.codigo}"><span th:text="${mes.descripcion}"> </span></option>
+                                <span th:each="brigada : ${session.objBrigadasAll}">
+                                    <option th:value="${brigada.codigo}"><span th:text="${brigada.descripcion}"> </span></option>
                                 </span>
                             </select>
                         </td>

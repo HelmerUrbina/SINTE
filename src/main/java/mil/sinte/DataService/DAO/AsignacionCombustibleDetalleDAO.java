@@ -55,7 +55,7 @@ public interface AsignacionCombustibleDetalleDAO extends JpaRepository<BeanAsign
             + "       '' CMES_CODIGO,\n"
             + "       '' NTIPO_ASIGNACION_CODIGO,\n"
             + "       '' NTIPO_COMBUSTIBLE_CODIGO,\n"
-            + "       UTIL.FUN_TIPO_DEPENDENCIA_ABREVIATU(NDEPENDENCIA_CODIGO) NDEPENDENCIA_CODIGO,\n"
+            + "       UTIL.FUN_DEPENDENCIA_ABREVIATURA(NBRIGADA_CODIGO,NDEPENDENCIA_CODIGO) NDEPENDENCIA_CODIGO,\n"
             + "       UTIL.FUN_VEHICULO(NVEHICULO_CODIGO) NVEHICULO_CODIGO,\n"
             + "       NASIGNACION_DETALLE_CANTIDAD,\n"
             + "       NASIGNACION_DETALLE_SOLICITADO,\n"

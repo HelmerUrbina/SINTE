@@ -1,19 +1,3 @@
-<<<<<<< HEAD
-server.port=8090
-logging.pattern.dateformat=hh:mm
-spring.main.banner-mode=off
-spring.thymeleaf.cache=false
-#Oracle conexion
-spring.datasource.url= jdbc:oracle:thin:@localhost:1521:xe
-spring.datasource.username=SINTE
-spring.datasource.password=SINTE
-spring.datasource.driver-class-name=oracle.jdbc.OracleDriver
-#hibernate config
-spring.jpa.database-platform=org.hibernate.dialect.Oracle12cDialect
-spring.jpa.hibernate.use-new-id-generator-mappings=false
-#Mostrar sql
-logging.level.org.hibernate.SQL=DEBUG
-=======
 #Spring configuration
 server.port=80
 server.servlet.context-path=/SYSCOM
@@ -23,8 +7,13 @@ spring.main.banner-mode=off
 spring.thymeleaf.cache=false
 #Oracle conexion
 #spring.datasource.url= jdbc:oracle:thin:@SERVER2012:1521:ORCL
+
 #spring.datasource.url= jdbc:oracle:thin:@localhost:1521:xe
 spring.datasource.url= jdbc:oracle:thin:@SERVER2012:1521:ORCL
+
+
+#spring.datasource.url= jdbc:oracle:thin:@SERVER2012:1521:ORCL
+>>>>>>> leonel
 spring.datasource.username=SINTE
 spring.datasource.password=SINTE
 spring.datasource.driver-class-name=oracle.jdbc.OracleDriver
@@ -33,5 +22,4 @@ spring.jpa.database-platform=org.hibernate.dialect.Oracle12cDialect
 spring.jpa.hibernate.use-new-id-generator-mappings=false
 #Mostrar sql
 logging.level.org.hibernate.SQL=DEBUG
->>>>>>> master
 logging.level.org.hibernate.type.descriptor.sql.BasicBinder=TRACE
