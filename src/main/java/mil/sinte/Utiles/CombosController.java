@@ -86,7 +86,12 @@ public class CombosController {
                 return new Gson().toJson(combosService.getVehiculoByVariacion(codigo, Integer.parseInt(codigo2), String.valueOf(codigo3), Integer.parseInt(codigo4),Integer.parseInt(codigo5),Integer.parseInt(codigo6)));    
             case "dependenciaByVariacion":
                 return new Gson().toJson(combosService.getDependenciaByVariacion(codigo, Integer.parseInt(codigo2), String.valueOf(codigo3), Integer.parseInt(codigo4),Integer.parseInt(codigo5)));    
-                
+            case "dependenciaByComision":
+                return new Gson().toJson(combosService.getDependenciaByComision(codigo, Integer.parseInt(codigo2), String.valueOf(codigo3), Integer.parseInt(codigo4)));    
+            case "vehiculoByComision":
+                return new Gson().toJson(combosService.getVehiculoByComision(codigo, Integer.parseInt(codigo2), String.valueOf(codigo3), Integer.parseInt(codigo4),Integer.parseInt(codigo5)));        
+            case "combustibleByComision":
+                return new Gson().toJson(combosService.getCombustibleByComision(codigo, Integer.parseInt(codigo2), String.valueOf(codigo3), Integer.parseInt(codigo4),Integer.parseInt(codigo5),Integer.parseInt(codigo6)));        
             default:
                 return "ERROR";
         }

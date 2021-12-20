@@ -311,4 +311,60 @@ public interface CombosDAO extends CrudRepository<BeanCombos, String> {
     List<BeanCombos> getDependenciaByVariacion(String periodo, Integer brigada, String mes, Integer tipoAsignacion, Integer tipoCombustible);
     
     
+    @Query(nativeQuery = true, value =  "SELECT NDEPENDENCIA_CODIGO CODIGO,\n" +
+                                        "     VDEPENDENCIA_ABREVIATURA DESCRIPCION\n" +
+                                        "FROM SINTE_DEPENDENCIAS\n" +
+                                        "WHERE NBRIGADA_CODIGO = 1\n" +
+                                        " AND CESTADO_CODIGO = 'AC'\n" +
+                                        " AND NDEPENDENCIA_CODIGO IN (SELECT NDEPENDENCIA_CODIGO\n" +
+                                        "                              FROM SINTE_ASIGNACION_DETALLE AD\n" +
+                                        "                             WHERE CPERIODO_CODIGO = ?1\n" +
+                                        "                               AND NBRIGADA_CODIGO = ?2\n" +
+                                        "                               AND CMES_CODIGO = ?3\n" +
+                                        "                               AND NTIPO_ASIGNACION_CODIGO = ?4\n" +
+                                        "                               AND NASIGNACION_DETALLE_CANTIDAD > 0)\n" +
+                                        "ORDER BY CODIGO")
+    List<BeanCombos> getDependenciaByComision(String periodo, Integer brigada, String mes, Integer tipoAsignacion);
+    
+    @Query(nativeQuery = true, value =  " SELECT TA.CODIGO,\n" +
+                                        "        TA.DESCRIPCION\n" +
+                                        "  FROM (SELECT AD.NVEHICULO_CODIGO CODIGO,\n" +
+                                        "               UTIL.FUN_VEHICULO(AD.NVEHICULO_CODIGO)|| ' - '|| \n" +
+                                        "               (UTIL.FUN_ASIGNACION_VEHICULO(AD.CPERIODO_CODIGO, AD.NBRIGADA_CODIGO,\n" +
+                                        "                                              AD.CMES_CODIGO,AD.NTIPO_ASIGNACION_CODIGO,\n" +
+                                        "                                              AD.NDEPENDENCIA_CODIGO, AD.NVEHICULO_CODIGO) -\n" +
+                                        "               UTIL.FUN_COMISIONES_VEHICULO_2(AD.CPERIODO_CODIGO, AD.NBRIGADA_CODIGO,\n" +
+                                        "                                              AD.CMES_CODIGO,AD.NTIPO_ASIGNACION_CODIGO,\n" +
+                                        "                                              AD.NDEPENDENCIA_CODIGO, AD.NVEHICULO_CODIGO) -\n" +
+                                        "               UTIL.FUN_VAR_COMISION_VEHICULO(AD.CPERIODO_CODIGO, AD.NBRIGADA_CODIGO,\n" +
+                                        "                                              AD.CMES_CODIGO,AD.NTIPO_ASIGNACION_CODIGO,\n" +
+                                        "                                              AD.NDEPENDENCIA_CODIGO, AD.NVEHICULO_CODIGO) ) DESCRIPCION\n" +
+                                        "          FROM SINTE_ASIGNACION_DETALLE AD\n" +
+                                        "         WHERE AD.CPERIODO_CODIGO = ?1\n" +
+                                        "           AND AD.NBRIGADA_CODIGO = ?2\n" +
+                                        "           AND AD.CMES_CODIGO = ?3\n" +
+                                        "           AND AD.NTIPO_ASIGNACION_CODIGO = ?4\n" +
+                                        "           AND AD.NDEPENDENCIA_CODIGO = ?5\n" +
+                                        "           AND AD.NASIGNACION_DETALLE_CANTIDAD > 0) TA\n" +
+                                        " GROUP BY TA.CODIGO, TA.DESCRIPCION\n" +
+                                        " ORDER BY TA.CODIGO")
+    List<BeanCombos> getVehiculoByComision(String periodo, Integer brigada, String mes, Integer tipoAsignacion, Integer dependencia);
+    
+    @Query(nativeQuery = true, value =  "SELECT NTIPO_COMBUSTIBLE_CODIGO CODIGO,\n" +
+                                        "       VTIPO_COMBUSTIBLE_ABREVIATURA DESCRIPCION\n" +
+                                        "FROM SINTE_TIPO_COMBUSTIBLE\n" +
+                                        "WHERE CESTADO_CODIGO = 'AC'\n" +
+                                        "AND NTIPO_COMBUSTIBLE_CODIGO IN (SELECT AD.NTIPO_COMBUSTIBLE_CODIGO\n" +
+                                        "                              FROM SINTE_ASIGNACION_DETALLE AD\n" +
+                                        "                             WHERE AD.CPERIODO_CODIGO = '2021'\n" +
+                                        "                               AND AD.NBRIGADA_CODIGO = 1\n" +
+                                        "                               AND AD.CMES_CODIGO = '12'\n" +
+                                        "                               AND AD.NTIPO_ASIGNACION_CODIGO = 2\n" +
+                                        "                               AND AD.NDEPENDENCIA_CODIGO = 1\n" +
+                                        "                               AND AD.NVEHICULO_CODIGO = 12\n" +
+                                        "                               AND AD.NASIGNACION_DETALLE_CANTIDAD > 0)\n" +
+                                        "ORDER BY NTIPO_COMBUSTIBLE_CODIGO")
+    List<BeanCombos> getCombustibleByComision(String periodo, Integer brigada, String mes, Integer tipoAsignacion, Integer dependencia, Integer vehiculo);
+    
+    
 }
