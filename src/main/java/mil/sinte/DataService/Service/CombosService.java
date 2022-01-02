@@ -90,4 +90,8 @@ public interface CombosService {
     public List<BeanCombos> getVehiculoByComision(String periodo, Integer brigada, String mes, Integer tipoAsignacion, Integer dependencia);
 
     public List<BeanCombos> getCombustibleByComision(String periodo, Integer brigada, String mes, Integer tipoAsignacion, Integer dependencia, Integer vehiculo);
+    
+    public List<BeanCombos> getGrifo();
+    
+    public List<BeanCombos> getUsuariosByGrifos(Integer grifo, String periodo);
 }
