@@ -1,5 +1,6 @@
 package mil.sinte.DataService.Service.Impl;
 
+import com.google.gson.Gson;
 import java.util.List;
 import mil.sinte.BusinessServices.Beans.BeanCombos;
 import mil.sinte.DataService.DAO.CombosDAO;
@@ -199,6 +200,16 @@ public class CombosServiceImpl implements CombosService {
     @Override
     public List<BeanCombos> getCombustibleByComision(String periodo, Integer brigada, String mes, Integer tipoAsignacion, Integer dependencia, Integer vehiculo) {
         return combosDAO.getCombustibleByComision(periodo, brigada, mes, tipoAsignacion, dependencia, vehiculo);
+    }
+
+    @Override
+    public List<BeanCombos> getGrifo() {
+        return combosDAO.getGrifoAll();
+    }
+
+    @Override
+    public List<BeanCombos> getUsuariosByGrifos(Integer grifo, String periodo) {
+        return combosDAO.getUsuariosByGrifos(grifo,periodo);
     }
 
 }

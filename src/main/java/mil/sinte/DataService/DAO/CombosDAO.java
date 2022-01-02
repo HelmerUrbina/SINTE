@@ -366,5 +366,26 @@ public interface CombosDAO extends CrudRepository<BeanCombos, String> {
                                         "ORDER BY NTIPO_COMBUSTIBLE_CODIGO")
     List<BeanCombos> getCombustibleByComision(String periodo, Integer brigada, String mes, Integer tipoAsignacion, Integer dependencia, Integer vehiculo);
     
+    @Query(nativeQuery = true, value =  "SELECT NGRIFO_CODIGO CODIGO,\n" +
+                                        "       VGRIFO_NOMBRE DESCRIPCION\n" +
+                                        "  FROM SINTE_GRIFO\n" +
+                                        " WHERE CESTADO_CODIGO = 'AC'\n" +
+                                        " ORDER BY CODIGO")
+    List<BeanCombos> getGrifoAll();
+    
+    
+    @Query(nativeQuery = true, value =  "SELECT VUSUARIO_CODIGO CODIGO,\n" +
+                                        "       VUSUARIO_CODIGO DESCRIPCION\n" +
+                                        "  FROM SINTE_USUARIOS\n" +
+                                        " WHERE CESTADO_CODIGO = 'AC'\n" +
+                                        "   AND NBRIGADA_CODIGO IN (SELECT NBRIGADA_CODIGO\n" +
+                                        "                             FROM SINTE_GRIFO\n" +
+                                        "                            WHERE NGRIFO_CODIGO = ?1)\n" +
+                                        "   AND VUSUARIO_CODIGO NOT IN (SELECT VUSUARIO_CODIGO\n" +
+                                        "                                 FROM SINTE_USUARIO_GRIFO\n" +
+                                        "                                WHERE CPERIODO_CODIGO = ?2)")
+    List<BeanCombos> getUsuariosByGrifos(Integer grifo, String periodo);
+    
+    
     
 }
