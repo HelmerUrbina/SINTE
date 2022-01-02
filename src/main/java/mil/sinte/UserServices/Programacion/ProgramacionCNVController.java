@@ -34,10 +34,10 @@ public class ProgramacionCNVController {
 
     @RequestMapping(value = "/ProgramacionCNVDetalle")
     @ResponseBody
-    public String getTipoAsignacionDetalle(String mode, String periodo, Integer tipoAsignacion, Integer brigada, String eventoPrincipal, Integer eventoFinal) {
+    public String getTipoAsignacionDetalle(String mode, String periodo, Integer tipoAsignacion, Integer brigada, Integer tipoCombustible, String eventoPrincipal, Integer eventoFinal) {
         switch (mode) {
             case "G":
-                return new Gson().toJson(programacionCNVService.getProgramacionCNV(periodo, tipoAsignacion, brigada, eventoPrincipal, eventoFinal));
+                return new Gson().toJson(programacionCNVService.getProgramacionCNV(periodo, tipoAsignacion, brigada, tipoCombustible, eventoPrincipal, eventoFinal));
             default:
                 return "ERROR";
         }

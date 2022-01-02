@@ -17,24 +17,26 @@ import org.springframework.transaction.annotation.Transactional;
 public interface ProgramacionEventoFinalDAO extends JpaRepository<BeanProgramacionEventoFinal, String> {
 
     @Query(nativeQuery = true, value = "SELECT "
-            + "CPERIODO_CODIGO, NTIPO_ASIGNACION_CODIGO, NBRIGADA_CODIGO, VEVENTO_PRINCIPAL_CODIGO, "
-            + "NEVENTO_FINAL_CODIGO, VEVENTO_FINAL_NOMBRE, NEVENTO_FINAL_PRIORIDAD, "
+            + "CPERIODO_CODIGO, NTIPO_ASIGNACION_CODIGO, NBRIGADA_CODIGO, NTIPO_COMBUSTIBLE_CODIGO, "
+            + "VEVENTO_PRINCIPAL_CODIGO, NEVENTO_FINAL_CODIGO, VEVENTO_FINAL_NOMBRE, NEVENTO_FINAL_PRIORIDAD, "
             + "UTIL.FUN_ESTADO_DESCRIPCION(CESTADO_CODIGO) CESTADO_CODIGO "
             + "FROM SINTE_PROG_EVENTO_FINAL WHERE "
             + "CPERIODO_CODIGO=?1 AND "
             + "NTIPO_ASIGNACION_CODIGO=?2 AND "
             + "NBRIGADA_CODIGO=?3 AND "
-            + "VEVENTO_PRINCIPAL_CODIGO=?4  "
+            + "NTIPO_COMBUSTIBLE_CODIGO=?4 AND "
+            + "VEVENTO_PRINCIPAL_CODIGO=?5  "
             + "ORDER BY NEVENTO_FINAL_CODIGO")
-    List<BeanProgramacionEventoFinal> findByPeriodoTipoAsignacionBrigadaEventoPrincipal(String periodo, Integer tipoAsignacion, Integer brigada, String eventoPrincipal);
+    List<BeanProgramacionEventoFinal> findByPeriodoTipoAsignacionBrigadaEventoPrincipal(String periodo, Integer tipoAsignacion, Integer brigada, Integer tipoCombustible, String eventoPrincipal);
 
     @Transactional
     @Modifying
-    @Query(value = "{CALL SP_IDU_PROG_EVENTO_FINAL(:periodo, :tipoAsignacion, :brigada, :eventoPrincipal, :eventoFinal, :eventoFinalNombre, :prioridad, :usuario, :modo)}", nativeQuery = true)
+    @Query(value = "{CALL SP_IDU_PROG_EVENTO_FINAL(:periodo, :tipoAsignacion, :brigada, :tipoCombustible, :eventoPrincipal, :eventoFinal, :eventoFinalNombre, :prioridad, :usuario, :modo)}", nativeQuery = true)
     void sp_programacionEventoFinal(
             @Param("periodo") String periodo,
             @Param("tipoAsignacion") Integer tipoAsignacion,
             @Param("brigada") Integer brigada,
+            @Param("tipoCombustible") Integer tipoCombustible,
             @Param("eventoPrincipal") String eventoPrincipal,
             @Param("eventoFinal") Integer eventoFinal,
             @Param("eventoFinalNombre") String eventoFinalNombre,

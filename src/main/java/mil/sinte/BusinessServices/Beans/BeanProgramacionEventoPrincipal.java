@@ -26,6 +26,9 @@ public class BeanProgramacionEventoPrincipal implements Serializable {
 
     @Column(name = "NBRIGADA_CODIGO", nullable = false)
     private Integer brigada;
+    
+    @Column(name = "NTIPO_COMBUSTIBLE_CODIGO", nullable = false)
+    private Integer tipoCombustible;
 
     @Id
     @Column(name = "VEVENTO_PRINCIPAL_CODIGO", nullable = false)

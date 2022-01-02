@@ -2,6 +2,7 @@
     var periodo = $("#cbo_Periodo").val();
     var tipoAsignacion = $("#cbo_TipoAsignacion").val();
     var brigada = $("#cbo_Brigadas").val();
+    var tipoCombustible = $("#cbo_TipoCombustible").val();
     var modeFinal = null;
     var eventoFinal = null;
     $(document).ready(function () {
@@ -60,6 +61,10 @@
                 });
                 //reporte
                 ButtonReporte.click(function (event) {
+                    var reporte = "PROG0002";
+                    var url = "Reportes?reporte=" + reporte + "&periodo=" + periodo + "&tipoAsignacion=" + tipoAsignacion + "&brigada=" + brigada +
+                            "&tipoCombustible=" + tipoCombustible + "&eventoPrincipal=" + eventoPrincipal + "&codigo=*" ;
+                    $('#div_ReporteViewer').attr('src', url + "&page=hsn#toolbar=1");
                     $('#div_Reporte').jqxWindow({isModal: true, modalOpacity: 0.9});
                     $('#div_Reporte').jqxWindow('open');
                 });
@@ -192,53 +197,6 @@
                         });
                     }
                 });
-                ancho = 400;
-                alto = 105;
-                posicionX = ($(window).width() / 2) - (ancho / 2);
-                posicionY = ($(window).height() / 2) - (alto / 2);
-                $('#div_ReporteEventoFinal').jqxWindow({
-                    position: {x: posicionX, y: posicionY},
-                    width: ancho, height: alto, resizable: false,
-                    cancelButton: $('#btn_CerrarImprimir'),
-                    initContent: function () {
-                        $("#div_PROG0001").jqxRadioButton({width: 200, height: 20});
-                        $('#div_PROG0001').on('checked', function (event) {
-                            reporte = 'PROG0013';
-                        });
-                        $("#div_PROG0002").jqxRadioButton({width: 200, height: 20});
-                        $('#div_PROG0002').on('checked', function (event) {
-                            reporte = 'PROG0002';
-                        });
-                        $('#btn_CerrarImprimir').jqxButton({width: '65px', height: 25});
-                        $('#btn_Imprimir').jqxButton({width: '65px', height: 25});
-                        $('#btn_Imprimir').on('click', function (event) {
-                            var msg = "";
-                            switch (reporte) {
-                                case "PROG0002":
-                                    break;
-                                case "PROG0013":
-                                    break;
-                                default:
-                                    msg += "Debe selecciona una opción.<br>";
-                                    break;
-                            }
-                            if (msg === "") {
-                                var url = 'Reportes?reporte=' + reporte + '&periodo=' + periodo + '&unidadOperativa=' + unidadOperativa + '&tipoAsignacion=' + tipoAsignacion + '&codigo=' + codigo;
-                                window.open(url, '_blank');
-                            } else {
-                                $.alert({
-                                    theme: 'material',
-                                    title: 'AVISO DEL SISTEMA',
-                                    content: msg,
-                                    animation: 'zoom',
-                                    closeAnimation: 'zoom',
-                                    type: 'red',
-                                    typeAnimated: true
-                                });
-                            }
-                        });
-                    }
-                });
             }
             return {init: function () {
                     _createElements();
@@ -261,7 +219,7 @@
                 ],
                 id: 'eventoFinal',
                 url: "ProgramacionEventoPrincipalDetalle",
-                data: {mode: 'GF', periodo: periodo, tipoAsignacion: tipoAsignacion, brigada: brigada, eventoPrincipal: eventoPrincipal}
+                data: {mode: 'GF', periodo: periodo, tipoAsignacion: tipoAsignacion, brigada: brigada, tipoCombustible: tipoCombustible, eventoPrincipal: eventoPrincipal}
             };
             var dataAdapter = new $.jqx.dataAdapter(source);
             $("#div_GrillaEventoFinal").jqxGrid({source: dataAdapter});
@@ -278,7 +236,7 @@
             $.ajax({
                 type: "GET",
                 url: "IduProgramacionEventoFinal",
-                data: {mode: modeFinal, periodo: periodo, tipoAsignacion: tipoAsignacion, brigada: brigada,
+                data: {mode: modeFinal, periodo: periodo, tipoAsignacion: tipoAsignacion, brigada: brigada, tipoCombustible: tipoCombustible,
                     eventoPrincipal: eventoPrincipal, eventoFinal: eventoFinal, eventoFinalNombre: eventoFinalNombre,
                     prioridad: prioridad},
                 success: function (data) {
@@ -321,7 +279,6 @@
                 $("#div_GrillaEventoFinal").remove();
                 $("#div_VentanaEventoFinal").remove();
                 $("#div_ContextMenuEventoFinal").remove();
-                $("#div_ReporteEventoFinal").remove();
                 $("#div_GrillaEventoSecundario").remove();
                 $("#div_VentanaEventoSecundario").remove();
                 $("#div_ContextMenuEventoSecundario").remove();
@@ -341,7 +298,6 @@
             $("#div_GrillaEventoFinal").remove();
             $("#div_VentanaEventoFinal").remove();
             $("#div_ContextMenuEventoFinal").remove();
-            $("#div_ReporteEventoFinal").remove();
             $("#div_GrillaEventoSecundario").remove();
             $("#div_VentanaEventoSecundario").remove();
             $("#div_ContextMenuEventoSecundario").remove();
@@ -396,18 +352,5 @@
             <li type='separator'></li>
             <li style="color: green; font-weight: bold;">Registrar Insumos</li>
         </ul>
-    </div>
-    <div id="div_ReporteEventoFinal" style="display: none">
-        <div>
-            <span style="float: left">LISTADO DE REPORTES</span>
-        </div>
-        <div style="overflow: hidden">
-            <div id='div_PROG0001'>Resumen</div>
-            <div id='div_PROG0002'>CNV</div>
-            <div class="Summit">
-                <input type="submit" id="btn_Imprimir" name="btn_Imprimir" value="Ver" style="margin-right: 20px"/>
-                <input type="button" id="btn_CerrarImprimir" name="btn_CerrarImprimir" value="Cerrar" style="margin-right: 20px"/>
-            </div>
-        </div>
     </div>
 </div>

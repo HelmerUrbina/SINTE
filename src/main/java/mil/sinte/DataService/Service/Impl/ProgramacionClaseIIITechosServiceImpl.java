@@ -19,8 +19,8 @@ public class ProgramacionClaseIIITechosServiceImpl implements ProgramacionClaseI
     private ProgramacionClaseIIITechosDAO programacionClaseIII;
 
     @Override
-    public List<BeanProgramacionClaseIIITechos> getProgramacionClaseIIITechos(String periodo, String tipoAsignacion) {
-        return programacionClaseIII.findByPeriodoTipoAsignacion(periodo, tipoAsignacion);
+    public List<BeanProgramacionClaseIIITechos> getProgramacionClaseIIITechos(String periodo, Integer tipoAsignacion, Integer tipoCombustible) {
+        return programacionClaseIII.findByPeriodoAndTipoAsignacionAndTipoCombustible(periodo, tipoAsignacion, tipoCombustible);
     }
 
     @Override
@@ -30,8 +30,10 @@ public class ProgramacionClaseIIITechosServiceImpl implements ProgramacionClaseI
             programacionClaseIII.sp_programacionClaseIIITechos(
                     objBnProgramacionClaseIII.getPeriodo(),
                     objBnProgramacionClaseIII.getTipoAsignacion(),
+                    objBnProgramacionClaseIII.getTipoCombustible(),
                     objBnProgramacionClaseIII.getBrigada(),
-                    objBnProgramacionClaseIII.getImporte(),
+                    objBnProgramacionClaseIII.getPrecio(),
+                    objBnProgramacionClaseIII.getCantidad(),
                     usuario,
                     modo
             );

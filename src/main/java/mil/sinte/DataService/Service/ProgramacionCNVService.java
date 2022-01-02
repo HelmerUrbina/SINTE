@@ -9,7 +9,7 @@ import mil.sinte.BusinessServices.Beans.BeanProgramacionCNV;
  */
 public interface ProgramacionCNVService {
 
-    public List<BeanProgramacionCNV> getProgramacionCNV(String periodo, Integer tipoAsignacion, Integer brigada, String eventoPrincipal, Integer eventoFinal);
+    public List<BeanProgramacionCNV> getProgramacionCNV(String periodo, Integer tipoAsignacion, Integer brigada, Integer tipoCombustible, String eventoPrincipal, Integer eventoFinal);
 
     public String guardarProgramacionCNV(BeanProgramacionCNV objBnProgramacionCNV, String usuario, String modo);
 

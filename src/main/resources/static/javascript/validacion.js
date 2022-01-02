@@ -99,16 +99,18 @@ function fn_cargarComboxCabecera(obj, datos) {
     $(obj).jqxComboBox({source: dataAdapter, placeHolder: "Seleccione", displayMember: "descripcion", valueMember: "codigo"});
 }
 //FUNCION PARA CARGAR UN TEXTO CON AJAX
-function fn_cargarTextoAjax(obj, mode, codigo) {
+function fn_cargarTextoAjax(obj, datos) {
     $.ajax({
-        type: "GET",
+        datatype: "json",
         url: "TextoAjax",
-        data: {mode: mode, codigo: codigo},
+        data: datos,
         success: function (data) {
-            $(obj).val(data);
+            var dato = JSON.parse(data);
+            $(obj).val(dato.descripcion);
         }
     });
 }
+
 //FUNCION PARA EXTRAER DATOS DE UN TEXTO 
 function fn_extraerDatos(text, simbolo) {
     return text.substring(0, text.indexOf(simbolo));

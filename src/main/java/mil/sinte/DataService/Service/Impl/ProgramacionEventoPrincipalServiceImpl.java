@@ -19,13 +19,13 @@ public class ProgramacionEventoPrincipalServiceImpl implements ProgramacionEvent
     private ProgramacionEventoPrincipalDAO eventoPrincipalDAO;
 
     @Override
-    public List<BeanProgramacionEventoPrincipal> getProgramacionEventoPrincipal(String periodo, Integer tipoAsignacion, Integer brigada) {
-        return eventoPrincipalDAO.findByPeriodoTipoAsignacionBrigada(periodo, tipoAsignacion, brigada);
+    public List<BeanProgramacionEventoPrincipal> getProgramacionEventoPrincipal(String periodo, Integer tipoAsignacion, Integer brigada, Integer tipoCombustible) {
+        return eventoPrincipalDAO.findByPeriodoTipoAsignacionBrigada(periodo, tipoAsignacion, brigada, tipoCombustible);
     }
 
     @Override
-    public List<BeanProgramacionEventoPrincipal> getProgramacionEventosSecundarios(String periodo, Integer tipoAsignacion, Integer brigada, String eventoPrincipal, Integer nivel) {
-        return eventoPrincipalDAO.findByPeriodoTipoAsignacionBrigadaEventoPrincipalNivel(periodo, tipoAsignacion, brigada, eventoPrincipal, nivel);
+    public List<BeanProgramacionEventoPrincipal> getProgramacionEventosSecundarios(String periodo, Integer tipoAsignacion, Integer brigada, Integer tipoCombustible, String eventoPrincipal, Integer nivel) {
+        return eventoPrincipalDAO.findByPeriodoTipoAsignacionBrigadaEventoPrincipalNivel(periodo, tipoAsignacion, brigada, tipoCombustible, eventoPrincipal, nivel);
     }
 
     @Override
@@ -36,6 +36,7 @@ public class ProgramacionEventoPrincipalServiceImpl implements ProgramacionEvent
                     objBnProgramacionEventoPrincipal.getPeriodo(),
                     objBnProgramacionEventoPrincipal.getTipoAsignacion(),
                     objBnProgramacionEventoPrincipal.getBrigada(),
+                    objBnProgramacionEventoPrincipal.getTipoCombustible(),
                     objBnProgramacionEventoPrincipal.getEventoPrincipal(),
                     objBnProgramacionEventoPrincipal.getEventoPrincipalNombre(),
                     objBnProgramacionEventoPrincipal.getNivel(),

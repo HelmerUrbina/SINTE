@@ -87,6 +87,21 @@
                         }
                     });
                 });
+                var posicionX, posicionY;
+                var ancho = ($(window).width() * .8);
+                var alto = ($(window).height() - 100);
+                posicionX = ($(window).width() - ancho) / 2;
+                posicionY = ($(window).height() - alto) / 2;
+                $('#div_Reporte').jqxWindow({
+                    position: {x: posicionX, y: posicionY},
+                    width: ancho, height: alto, resizable: true,
+                    initContent: function () {
+                    }
+                });
+                $('#div_Reporte').on('close', function (event) {
+                    $('#div_ReporteViewer').contents().empty();
+                    $('#div_ReporteViewer').attr('src', '');
+                });
             });
             function fn_mensaje() {
                 var interval = setInterval(function () {
@@ -106,7 +121,7 @@
             }
         </script>
     </head>
-    <body> 
+    <body>
         <section th:fragment="menuOpciones">
             <div id='div_MenuOpciones' style='visibility: hidden;'>
                 <ul>
@@ -124,7 +139,7 @@
                     <li id="2" > 
                         <form method="POST" th:action="@{/logout}">
                             <a href="#" onclick="this.parentNode.submit();" style="font-weight: bold; color: red">SALIR</a>
-                        </form>                       
+                        </form>
                     </li>
                 </ul>
             </div>
@@ -141,6 +156,18 @@
                         Sistema de Gestión y Control de Abastecimiento de Combustible
                     </div>
                 </center>
+            </div>
+        </section>
+        <section th:fragment="reportes">
+            <div id="div_Reporte" style="display: none">
+                <div>
+                    <div id="div_ReporteTitulo">Reporte</div>
+                </div>
+                <div>
+                    <div style="width:100%; height:100%;">
+                        <iframe id="div_ReporteViewer" name="div_ReporteViewer" style="width:100%; height:100%;"></iframe>
+                    </div>
+                </div>
             </div>
         </section>
     </body>

@@ -34,10 +34,10 @@ public class ProgramacionClaseIIITechosController {
 
     @RequestMapping(value = "/ProgramacionClaseIIITechosDetalle")
     @ResponseBody
-    public String getTipoAsignacionDetalle(String mode, String periodo, String tipoAsignacion) {
+    public String getTipoAsignacionDetalle(String mode, String periodo, String tipoAsignacion, String tipoCombustible) {
         switch (mode) {
             case "G":
-                return new Gson().toJson(programacionClaseIIIService.getProgramacionClaseIIITechos(periodo, tipoAsignacion));
+                return new Gson().toJson(programacionClaseIIIService.getProgramacionClaseIIITechos(periodo, Utiles.checkNum(tipoAsignacion), Utiles.checkNum(tipoCombustible)));
             default:
                 return "ERROR";
         }
@@ -49,13 +49,17 @@ public class ProgramacionClaseIIITechosController {
             @RequestParam("mode") String mode,
             @RequestParam("periodo") String periodo,
             @RequestParam("tipoAsignacion") Integer tipoAsignacion,
+            @RequestParam("tipoCombustible") Integer tipoCombustible,
             @RequestParam("brigada") Integer brigada,
-            @RequestParam("importe") Double importe) {
+            @RequestParam("precio") Double precio,
+            @RequestParam("cantidad") Double cantidad) {
         BeanProgramacionClaseIIITechos objBeanProgramacionClaseIII = new BeanProgramacionClaseIIITechos();
         objBeanProgramacionClaseIII.setPeriodo(periodo);
         objBeanProgramacionClaseIII.setTipoAsignacion(tipoAsignacion);
+        objBeanProgramacionClaseIII.setTipoCombustible(tipoCombustible);
         objBeanProgramacionClaseIII.setBrigada(brigada);
-        objBeanProgramacionClaseIII.setImporte(importe);
+        objBeanProgramacionClaseIII.setPrecio(precio);
+        objBeanProgramacionClaseIII.setCantidad(cantidad);
         return "" + programacionClaseIIIService.guardarProgramacionClaseIIITechos(objBeanProgramacionClaseIII, Utiles.getUsuario(), mode);
     }
 }

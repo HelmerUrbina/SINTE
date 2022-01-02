@@ -39,7 +39,6 @@ public class VerificaUsuario {
                 session.setAttribute("usuario", usuario);
             }
             session.setAttribute("objMeses", combosService.getMeses());
-            session.setAttribute("objBrigadasAll", combosService.getBrigadas());
             session.setAttribute("objModulos", usuarioMenuService.getModuloUsuario(user.getUsername()));
             session.setAttribute("objMenus", usuarioMenuService.getMenuUsuario(user.getUsername()));
             session.setAttribute("objAutorizacion", usuario.getAutorizacion());

@@ -43,14 +43,14 @@ public class ProgramacionEventoPrincipalController {
 
     @RequestMapping(value = "/ProgramacionEventoPrincipalDetalle")
     @ResponseBody
-    public String getTipoAsignacionDetalle(String mode, String periodo, Integer tipoAsignacion, Integer brigada, String eventoPrincipal, Integer nivel) {
+    public String getTipoAsignacionDetalle(String mode, String periodo, Integer tipoAsignacion, Integer brigada, Integer tipoCombustible, String eventoPrincipal, Integer nivel) {
         switch (mode) {
             case "G":
-                return new Gson().toJson(programacionEventoPrincipalService.getProgramacionEventoPrincipal(periodo, tipoAsignacion, Utiles.checkNum("" + brigada)));
+                return new Gson().toJson(programacionEventoPrincipalService.getProgramacionEventoPrincipal(periodo, tipoAsignacion, brigada, tipoCombustible));
             case "GS":
-                return new Gson().toJson(programacionEventoPrincipalService.getProgramacionEventosSecundarios(periodo, tipoAsignacion, brigada, eventoPrincipal, nivel));
+                return new Gson().toJson(programacionEventoPrincipalService.getProgramacionEventosSecundarios(periodo, tipoAsignacion, brigada, tipoCombustible, eventoPrincipal, nivel));
             case "GF":
-                return new Gson().toJson(programacionEventoFinalService.getProgramacionEventoFinal(periodo, tipoAsignacion, brigada, eventoPrincipal));
+                return new Gson().toJson(programacionEventoFinalService.getProgramacionEventoFinal(periodo, tipoAsignacion, brigada, tipoCombustible, eventoPrincipal));
             default:
                 return "ERROR";
         }
@@ -63,6 +63,7 @@ public class ProgramacionEventoPrincipalController {
             @RequestParam("periodo") String periodo,
             @RequestParam("tipoAsignacion") Integer tipoAsignacion,
             @RequestParam("brigada") Integer brigada,
+            @RequestParam("tipoCombustible") Integer tipoCombustible,
             @RequestParam("eventoPrincipal") String eventoPrincipal,
             @RequestParam("eventoPrincipalNombre") String eventoPrincipalNombre,
             @RequestParam("nivel") Integer nivel,
@@ -72,6 +73,7 @@ public class ProgramacionEventoPrincipalController {
         objBeanProgramacionEventoPrincipal.setPeriodo(periodo);
         objBeanProgramacionEventoPrincipal.setTipoAsignacion(tipoAsignacion);
         objBeanProgramacionEventoPrincipal.setBrigada(brigada);
+        objBeanProgramacionEventoPrincipal.setTipoCombustible(tipoCombustible);
         objBeanProgramacionEventoPrincipal.setEventoPrincipal(eventoPrincipal);
         objBeanProgramacionEventoPrincipal.setEventoPrincipalNombre(eventoPrincipalNombre);
         objBeanProgramacionEventoPrincipal.setNivel(nivel);
@@ -87,6 +89,7 @@ public class ProgramacionEventoPrincipalController {
             @RequestParam("periodo") String periodo,
             @RequestParam("tipoAsignacion") Integer tipoAsignacion,
             @RequestParam("brigada") Integer brigada,
+            @RequestParam("tipoCombustible") Integer tipoCombustible,
             @RequestParam("eventoPrincipal") String eventoPrincipal,
             @RequestParam("eventoFinal") Integer eventoFinal,
             @RequestParam("eventoFinalNombre") String eventoFinalNombre,
@@ -95,6 +98,7 @@ public class ProgramacionEventoPrincipalController {
         objBeanProgramacionEventoFinal.setPeriodo(periodo);
         objBeanProgramacionEventoFinal.setTipoAsignacion(tipoAsignacion);
         objBeanProgramacionEventoFinal.setBrigada(brigada);
+        objBeanProgramacionEventoFinal.setTipoCombustible(tipoCombustible);
         objBeanProgramacionEventoFinal.setEventoPrincipal(eventoPrincipal);
         objBeanProgramacionEventoFinal.setEventoFinal(eventoFinal);
         objBeanProgramacionEventoFinal.setEventoFinalNombre(eventoFinalNombre);

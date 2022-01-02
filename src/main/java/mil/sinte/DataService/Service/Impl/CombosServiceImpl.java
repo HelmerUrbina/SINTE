@@ -34,6 +34,11 @@ public class CombosServiceImpl implements CombosService {
     }
 
     @Override
+    public List<BeanCombos> getBrigadas() {
+        return combosDAO.getBrigadas();
+    }
+
+    @Override
     public List<BeanCombos> getDepartamentos() {
         return combosDAO.getDepartamentos();
     }
@@ -51,12 +56,6 @@ public class CombosServiceImpl implements CombosService {
     @Override
     public List<BeanCombos> getTipoDependencia() {
         return combosDAO.getTipoDependencia();
-    }
-
-    @Override
-
-    public List<BeanCombos> getBrigadas() {
-        return combosDAO.getBrigadas();
     }
 
     @Override
@@ -81,8 +80,28 @@ public class CombosServiceImpl implements CombosService {
     }
 
     @Override
-    public List<BeanCombos> getBrigadasByPeriodoTipoAsignacion(String periodo, Integer tipoAsignacion) {
-        return combosDAO.getBrigadasByPeriodoTipoAsignacion(periodo, tipoAsignacion);
+    public List<BeanCombos> getBrigadasTechosByPeriodo(String periodo) {
+        return combosDAO.getBrigadasTechosByPeriodo(periodo);
+    }
+
+    @Override
+    public List<BeanCombos> getTipoAsignacionTechosByPeriodoAndBrigada(String periodo, Integer brigada) {
+        return combosDAO.getTipoAsignacionTechosByPeriodoAndBrigada(periodo, brigada);
+    }
+
+    @Override
+    public List<BeanCombos> getTipoCombustibleTechosByPeriodoAndBrigadaAndTipoAsignacion(String periodo, Integer brigada, Integer tipoAsignacion) {
+        return combosDAO.getTipoCombustibleTechosByPeriodoAndBrigadaAndTipoAsignacion(periodo, brigada, tipoAsignacion);
+    }
+
+    @Override
+    public List<BeanCombos> getDependenciasByPeriodoAndBrigadaAndTipoCombustible(String periodo, Integer brigada, Integer tipoCombustible) {
+        return combosDAO.getDependenciasByPeriodoAndBrigadaAndTipoCombustible(periodo, brigada, tipoCombustible);
+    }
+
+    @Override
+    public List<BeanCombos> getVehiculosCNVByPeriodoAndBrigadaAndTipoCombustibleAndDependencia(String periodo, Integer brigada, Integer tipoCombustible, Integer Dependencia) {
+        return combosDAO.getVehiculosCNVByPeriodoAndBrigadaAndTipoCombustibleAndDependencia(periodo, brigada, tipoCombustible, Dependencia);
     }
 
     @Override

@@ -19,8 +19,8 @@ public class ProgramacionEventoFinalServiceImpl implements ProgramacionEventoFin
     private ProgramacionEventoFinalDAO eventoPrincipalDAO;
 
     @Override
-    public List<BeanProgramacionEventoFinal> getProgramacionEventoFinal(String periodo, Integer tipoAsignacion, Integer brigada, String eventoFinal) {
-        return eventoPrincipalDAO.findByPeriodoTipoAsignacionBrigadaEventoPrincipal(periodo, tipoAsignacion, brigada, eventoFinal);
+    public List<BeanProgramacionEventoFinal> getProgramacionEventoFinal(String periodo, Integer tipoAsignacion, Integer brigada, Integer tipoCombustible, String eventoFinal) {
+        return eventoPrincipalDAO.findByPeriodoTipoAsignacionBrigadaEventoPrincipal(periodo, tipoAsignacion, brigada, tipoCombustible, eventoFinal);
     }
 
     @Override
@@ -31,6 +31,7 @@ public class ProgramacionEventoFinalServiceImpl implements ProgramacionEventoFin
                     objBnProgramacionEventoFinal.getPeriodo(),
                     objBnProgramacionEventoFinal.getTipoAsignacion(),
                     objBnProgramacionEventoFinal.getBrigada(),
+                    objBnProgramacionEventoFinal.getTipoCombustible(),
                     objBnProgramacionEventoFinal.getEventoPrincipal(),
                     objBnProgramacionEventoFinal.getEventoFinal(),
                     objBnProgramacionEventoFinal.getEventoFinalNombre(),

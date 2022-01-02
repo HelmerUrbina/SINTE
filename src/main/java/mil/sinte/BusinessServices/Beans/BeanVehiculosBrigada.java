@@ -34,6 +34,12 @@ public class BeanVehiculosBrigada implements Serializable {
     @Id
     @Column(name = "NDEPENDENCIA_CODIGO", nullable = false)
     private Integer dependencia;
+    
+    @Column(name = "VVEHICULO_TIPO", nullable = false)
+    private String tipo;
+    
+    @Column(name = "VVEHICULO_CLASE", nullable = false)
+    private String clase;
 
     @Column(name = "DVEHICULO_BRIGADA_FECHA", nullable = false)
     private Date fecha;

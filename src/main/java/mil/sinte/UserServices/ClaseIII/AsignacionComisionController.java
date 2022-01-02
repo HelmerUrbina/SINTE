@@ -7,10 +7,8 @@ package mil.sinte.UserServices.ClaseIII;
 
 import com.google.gson.Gson;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import lombok.extern.slf4j.Slf4j;
 import mil.sinte.BusinessServices.Beans.BeanComision;
-import mil.sinte.BusinessServices.Beans.BeanVariacion;
 import mil.sinte.DataService.Service.ComisionDetService;
 import mil.sinte.DataService.Service.ComisionService;
 import mil.sinte.Utiles.Utiles;

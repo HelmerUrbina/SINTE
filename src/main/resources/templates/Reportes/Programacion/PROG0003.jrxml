@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PROG0003" pageWidth="226" pageHeight="226" columnWidth="212" leftMargin="7" rightMargin="7" topMargin="7" bottomMargin="7" isSummaryWithPageHeaderAndFooter="true" uuid="7b5b6483-c189-4664-a730-0283737df4bb">
+	<property name="ireport.zoom" value="1.948717100000002"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="Crosstab Data Text" hAlign="Center"/>
+	<parameter name="PERIODO" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["2021"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="CODIGO" class="java.lang.String">
+		<defaultValueExpression><![CDATA["EP-349-CM"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="USUARIO" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["ADMIN"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="BRIGADA" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["%"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["D:\\Desarrollo\\SYSCOM\\src\\main\\resources\\static\\"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT 
+UTIL.FUN_VEHICULO(NVEHICULO_CODIGO) AS PLACA,
+UTIL.FUN_USUARIO($P{USUARIO}) AS USUARIO_IMPRESION
+FROM SINTE_VEHICULOS_BRIGADAS WHERE 
+CPERIODO_CODIGO=$P{PERIODO} AND 
+NBRIGADA_CODIGO LIKE $P{BRIGADA} AND
+NVEHICULO_CODIGO LIKE $P{CODIGO} AND 
+CESTADO_CODIGO='AC'
+ORDER BY NVEHICULO_CODIGO]]>
+	</queryString>
+	<field name="PLACA" class="java.lang.String"/>
+	<field name="USUARIO_IMPRESION" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="40" splitType="Stretch">
+			<image scaleImage="FillFrame" hAlign="Center" vAlign="Middle">
+				<reportElement x="0" y="0" width="45" height="40" uuid="c0824729-7d60-492f-99f7-ede53a0d70e9"/>
+				<imageExpression><![CDATA[$P{SUBREPORT_DIR}+"images\\Logos\\logo.png"]]></imageExpression>
+			</image>
+			<image scaleImage="FillFrame" hAlign="Center" vAlign="Middle">
+				<reportElement x="162" y="0" width="45" height="40" uuid="4dabebd8-436b-4ea2-a9ae-ecf172ab21a2"/>
+				<imageExpression><![CDATA[$P{SUBREPORT_DIR}+"images\\Logos\\logoEjercito.png"]]></imageExpression>
+			</image>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="150" splitType="Stretch">
+			<image scaleImage="FillFrame" hAlign="Center" vAlign="Middle" isLazy="true">
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="16" y="0" width="180" height="135" isRemoveLineWhenBlank="true" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true" uuid="ce04aedb-f214-412d-8825-4c82547698e6"/>
+				<imageExpression><![CDATA[com.google.zxing.client.j2se.MatrixToImageWriter.toBufferedImage(
+    new com.google.zxing.qrcode.QRCodeWriter().encode(
+        $F{PLACA}, com.google.zxing.BarcodeFormat.QR_CODE, 1000, 1000))]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="0" y="135" width="212" height="15" uuid="bd8ba662-fa78-430b-a46a-eae5c5f1f9f9"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Courier New" size="12" isBold="true" pdfFontName="Courier-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PLACA}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="15" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="212" height="8" uuid="457d4628-1271-48a2-a3fb-a224379b2928"/>
+				<textElement>
+					<font size="5" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[SYSCOM - SISTEMA DE GESTIÓN Y CONTROL DE ABASTECIMIENTO DE COMBUSTIBLE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="61" y="7" width="151" height="8" uuid="21c83f05-ec04-4a09-8709-f8a82599cae5"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="5"/>
+				</textElement>
+				<text><![CDATA[© TODOS LOS DERECHOS RESERVADOS]]></text>
+			</staticText>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

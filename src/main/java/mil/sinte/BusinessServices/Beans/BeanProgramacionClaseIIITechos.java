@@ -24,6 +24,9 @@ public class BeanProgramacionClaseIIITechos implements Serializable {
     @Column(name = "NTIPO_ASIGNACION_CODIGO", nullable = false)
     private Integer tipoAsignacion;
 
+    @Column(name = "NTIPO_COMBUSTIBLE_CODIGO", nullable = false)
+    private Integer tipoCombustible;
+
     @Id
     @Column(name = "NBRIGADA_CODIGO", nullable = false)
     private Integer brigada;
@@ -31,11 +34,14 @@ public class BeanProgramacionClaseIIITechos implements Serializable {
     @Column(name = "VBRIGADA_ABREVIATURA", nullable = false)
     private String brigadaNombre;
 
-    @Column(name = "NPROGRAMACION_CLASE_III_IMPORT")
-    private Double importe;
-    
-    @Column(name = "NPROGRAMACION_CLASE_III_CANTID")
+    @Column(name = "NPROGRAMACION_TECHOS_CANTIDAD")
     private Double cantidad;
+
+    @Column(name = "NPROGRAMACION_TECHOS_PRECIO")
+    private Double precio;
+
+    @Column(name = "NPROGRAMACION_TECHOS_IMPORTE")
+    private Double importe;
 
     @Column(name = "CESTADO_CODIGO")
     private String estado;

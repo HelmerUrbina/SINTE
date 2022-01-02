@@ -9,7 +9,7 @@ import mil.sinte.BusinessServices.Beans.BeanProgramacionClaseIIITechos;
  */
 public interface ProgramacionClaseIIITechosService {
 
-    public List<BeanProgramacionClaseIIITechos> getProgramacionClaseIIITechos(String periodo, String tipoAsignacion);
+    public List<BeanProgramacionClaseIIITechos> getProgramacionClaseIIITechos(String periodo, Integer tipoAsignacion, Integer tipoCombustible);
 
     public String guardarProgramacionClaseIIITechos(BeanProgramacionClaseIIITechos objBnProgramacionClaseIII, String usuario, String modo);
 

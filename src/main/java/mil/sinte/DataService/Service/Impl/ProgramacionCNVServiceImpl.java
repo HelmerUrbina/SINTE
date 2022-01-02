@@ -19,8 +19,8 @@ public class ProgramacionCNVServiceImpl implements ProgramacionCNVService {
     private ProgramacionCNVDAO cnvDAO;
 
     @Override
-    public List<BeanProgramacionCNV> getProgramacionCNV(String periodo, Integer tipoAsignacion, Integer brigada, String eventoPrincipal, Integer eventoFinal) {
-        return cnvDAO.findByPeriodoTipoAsignacionBrigadaEventoPrincipalEventoFinal(periodo, tipoAsignacion, brigada, eventoPrincipal, eventoFinal);
+    public List<BeanProgramacionCNV> getProgramacionCNV(String periodo, Integer tipoAsignacion, Integer brigada, Integer tipoCombustible, String eventoPrincipal, Integer eventoFinal) {
+        return cnvDAO.findByPeriodoTipoAsignacionBrigadaEventoPrincipalEventoFinal(periodo, tipoAsignacion, brigada, tipoCombustible, eventoPrincipal, eventoFinal);
     }
 
     @Override
@@ -31,12 +31,12 @@ public class ProgramacionCNVServiceImpl implements ProgramacionCNVService {
                     objBnProgramacionCNV.getPeriodo(),
                     objBnProgramacionCNV.getTipoAsignacion(),
                     objBnProgramacionCNV.getBrigada(),
+                    objBnProgramacionCNV.getTipoCombustible(),
                     objBnProgramacionCNV.getEventoPrincipal(),
                     objBnProgramacionCNV.getEventoFinal(),
                     objBnProgramacionCNV.getCodigo(),
                     objBnProgramacionCNV.getDependencia(),
                     objBnProgramacionCNV.getVehiculo(),
-                    objBnProgramacionCNV.getTipoCombustible(),
                     objBnProgramacionCNV.getCantidad(),
                     objBnProgramacionCNV.getPrecio(),
                     objBnProgramacionCNV.getDemandaGlobal(),

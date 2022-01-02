@@ -2,6 +2,7 @@
     var periodo = $("#cbo_Periodo").val();
     var tipoAsignacion = $("#cbo_TipoAsignacion").val();
     var brigada = $("#cbo_Brigadas").val();
+    var tipoCombustible = $("#cbo_TipoCombustible").val();
     var modeCNV = null;
     var codigo = null;
     $(document).ready(function () {
@@ -64,11 +65,10 @@
                     codigo = 0;
                     $("#cbo_Dependencia").jqxDropDownList('setContent', "Seleccione");
                     $("#cbo_Vehiculo").jqxDropDownList('setContent', "Seleccione");
-                    $("#cbo_TipoCombustible").jqxDropDownList('setContent', "Seleccione");
                     $("#cbo_Dependencia").jqxDropDownList('setContent', "Seleccione");
-                    $('#div_Precio').val(0);
                     $('#div_Cantidad').val(0);
                     $('#div_DemandaGlobal').val(0);
+                    fn_cargarTextoAjax("#div_Saldo", {mode: 'saldoTechosByPeriodoAndBrigadaAndTipoAsignacionAndTipoCombustible', codigo: periodo, codigo2: brigada, codigo3: tipoAsignacion, codigo4: tipoCombustible});
                     $('#div_VentanaCNV').jqxWindow({isModal: true, modalOpacity: 0.8});
                     $('#div_VentanaCNV').jqxWindow('open');
                 });
@@ -82,6 +82,10 @@
                 });
                 //reporte
                 ButtonReporte.click(function (event) {
+                    var reporte = "PROG0002";
+                    var url = "Reportes?reporte=" + reporte + "&periodo=" + periodo + "&tipoAsignacion=" + tipoAsignacion + "&brigada=" + brigada +
+                            "&tipoCombustible=" + tipoCombustible + "&eventoPrincipal=" + eventoPrincipal + "&codigo=" + eventoFinal;
+                    $('#div_ReporteViewer').attr('src', url + "&page=hsn#toolbar=1");
                     $('#div_Reporte').jqxWindow({isModal: true, modalOpacity: 0.9});
                     $('#div_Reporte').jqxWindow('open');
                 });
@@ -94,9 +98,8 @@
                         return "<div style='margin: 6px; text-align: center;'>" + (value + 1) + "</div>";
                     }
                 },
-                {text: 'DEPENDENCIA', dataField: 'dependencia', columngroup: 'Titulo', filtertype: 'checkedlist', width: '10%', align: 'center', cellsAlign: 'left'},
-                {text: 'VEHÍCULO', dataField: 'vehiculo', columngroup: 'Titulo', width: '12%', align: 'center', cellsAlign: 'center'},
-                {text: 'TIPO COMBUSTIBLE', dataField: 'tipoCombustible', columngroup: 'Titulo', filtertype: 'checkedlist', width: '15%', align: 'center', cellsAlign: 'left', aggregates: [{'<b>Totales : </b>':
+                {text: 'DEPENDENCIA', dataField: 'dependencia', columngroup: 'Titulo', filtertype: 'checkedlist', width: '15%', align: 'center', cellsAlign: 'left'},
+                {text: 'VEHÍCULO', dataField: 'vehiculo', columngroup: 'Titulo', width: '20%', align: 'center', cellsAlign: 'center', aggregates: [{'<b>Totales : </b>':
                                     function () {
                                         return "";
                                     }}]},
@@ -105,7 +108,7 @@
                 {text: 'TOTAL', dataField: 'total', columngroup: 'Titulo', width: '13%', align: 'center', cellsAlign: 'right', cellsFormat: 'f2', cellclassname: cellclass, aggregates: ['sum']},
                 {text: 'D GLOBAL', dataField: 'demandaGlobal', columngroup: 'Titulo', width: '9%', align: 'center', cellsAlign: 'right', cellsFormat: 'f2', cellclassname: cellclass, aggregates: ['sum']},
                 {text: 'TOTAL D GLOBAL', dataField: 'totalDemandaGlobal', columngroup: 'Titulo', width: '13%', align: 'center', cellsAlign: 'right', cellsFormat: 'f2', cellclassname: cellclass, aggregates: ['sum']},
-                {text: 'ESTADO', dataField: 'estado', columngroup: 'Titulo', filtertype: 'checkedlist', width: '6%', align: 'center', cellsAlign: 'center'}
+                {text: 'ESTADO', dataField: 'estado', columngroup: 'Titulo', filtertype: 'checkedlist', width: '8%', align: 'center', cellsAlign: 'center'}
             ],
             columngroups: [
                 {text: '<strong>LISTADO DE INSUMOS</strong>', name: 'Titulo', align: 'center'}
@@ -185,12 +188,14 @@
             var args = event.args;
             var row = $("#div_GrillaCNV").jqxGrid('getrowdata', args.rowindex);
             codigo = row['codigo'];
-            $("#cbo_Dependencia").jqxDropDownList('selectItem', codigo.substring(0, 1));
-            $("#cbo_Vehiculo").jqxDropDownList('selectItem', codigo.substring(2, 3));
-            $('#div_Precio').val(parseFloat(row['precio']));
+            var dato = codigo.split("+++");
+            $("#cbo_Dependencia").jqxDropDownList('selectItem', dato[0]);
+            $("#cbo_Vehiculo").jqxDropDownList('addItem', {label: row['vehiculo'], value: dato[1]});
+            $("#cbo_Vehiculo").jqxDropDownList('selectItem', dato[1]);
+            $("#cbo_Vehiculo").jqxDropDownList('setContent', row['vehiculo']);
             $('#div_Cantidad').val(parseFloat(row['cantidad']));
             $('#div_DemandaGlobal').val(parseFloat(row['demandaGlobal']));
-            $("#cbo_TipoCombustible").jqxDropDownList('selectItem', codigo.substring(4, 5));
+            fn_cargarTextoAjax("#div_Saldo", {mode: 'saldoTechosByPeriodoAndBrigadaAndTipoAsignacionAndTipoCombustible', codigo: periodo, codigo2: brigada, codigo3: tipoAsignacion, codigo4: tipoCombustible});
         });
         //CREA LOS ELEMENTOS DE LAS VENTANAS
         var customButtonsDemo = (function () {
@@ -198,9 +203,9 @@
                 //INICIA LOS VALORES DE LA VENTANA
                 var posicionX, posicionY;
                 var ancho = 550;
-                var alto = 240;
-                posicionX = ($(window).width() / 2) - (ancho / 2);
-                posicionY = ($(window).height() / 2) - (alto / 2);
+                var alto = 220;
+                posicionX = (($(window).width() - ancho) / 2);
+                posicionY = (($(window).height() - alto) / 2);
                 $('#div_VentanaCNV').jqxWindow({
                     position: {x: posicionX, y: posicionY},
                     width: ancho, height: alto, resizable: false,
@@ -208,17 +213,11 @@
                     initContent: function () {
                         $("#cbo_Dependencia").jqxDropDownList({animationType: 'fade', width: 380, dropDownWidth: 450, height: 25});
                         $('#cbo_Dependencia').on('change', function () {
-                            fn_cargarComboAjax("#cbo_Vehiculo", {mode: 'vehiculosByPeriodoAndBrigadaAndDependencia', codigo: periodo, codigo2: brigada, codigo3: $('#cbo_Dependencia').val()});
+                            fn_cargarComboAjax("#cbo_Vehiculo", {mode: 'vehiculosCNVByPeriodoAndBrigadaAndTipoCombustibleAndDependencia', codigo: periodo, codigo2: brigada, codigo3: tipoCombustible, codigo4: $('#cbo_Dependencia').val()});
                         });
                         $("#cbo_Vehiculo").jqxDropDownList({animationType: 'fade', width: 380, dropDownWidth: 450, height: 25});
-                        $('#cbo_Vehiculo').on('change', function () {
-                            fn_cargarComboAjax("#cbo_TipoCombustible", {mode: 'tipoCombustibleByVehiculo', codigo3: $('#cbo_Vehiculo').val()});
-                        });
-                        $("#cbo_TipoCombustible").jqxDropDownList({animationType: 'fade', width: 380, dropDownWidth: 450, height: 25});
-                        $("#div_Precio").jqxNumberInput({width: 120, height: 25, max: 999999999, digits: 9, decimalDigits: 2});
-                        $('#div_Precio').on('textchanged', function (event) {
-                            fn_VerTotal();
-                        });
+                        $("#div_Precio").jqxNumberInput({width: 120, height: 25, max: 999999999, digits: 9, decimalDigits: 2, disabled: true});
+                        $("#div_Saldo").jqxNumberInput({width: 120, height: 25, max: 999999999, digits: 9, decimalDigits: 2, disabled: true});
                         $("#div_Cantidad").jqxNumberInput({width: 120, height: 25, max: 999999999, digits: 9, decimalDigits: 2});
                         $('#div_Cantidad').on('textchanged', function (event) {
                             fn_VerTotal();
@@ -229,57 +228,10 @@
                             fn_VerTotal();
                         });
                         $("#div_TotalDemandaGlobal").jqxNumberInput({width: 120, height: 25, max: 999999999, digits: 9, decimalDigits: 2, disabled: true});
-                        $('#btn_CancelarFinal').jqxButton({width: '65px', height: 25});
-                        $('#btn_GuardarFinal').jqxButton({width: '65px', height: 25});
+                        $('#btn_CancelarFinal').jqxButton({width: '65px', height: 30});
+                        $('#btn_GuardarFinal').jqxButton({width: '65px', height: 30});
                         $('#btn_GuardarFinal').on('click', function (event) {
                             fn_GrabarDatosCNV();
-                        });
-                    }
-                });
-                ancho = 400;
-                alto = 105;
-                posicionX = ($(window).width() / 2) - (ancho / 2);
-                posicionY = ($(window).height() / 2) - (alto / 2);
-                $('#div_ReporteCNV').jqxWindow({
-                    position: {x: posicionX, y: posicionY},
-                    width: ancho, height: alto, resizable: false,
-                    cancelButton: $('#btn_CerrarImprimir'),
-                    initContent: function () {
-                        $("#div_PROG0001").jqxRadioButton({width: 200, height: 20});
-                        $('#div_PROG0001').on('checked', function (event) {
-                            reporte = 'PROG0013';
-                        });
-                        $("#div_PROG0002").jqxRadioButton({width: 200, height: 20});
-                        $('#div_PROG0002').on('checked', function (event) {
-                            reporte = 'PROG0002';
-                        });
-                        $('#btn_CerrarImprimir').jqxButton({width: '65px', height: 25});
-                        $('#btn_Imprimir').jqxButton({width: '65px', height: 25});
-                        $('#btn_Imprimir').on('click', function (event) {
-                            var msg = "";
-                            switch (reporte) {
-                                case "PROG0002":
-                                    break;
-                                case "PROG0013":
-                                    break;
-                                default:
-                                    msg += "Debe selecciona una opción.<br>";
-                                    break;
-                            }
-                            if (msg === "") {
-                                var url = 'Reportes?reporte=' + reporte + '&periodo=' + periodo + '&unidadOperativa=' + unidadOperativa + '&tipoAsignacion=' + tipoAsignacion + '&codigo=' + codigo;
-                                window.open(url, '_blank');
-                            } else {
-                                $.alert({
-                                    theme: 'material',
-                                    title: 'AVISO DEL SISTEMA',
-                                    content: msg,
-                                    animation: 'zoom',
-                                    closeAnimation: 'zoom',
-                                    type: 'red',
-                                    typeAnimated: true
-                                });
-                            }
                         });
                     }
                 });
@@ -292,7 +244,8 @@
         $(document).ready(function () {
             customButtonsDemo.init();
             fn_RefrescarCNV();
-            fn_cargarComboAjax("#cbo_Dependencia", {mode: 'dependenciaByBrigada', codigo: brigada});
+            fn_cargarComboAjax("#cbo_Dependencia", {mode: 'dependenciaByPeriodoAndBrigadaAndTipoCombustible', codigo: periodo, codigo2: brigada, codigo3: tipoCombustible});
+            fn_cargarTextoAjax("#div_Precio", {mode: 'precioTechosByPeriodoAndBrigadaAndTipoAsignacionAndTipoCombustible', codigo: periodo, codigo2: brigada, codigo3: tipoAsignacion, codigo4: tipoCombustible});
         });
         //FUNCION PARA REFRESCAR LA PANTALLA
         function fn_RefrescarCNV() {
@@ -302,7 +255,6 @@
                     {name: 'codigo', type: "string"},
                     {name: 'dependencia', type: "number"},
                     {name: 'vehiculo', type: "string"},
-                    {name: 'tipoCombustible', type: "string"},
                     {name: 'precio', type: "number"},
                     {name: 'cantidad', type: "number"},
                     {name: 'total', type: "number"},
@@ -312,7 +264,7 @@
                 ],
                 id: 'codigo',
                 url: "ProgramacionCNVDetalle",
-                data: {mode: 'G', periodo: periodo, tipoAsignacion: tipoAsignacion, brigada: brigada, eventoPrincipal: eventoPrincipal, eventoFinal: eventoFinal}
+                data: {mode: 'G', periodo: periodo, tipoAsignacion: tipoAsignacion, brigada: brigada, tipoCombustible: tipoCombustible, eventoPrincipal: eventoPrincipal, eventoFinal: eventoFinal}
             };
             var dataAdapter = new $.jqx.dataAdapter(source);
             $("#div_GrillaCNV").jqxGrid({source: dataAdapter});
@@ -320,6 +272,8 @@
         }
         //FUNCION PARA CARGAR VENTANA PARA EDITAR REGISTRO
         function fn_EditarCNV() {
+            var saldo = $("#div_Total").val() + $("#div_Saldo").val();
+            $("#div_Saldo").val(parseFloat(saldo).toFixed(2));
             $('#div_VentanaCNV').jqxWindow({isModal: true, modalOpacity: 0.8});
             $('#div_VentanaCNV').jqxWindow('open');
         }
@@ -327,16 +281,16 @@
         function fn_GrabarDatosCNV() {
             var dependencia = $("#cbo_Dependencia").val();
             var vehiculo = $("#cbo_Vehiculo").val();
-            var tipoCombustible = $("#cbo_TipoCombustible").val();
             var precio = $("#div_Precio").val();
+            var saldo = $("#div_Saldo").val();
             var cantidad = $("#div_Cantidad").val();
             var demandaGlobal = $("#div_DemandaGlobal").val();
             $.ajax({
                 type: "GET",
                 url: "IduProgramacionCNV",
-                data: {mode: modeCNV, periodo: periodo, tipoAsignacion: tipoAsignacion, brigada: brigada,
+                data: {mode: modeCNV, periodo: periodo, tipoAsignacion: tipoAsignacion, brigada: brigada, tipoCombustible: tipoCombustible,
                     eventoPrincipal: eventoPrincipal, eventoFinal: eventoFinal, codigo: codigo, dependencia: dependencia,
-                    vehiculo: vehiculo, tipoCombustible: tipoCombustible, precio: precio, cantidad: cantidad, demandaGlobal: demandaGlobal},
+                    vehiculo: vehiculo, precio: precio, cantidad: cantidad, demandaGlobal: demandaGlobal},
                 success: function (data) {
                     msg = data;
                     if (msg === "GUARDO") {
@@ -383,7 +337,6 @@
                 $("#div_GrillaCNV").remove();
                 $("#div_VentanaCNV").remove();
                 $("#div_ContextMenuCNV").remove();
-                $("#div_ReporteCNV").remove();
                 $("#div_GrillaEventoSecundario").remove();
                 $("#div_VentanaEventoSecundario").remove();
                 $("#div_ContextMenuEventoSecundario").remove();
@@ -425,15 +378,10 @@
                         </td>
                     </tr>
                     <tr>
-                        <td class="inputlabel">Tipo Combustible : </td>
-                        <td colspan="3"><select id="cbo_TipoCombustible" name="cbo_TipoCombustible">
-                                <option value="0">Seleccione</option>
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
                         <td class="inputlabel">Precio : </td>
-                        <td colspan="3"><div id="div_Precio"></div></td>
+                        <td><div id="div_Precio"></div></td>
+                        <td class="inputlabel">Saldo : </td>
+                        <td><div id="div_Saldo"></div></td>
                     </tr>
                     <tr>
                         <td class="inputlabel">Cantidad : </td>
@@ -466,18 +414,5 @@
             <li type='separator'></li>
             <li><-- Regresar</li>
         </ul>
-    </div>
-    <div id="div_ReporteCNV" style="display: none">
-        <div>
-            <span style="float: left">LISTADO DE REPORTES</span>
-        </div>
-        <div style="overflow: hidden">
-            <div id='div_PROG0001'>Resumen</div>
-            <div id='div_PROG0002'>CNV</div>
-            <div class="Summit">
-                <input type="submit" id="btn_Imprimir" name="btn_Imprimir" value="Ver" style="margin-right: 20px"/>
-                <input type="button" id="btn_CerrarImprimir" name="btn_CerrarImprimir" value="Cerrar" style="margin-right: 20px"/>
-            </div>
-        </div>
     </div>
 </div>

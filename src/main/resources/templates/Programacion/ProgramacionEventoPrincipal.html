@@ -10,22 +10,27 @@
         var theme = getTheme();
         $("#div_Titulo").jqxExpander({theme: theme, width: '100%'});
         $("#cbo_Periodo").jqxComboBox({theme: theme, autoOpen: true, promptText: "Seleccione", width: 150, height: 25, dropDownWidth: 250});
-        $("#cbo_TipoAsignacion").jqxComboBox({theme: theme, autoOpen: true, promptText: "Seleccione", width: 250, height: 25, dropDownWidth: 350});
         $("#cbo_Brigadas").jqxComboBox({theme: theme, autoOpen: true, promptText: "Seleccione", width: 250, height: 25, dropDownWidth: 350});
+        $("#cbo_TipoAsignacion").jqxComboBox({theme: theme, autoOpen: true, promptText: "Seleccione", width: 200, height: 25, dropDownWidth: 350});
+        $("#cbo_TipoCombustible").jqxComboBox({theme: theme, autoOpen: true, promptText: "Seleccione", width: 200, height: 25, dropDownWidth: 350});
         var fecha = new Date();
         $("#cbo_Periodo").jqxComboBox('selectItem', fecha.getFullYear());
         $('#cbo_Periodo').on('change', function () {
-            fn_cargarComboxCabecera("#cbo_TipoAsignacion", {mode: 'tipoAsignacionByPeriodo', codigo: $('#cbo_Periodo').val()});
-        });
-        $('#cbo_TipoAsignacion').on('change', function () {
-            if (autorizacion === true)
-                fn_cargarComboxCabecera("#cbo_Brigadas", {mode: 'brigadasByPeriodoTipoAsignacion', codigo: $('#cbo_Periodo').val(), codigo3: $('#cbo_TipoAsignacion').val()});
             fn_CargarBusqueda();
         });
         $('#cbo_Brigadas').on('change', function () {
+            fn_cargarComboxCabecera("#cbo_TipoAsignacion", {mode: 'tipoAsignacionTechosByPeriodoAndBrigada', codigo: $('#cbo_Periodo').val(), codigo2: $('#cbo_Brigadas').val()});
+        });
+        $('#cbo_TipoAsignacion').on('change', function () {
+            fn_cargarComboxCabecera("#cbo_TipoCombustible", {mode: 'tipoCombustibleTechosByPeriodoAndBrigadaAndTipoAsignacion', codigo: $('#cbo_Periodo').val(), codigo2: $('#cbo_Brigadas').val(), codigo3: $('#cbo_TipoAsignacion').val()});
+        });
+        $('#cbo_TipoCombustible').on('change', function () {
             fn_CargarBusqueda();
         });
-        fn_cargarComboxCabecera("#cbo_TipoAsignacion", {mode: 'tipoAsignacionByPeriodo', codigo: $('#cbo_Periodo').val()});
+        if (autorizacion === true)
+            fn_cargarComboxCabecera("#cbo_Brigadas", {mode: 'brigadasTechosByPeriodo', codigo: $('#cbo_Periodo').val()});
+        else
+            fn_cargarComboxCabecera("#cbo_TipoAsignacion", {mode: 'tipoAsignacionTechosByPeriodoAndBrigada', codigo: $('#cbo_Periodo').val(), codigo2: $('#cbo_Brigadas').val()});
         //DEFINIMOS LOS ESTILOS DE LAS GRILLAS
         var cellclass = function (row, datafield, value, rowdata) {
             if (datafield === "total") {
@@ -55,13 +60,17 @@
                 var container = $("<div style='overflow: hidden; position: relative; margin: 1px;'></div>");
                 var ButtonNuevo = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='images/Botones/nuevo42.gif' th:src='@{images/Botones/nuevo42.gif' width=18 height=18 /><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
                 var ButtonExportar = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='images/Botones/pauf42.gif' th:src='@{images/Botones/pauf42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
+                var ButtonReporte = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='images/Botones/printer42.gif' th:src='@{images/Botones/printer42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
                 container.append(ButtonNuevo);
                 container.append(ButtonExportar);
+                container.append(ButtonReporte);
                 toolbar.append(container);
                 ButtonNuevo.jqxButton({width: 30, height: 22});
                 ButtonNuevo.jqxTooltip({position: 'bottom', content: "Nuevo Registro"});
                 ButtonExportar.jqxButton({width: 30, height: 22});
                 ButtonExportar.jqxTooltip({position: 'bottom', content: "Exportar Datos"});
+                ButtonReporte.jqxButton({width: 30, height: 22});
+                ButtonReporte.jqxTooltip({position: 'bottom', content: "Reporte"});
                 //ASIGNAMOS LAS FUNCIONES PARA EL BOTON NUEVO
                 ButtonNuevo.click(function (event) {
                     mode = 'I';
@@ -89,6 +98,31 @@
                 //ASIGNAMOS LAS FUNCIONES PARA EL BOTON EXPORTAR
                 ButtonExportar.click(function (event) {
                     $("#div_GrillaPrincipal").jqxGrid('exportdata', 'xlsx', 'EventoPrincipal');
+                });
+                //reporte
+                ButtonReporte.click(function (event) {
+                    if (eventoPrincipal === null || eventoPrincipal === '') {
+                        $.alert({
+                            theme: 'material',
+                            title: 'AVISO DEL SISTEMA',
+                            content: 'Debe Seleccionar un Registro',
+                            animation: 'zoom',
+                            closeAnimation: 'zoom',
+                            type: 'orange',
+                            typeAnimated: true
+                        });
+                    } else {
+                        var reporte = "PROG0002";
+                        var periodo = $("#cbo_Periodo").val();
+                        var tipoAsignacion = $("#cbo_TipoAsignacion").val();
+                        var brigada = $("#cbo_Brigadas").val();
+                        var tipoCombustible = $("#cbo_TipoCombustible").val();
+                        var url = "Reportes?reporte=" + reporte + "&periodo=" + periodo + "&tipoAsignacion=" + tipoAsignacion + "&brigada=" + brigada +
+                                "&tipoCombustible=" + tipoCombustible + "&eventoPrincipal=" + eventoPrincipal + "&codigo=*";
+                        $('#div_ReporteViewer').attr('src', url + "&page=hsn#toolbar=1");
+                        $('#div_Reporte').jqxWindow({isModal: true, modalOpacity: 0.9});
+                        $('#div_Reporte').jqxWindow('open');
+                    }
                 });
             },
             columns: [
@@ -272,7 +306,7 @@
             ],
             id: 'codigo',
             url: "ProgramacionEventoPrincipalDetalle",
-            data: {mode: 'G', periodo: $('#cbo_Periodo').val(), tipoAsignacion: $('#cbo_TipoAsignacion').val(), brigada: $('#cbo_Brigadas').val()}
+            data: {mode: 'G', periodo: $('#cbo_Periodo').val(), tipoAsignacion: $('#cbo_TipoAsignacion').val(), brigada: $('#cbo_Brigadas').val(), tipoCombustible: $('#cbo_TipoCombustible').val()}
         };
         var dataAdapter = new $.jqx.dataAdapter(source);
         $("#div_GrillaPrincipal").jqxGrid({source: dataAdapter});
@@ -289,13 +323,14 @@
         var periodo = $("#cbo_Periodo").val();
         var tipoAsignacion = $("#cbo_TipoAsignacion").val();
         var brigada = $("#cbo_Brigadas").val();
+        var tipoCombustible = $("#cbo_TipoCombustible").val();
         var eventoPrincipalNombre = $("#txt_EventoPrincipal").val();
         var niveles = $("#div_Niveles").val();
         var eventoFinal = $("#chk_EventoFinal").jqxCheckBox('checked');
         $.ajax({
             type: "GET",
             url: "IduProgramacionEventoPrincipal",
-            data: {mode: mode, periodo: periodo, tipoAsignacion: tipoAsignacion, brigada: brigada,
+            data: {mode: mode, periodo: periodo, tipoAsignacion: tipoAsignacion, brigada: brigada, tipoCombustible: tipoCombustible,
                 eventoPrincipal: eventoPrincipal, eventoPrincipalNombre: eventoPrincipalNombre,
                 nivel: nivel, niveles: niveles, eventoFinal: eventoFinal},
             success: function (data) {
@@ -373,18 +408,24 @@
                                 </span>
                             </select>
                         </td>
-                        <td class="Titulo">Tipo Asignación : </td>
-                        <td>
-                            <select id="cbo_TipoAsignacion" name="cbo_TipoAsignacion">
-                                <option value="0">Seleccione</option>
-                            </select>
-                        </td>
                         <td class="Titulo">Brigada : </td>
                         <td>
                             <select id="cbo_Brigadas" name="cbo_Brigadas">
                                 <span th:each="brigada : ${session.objBrigadas}">
                                     <option th:value="${brigada.codigo}"><span th:text="${brigada.descripcion}"> </span></option>
                                 </span>
+                            </select>
+                        </td>
+                        <td class="Titulo">Asignación : </td>
+                        <td>
+                            <select id="cbo_TipoAsignacion" name="cbo_TipoAsignacion">
+                                <option value="0">Seleccione</option>
+                            </select>
+                        </td>
+                        <td class="Titulo">Combustible : </td>
+                        <td>
+                            <select id="cbo_TipoCombustible" name="cbo_TipoCombustible">
+                                <option value="0">Seleccione</option>
                             </select>
                         </td>
                         <td><a href="javascript: fn_CargarBusqueda();"><img src="images/Botones/refresh42.gif" alt="Buscar Datos" name="imgrefresh" width="30" height="28" border="0" id="imgrefresh"></a></td>

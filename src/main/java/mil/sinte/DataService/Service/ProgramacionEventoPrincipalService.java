@@ -9,9 +9,9 @@ import mil.sinte.BusinessServices.Beans.BeanProgramacionEventoPrincipal;
  */
 public interface ProgramacionEventoPrincipalService {
 
-    public List<BeanProgramacionEventoPrincipal> getProgramacionEventoPrincipal(String periodo, Integer tipoAsignacion, Integer brigada);
+    public List<BeanProgramacionEventoPrincipal> getProgramacionEventoPrincipal(String periodo, Integer tipoAsignacion, Integer brigada, Integer tipoCombustible);
 
-    public List<BeanProgramacionEventoPrincipal> getProgramacionEventosSecundarios(String periodo, Integer tipoAsignacion, Integer brigada, String eventoPrincipal, Integer nivel);
+    public List<BeanProgramacionEventoPrincipal> getProgramacionEventosSecundarios(String periodo, Integer tipoAsignacion, Integer brigada, Integer tipoCombustible, String eventoPrincipal, Integer nivel);
 
     public String guardarProgramacionEventoPrincipal(BeanProgramacionEventoPrincipal objBnProgramacionEventPrincipal, String usuario, String modo);
 

@@ -7,14 +7,14 @@
     var periodoG = null;
     var brigadaG = null;
     var mesG = null;
-    var tipoAsignacionG=null;
-    var tipoCombustibleG=null;
-    var tipoG=null;
-    var dependenciaG=null;
-    var vehiculoG=null;
-    var codigoNivel=null;
+    var tipoAsignacionG = null;
+    var tipoCombustibleG = null;
+    var tipoG = null;
+    var dependenciaG = null;
+    var vehiculoG = null;
+    var codigoNivel = null;
     var msg = "";
-    
+
     var dataLocalComision = [];
     var autorizacion = validarBoolean('[[${session.objAutorizacion}]]');
     $(document).ready(function () {
@@ -34,22 +34,21 @@
                 return "RowGreen";
             }
         };
-        $("#cbo_Periodo").jqxComboBox({theme: theme, autoOpen: true, promptText: "Seleccione", width: 150, dropDownWidth: 150, height: 20});
-        $("#cbo_Mes").jqxComboBox({theme: theme, autoOpen: true, promptText: "Seleccione", width: 150, dropDownWidth: 150, height: 20});
-        $("#cbo_Brigada").jqxComboBox({theme: theme, autoOpen: true, promptText: "Seleccione", width: 150, dropDownWidth: 150, height: 20});
-        $("#cbo_TipoAsignacion").jqxComboBox({theme: theme, autoOpen: true, promptText: "Seleccione", width: 150, dropDownWidth: 150, height: 20});
+        $("#cbo_Periodo").jqxComboBox({theme: theme, autoOpen: true, promptText: "Seleccione", width: 150, dropDownWidth: 180, height: 25});
+        $("#cbo_Mes").jqxComboBox({theme: theme, autoOpen: true, promptText: "Seleccione", width: 150, dropDownWidth: 180, height: 25});
+        $("#cbo_Brigada").jqxComboBox({theme: theme, autoOpen: true, promptText: "Seleccione", width: 150, dropDownWidth: 250, height: 25});
+        $("#cbo_TipoAsignacion").jqxComboBox({theme: theme, autoOpen: true, promptText: "Seleccione", width: 150, dropDownWidth: 250, height: 25});
         var fecha = new Date();
-        $("#cbo_Mes").jqxComboBox('selectItem', fecha.getMonth()+1);
+        $("#cbo_Mes").jqxComboBox('selectItem', fecha.getMonth() + 1);
         $("#cbo_Periodo").jqxComboBox('selectItem', fecha.getFullYear());
-        
-        $("#cbo_TipoAsignacion").jqxDropDownList('clear');
-        fn_cargarComboAjax("#cbo_TipoAsignacion", {mode: 'tipoAsignacionByPeriodo', codigo: $("#cbo_Periodo").val()});
-        $("#cbo_TipoAsignacion").jqxDropDownList('setContent', 'Seleccione');
-        
+        $("#cbo_TipoAsignacion").jqxComboBox('clear');
+        fn_cargarComboxCabecera("#cbo_TipoAsignacion", {mode: 'tipoAsignacionByPeriodo', codigo: $("#cbo_Periodo").val()});
+        $("#cbo_TipoAsignacion").jqxComboBox('setContent', 'Seleccione');
+
         $('#cbo_Periodo').on('change', function () {
-            $("#cbo_TipoAsignacion").jqxDropDownList('clear');
-            fn_cargarComboAjax("#cbo_TipoAsignacion", {mode: 'tipoAsignacionByPeriodo', codigo: $("#cbo_Periodo").val()});
-            $("#cbo_TipoAsignacion").jqxDropDownList('setContent', 'Seleccione');
+            $("#cbo_TipoAsignacion").jqxComboBox('clear');
+            fn_cargarComboxCabecera("#cbo_TipoAsignacion", {mode: 'tipoAsignacionByPeriodo', codigo: $("#cbo_Periodo").val()});
+            $("#cbo_TipoAsignacion").jqxComboBox('setContent', 'Seleccione');
         });
         $('#cbo_Brigada').on('change', function () {
             fn_CargarBusqueda();
@@ -60,7 +59,7 @@
         $('#cbo_TipoAsignacion').on('change', function () {
             fn_CargarBusqueda();
         });
-        
+
         //DEFINIMOS LOS CAMPOS Y DATOS DE LA GRILLA
         $("#div_GrillaPrincipal").jqxGrid({
             width: '99.8%',
@@ -95,7 +94,7 @@
                     mode = 'I';
                     mode2 = null;
                     codigo = 0;
-                    dataLocalComision=[];
+                    dataLocalComision = [];
                     fn_cargarDetalleCuota();
                     fn_CargarBusquedaDetalle();
                 });
@@ -108,7 +107,7 @@
                 {text: 'CODIGO', datafield: 'codigo', editable: false, width: '33%', align: 'center', cellsAlign: 'center'},
                 {text: 'DESCRIPCIÓN', datafield: 'descripcion', editable: false, width: '34%', align: 'center', cellsAlign: 'center'},
                 {text: 'ESTADO', datafield: 'estado', editable: false, width: '33%', align: 'center', cellsAlign: 'center'}
-                
+
             ]
         });
         // DEFINIMOS EL MENU CONTEXTUAL
@@ -126,7 +125,7 @@
                 return false;
             }
         });
-        
+
         //DEFINIMOS LOS EVENTOS SEGUN LA OPCION DEL MENU CONTEXTUAL
         $("#div_ContextMenu").on('itemclick', function (event) {
             var opcion = event.args;
@@ -170,7 +169,7 @@
                             }
                         }
                     });
-                }else {
+                } else {
                     $.alert({
                         theme: 'material',
                         title: 'AVISO DEL SISTEMA',
@@ -182,18 +181,18 @@
                     });
                 }
             }
-            
+
         });
 //        SELECCIONAMOS UN REGISTRO DE LA GRILLA
         $("#div_GrillaPrincipal").on('rowselect', function (event) {
             var args = event.args;
             var row = $("#div_GrillaPrincipal").jqxGrid('getrowdata', args.rowindex);
             console.log(row);
-            
+
             codigo = row.codigo;
 
             $("#txt_Descripcion").val(row.descripcion);
-            
+
         });
         //CREA LOS ELEMENTOS DE LAS VENTANAS
         var customButtonsDemo = (function () {
@@ -214,12 +213,12 @@
                         });
                         $('#btn_Cerrar').jqxButton({width: '65px', height: 30});
                         $('#btn_Cerrar').on('click', function () {
-                            select=0;
+                            select = 0;
                             $('#div_GrillaPrincipal').jqxGrid('clearselection');
                         });
                     }
                 });
-             
+
                 ancho = 500;
                 alto = 190;
                 posicionX = ($(window).width() / 2) - (ancho / 2);
@@ -232,9 +231,9 @@
                         $("#cbo_Dependencia").jqxDropDownList({width: 300, height: 25, dropDownWidth: 300, promptText: "Seleccione"});
                         $('#cbo_Dependencia').on('select', function (event) {
                             $("#cbo_Vehiculo").jqxDropDownList('clear');
-                            fn_cargarComboAjax("#cbo_Vehiculo", {mode: 'vehiculoByComision', 
-                                                                 codigo: periodoG, codigo2: brigadaG, codigo3: mesG, codigo4: tipoAsignacionG,
-                                                                 codigo5: $("#cbo_Dependencia").val()});
+                            fn_cargarComboAjax("#cbo_Vehiculo", {mode: 'vehiculoByComision',
+                                codigo: periodoG, codigo2: brigadaG, codigo3: mesG, codigo4: tipoAsignacionG,
+                                codigo5: $("#cbo_Dependencia").val()});
                             $("#cbo_Vehiculo").jqxDropDownList('setContent', 'Seleccione');
                             $("#cbo_Combustible").jqxDropDownList('clear');
                             $("#cbo_Combustible").jqxDropDownList('setContent', 'Seleccione');
@@ -242,9 +241,9 @@
                         $("#cbo_Vehiculo").jqxDropDownList({width: 300, height: 25, dropDownWidth: 300, promptText: "Seleccione"});
                         $('#cbo_Vehiculo').on('select', function (event) {
                             $("#cbo_Combustible").jqxDropDownList('clear');
-                            fn_cargarComboAjax("#cbo_Combustible", {mode: 'combustibleByComision', 
-                                                                 codigo: periodoG, codigo2: brigadaG, codigo3: mesG, codigo4: tipoAsignacionG,
-                                                                 codigo5: $("#cbo_Dependencia").val(), codigo6: $("#cbo_Vehiculo").val()});
+                            fn_cargarComboAjax("#cbo_Combustible", {mode: 'combustibleByComision',
+                                codigo: periodoG, codigo2: brigadaG, codigo3: mesG, codigo4: tipoAsignacionG,
+                                codigo5: $("#cbo_Dependencia").val(), codigo6: $("#cbo_Vehiculo").val()});
                             $("#cbo_Combustible").jqxDropDownList('setContent', 'Seleccione');
                         });
                         $("#cbo_Combustible").jqxDropDownList({width: 300, height: 25, dropDownWidth: 300, promptText: "Seleccione"});
@@ -256,7 +255,7 @@
                             $('#frm_ComisionDetalleAsig').jqxValidator('validate');
                         });
                         $('#btn_CancelarComisionDetalle').on('click', function () {
-                            select2=0;
+                            select2 = 0;
                             $('#div_GrillaComisionDetalle').jqxGrid('clearselection');
                         });
                         $('#frm_ComisionDetalleAsig').jqxValidator({
@@ -271,7 +270,7 @@
                             }
                         });
                     }
-                }); 
+                });
             }
             return {init: function () {
                     _createElements();
@@ -281,7 +280,7 @@
         $(document).ready(function () {
             customButtonsDemo.init();
         });
-        
+
         $("#div_GrillaComisionDetalle").jqxGrid({
             width: '100%',
             height: 380,
@@ -311,8 +310,8 @@
                 ButtonEliminaRegistro.jqxTooltip({position: 'bottom', content: "Eliminar Registro"});
                 // add new row.
                 ButtonNuevoRegistro.click(function (event) {
-                    mode2='I';
-                    select2=0;
+                    mode2 = 'I';
+                    select2 = 0;
                     fn_cargarDetalleCuotaDetalle()
                 });
                 // edit new row.
@@ -350,7 +349,7 @@
                                     btnClass: 'btn-primary',
                                     keys: ['enter', 'shift'],
                                     action: function () {
-                                        mode2='D';
+                                        mode2 = 'D';
                                         fn_GrabarDatosCuotasDetalle();
                                     }
                                 },
@@ -384,12 +383,12 @@
             var args = event.args;
             var rowDet = $("#div_GrillaComisionDetalle").jqxGrid('getrowdata', args.rowindex);
             console.log(rowDet);
-            select2=1;
+            select2 = 1;
             codigoNivel = rowDet.codigo;
-            dependenciaG=rowDet.codigoDependencia;
-            vehiculoG=rowDet.codigoVehiculo;
-            tipoCombustibleG=rowDet.codigoCombustible;
-            
+            dependenciaG = rowDet.codigoDependencia;
+            vehiculoG = rowDet.codigoVehiculo;
+            tipoCombustibleG = rowDet.codigoCombustible;
+
             $("#cbo_Dependencia").jqxDropDownList('setContent', rowDet.dependencia);
             $("#cbo_Dependencia").jqxDropDownList({disabled: true});
             $("#cbo_Vehiculo").jqxDropDownList('setContent', rowDet.vehiculo);
@@ -398,22 +397,22 @@
             $("#cbo_Combustible").jqxDropDownList({disabled: true});
             $("#div_Cantidad").val(rowDet.cantidad);
             $("#div_Distancia").val(rowDet.distancia);
-            
+
         });
     });
 
     function fn_cargarDetalleCuota() {
-        
-        if(periodoG!==null && brigadaG!==null && mesG!==null && tipoAsignacionG!==null){
-            codigo=0;
-            select2=0;
-            
+
+        if (periodoG !== null && brigadaG !== null && mesG !== null && tipoAsignacionG !== null) {
+            codigo = 0;
+            select2 = 0;
+
             $("#txt_Descripcion").val('');
 
             $('#div_GrillaComisionDetalle').jqxGrid('clear');
             $('#div_ComisionDetalle').jqxWindow({isModal: true});
             $('#div_ComisionDetalle').jqxWindow('open');
-        }else{
+        } else {
             $.alert({
                 theme: 'material',
                 title: 'AVISO DEL SISTEMA',
@@ -424,15 +423,15 @@
                 typeAnimated: true
             });
         }
-        
-        
+
+
     }
-    
+
     function fn_cargarDetalleCuotaDetalle() {
-        
+
         $("#cbo_Dependencia").jqxDropDownList('clear');
-        fn_cargarComboAjax("#cbo_Dependencia", {mode: 'dependenciaByComision', 
-                                         codigo: periodoG, codigo2: brigadaG, codigo3: mesG, codigo4: tipoAsignacionG});
+        fn_cargarComboAjax("#cbo_Dependencia", {mode: 'dependenciaByComision',
+            codigo: periodoG, codigo2: brigadaG, codigo3: mesG, codigo4: tipoAsignacionG});
         $("#cbo_Dependencia").jqxDropDownList('setContent', 'Seleccione');
         $("#cbo_Dependencia").jqxDropDownList({disabled: false});
 
@@ -446,48 +445,48 @@
 
         $("#div_Cantidad").val('');
         $("#div_Distancia").val('');
-        
+
         $('#div_ComisionDetalleAsig').jqxWindow({isModal: true});
         $('#div_ComisionDetalleAsig').jqxWindow('open');
-        
-        
+
+
     }
-    
-    
+
+
     //FUNCION PARA ACTUALIZAR DATOS DE LA GRILLA
     function fn_CargarBusqueda() {
-        if($('#cbo_Periodo').val() !== '0' && $('#cbo_Brigada').val() !== '0' && $('#cbo_Mes').val() !== '0' && $('#cbo_TipoAsignacion').val() !== '0' &&
-           $('#cbo_Periodo').val() !== '' && $('#cbo_Brigada').val() !== '' && $('#cbo_Mes').val() !== '' && $('#cbo_TipoAsignacion').val() !== ''   ){
-                    var source = {
-                        dataType: "json",
-                        datafields: [
-                            {name: 'codigo', type: "string"},
-                            {name: 'descripcion', type: "string"},
-                            {name: 'estado', type: "string"},
-                            {name: 'codigoPeriodo', type: "string"},
-                            {name: 'codigoBrigada', type: "string"},
-                            {name: 'codigoMes', type: "string"},
-                            {name: 'codigoAsignacion', type: "string"}
-                        ],
-                        id: 'codigo',
-                        url: "ComisionDetalle",
-                        data: {mode: 'G', periodo: $('#cbo_Periodo').val(), mes: $('#cbo_Mes').val(), brigada: $('#cbo_Brigada').val(), asignacion: $('#cbo_TipoAsignacion').val()}
-                    };
-                    periodoG= $('#cbo_Periodo').val();
-                    brigadaG= $('#cbo_Brigada').val();
-                    mesG= $('#cbo_Mes').val();
-                    tipoAsignacionG= $('#cbo_TipoAsignacion').val();
-                    var dataAdapter = new $.jqx.dataAdapter(source);
-                    $("#div_GrillaPrincipal").jqxGrid({source: dataAdapter});
-                    if ($('#div_GrillaPrincipal').jqxGrid('getselectedrowindex') >= 0)
-                        $('#div_GrillaPrincipal').jqxGrid('clearselection');
+        if ($('#cbo_Periodo').val() !== '0' && $('#cbo_Brigada').val() !== '0' && $('#cbo_Mes').val() !== '0' && $('#cbo_TipoAsignacion').val() !== '0' &&
+                $('#cbo_Periodo').val() !== '' && $('#cbo_Brigada').val() !== '' && $('#cbo_Mes').val() !== '' && $('#cbo_TipoAsignacion').val() !== '') {
+            var source = {
+                dataType: "json",
+                datafields: [
+                    {name: 'codigo', type: "string"},
+                    {name: 'descripcion', type: "string"},
+                    {name: 'estado', type: "string"},
+                    {name: 'codigoPeriodo', type: "string"},
+                    {name: 'codigoBrigada', type: "string"},
+                    {name: 'codigoMes', type: "string"},
+                    {name: 'codigoAsignacion', type: "string"}
+                ],
+                id: 'codigo',
+                url: "ComisionDetalle",
+                data: {mode: 'G', periodo: $('#cbo_Periodo').val(), mes: $('#cbo_Mes').val(), brigada: $('#cbo_Brigada').val(), asignacion: $('#cbo_TipoAsignacion').val()}
+            };
+            periodoG = $('#cbo_Periodo').val();
+            brigadaG = $('#cbo_Brigada').val();
+            mesG = $('#cbo_Mes').val();
+            tipoAsignacionG = $('#cbo_TipoAsignacion').val();
+            var dataAdapter = new $.jqx.dataAdapter(source);
+            $("#div_GrillaPrincipal").jqxGrid({source: dataAdapter});
+            if ($('#div_GrillaPrincipal').jqxGrid('getselectedrowindex') >= 0)
+                $('#div_GrillaPrincipal').jqxGrid('clearselection');
         }
 
     }
-    
+
     function fn_CargarBusquedaDetalle() {
         var source = null;
-        if(mode !== 'I' && mode2 === null){
+        if (mode !== 'I' && mode2 === null) {
             $.ajax({
                 type: "GET",
                 url: "ComisionDetDetalle",
@@ -514,12 +513,12 @@
                     $("#div_GrillaComisionDetalle").jqxGrid({source: dataAdapter});
                     if ($('#div_GrillaComisionDetalle').jqxGrid('getselectedrowindex') >= 0)
                         $('#div_GrillaComisionDetalle').jqxGrid('clearselection');
-                    
+
                 }
             });
-            
-        }else {
-          source = {
+
+        } else {
+            source = {
                 dataType: "json",
                 datafields: [
                     {name: 'codigo', type: "string"},
@@ -540,15 +539,15 @@
             if ($('#div_GrillaComisionDetalle').jqxGrid('getselectedrowindex') >= 0)
                 $('#div_GrillaComisionDetalle').jqxGrid('clearselection');
         }
-        
+
     }
 
     //FUNCION PARA GRABAR LOS DATOS DE LA VENTANA PRINCIPAL
     function fn_GrabarDatos() {
-        
+
         var rows = $('#div_GrillaComisionDetalle').jqxGrid('getrows');
-        var listFinal ='';
-        if(rows.length === 0){
+        var listFinal = '';
+        if (rows.length === 0) {
             $.alert({
                 theme: 'material',
                 title: 'AVISO DEL SISTEMA',
@@ -559,26 +558,26 @@
                 typeAnimated: true
             });
             return;
-        }else{
+        } else {
             var lista = [];
             for (var i = 0; i < rows.length; i++) {
                 var row = rows[i];
-                var result = row.codigoDependencia+"-"+row.codigoVehiculo+"-"+row.codigoCombustible+"-"+row.cantidad+"-"+row.distancia;
+                var result = row.codigoDependencia + "-" + row.codigoVehiculo + "-" + row.codigoCombustible + "-" + row.cantidad + "-" + row.distancia;
                 lista.push(result);
             }
 
             listFinal = JSON.stringify(lista).replaceAll('"', '').replaceAll('[', '').replaceAll(']', '');
         }
-        
+
         var json2 = {mode: mode, codigo: codigo, periodo: periodoG, brigada: brigadaG, mes: mesG,
-                   asignacion: tipoAsignacionG, descripcion: $('#txt_Descripcion').val(), lista: listFinal };
-        console.log(json2);       
-        
+            asignacion: tipoAsignacionG, descripcion: $('#txt_Descripcion').val(), lista: listFinal};
+        console.log(json2);
+
         $.ajax({
             type: "GET",
             url: "IduComision",
             data: {mode: mode, codigo: codigo, periodo: periodoG, brigada: brigadaG, mes: mesG,
-                   asignacion: tipoAsignacionG, descripcion: $('#txt_Descripcion').val(), lista: listFinal },
+                asignacion: tipoAsignacionG, descripcion: $('#txt_Descripcion').val(), lista: listFinal},
             success: function (data) {
                 msg = data;
                 if (msg === "GUARDO") {
@@ -612,18 +611,18 @@
             }
         });
     }
-    
+
     function fn_GrabarDatosEstados(txtRechazar) {
-        
+
         var json2 = {mode: mode, codigo: codigo, periodo: periodoG, brigada: brigadaG, mes: mesG,
-                   asignacion: tipoAsignacionG, descripcion: '', lista: null};
-        console.log(json2);       
-        
+            asignacion: tipoAsignacionG, descripcion: '', lista: null};
+        console.log(json2);
+
         $.ajax({
             type: "GET",
             url: "IduComision",
             data: {mode: mode, codigo: codigo, periodo: periodoG, brigada: brigadaG, mes: mesG,
-                   asignacion: tipoAsignacionG, descripcion: '', lista: null},
+                asignacion: tipoAsignacionG, descripcion: '', lista: null},
             success: function (data) {
                 msg = data;
                 if (msg === "GUARDO") {
@@ -656,82 +655,82 @@
             }
         });
     }
-    
-    function fn_GrabarDatosCuotasDetalle(){
+
+    function fn_GrabarDatosCuotasDetalle() {
         var json = null;
-        
-        if(mode2 === 'I'){
-           var vali=0; 
-           for(var i=0 ; i < dataLocalComision.length ; i++){
-                if(dataLocalComision[i].codigoVehiculo === $('#cbo_Vehiculo').val()){
-                    vali=1;
-                   break; 
+
+        if (mode2 === 'I') {
+            var vali = 0;
+            for (var i = 0; i < dataLocalComision.length; i++) {
+                if (dataLocalComision[i].codigoVehiculo === $('#cbo_Vehiculo').val()) {
+                    vali = 1;
+                    break;
                 }
             }
-            
-           if(vali !== 1){
+
+            if (vali !== 1) {
                 var placa = $('#cbo_Vehiculo').text().replaceAll('Seleccione', '').toUpperCase().split('-');
-                json     = { 
-                             codigo: dataLocalComision.length + 1,
-                             dependencia: $('#cbo_Dependencia').text().replaceAll('Seleccione', '').toUpperCase(),
-                             codigoDependencia: $('#cbo_Dependencia').val(),
-                             vehiculo: placa[0]+'-'+placa[1],
-                             codigoVehiculo: $('#cbo_Vehiculo').val(),
-                             combustible: $('#cbo_Combustible').text().replaceAll('Seleccione', '').toUpperCase(),
-                             codigoCombustible: $('#cbo_Combustible').val(),
-                             cantidad: $('#div_Cantidad').val(),
-                             distancia: $('#div_Distancia').val()
-                         } 
-                 dataLocalComision[dataLocalComision.length] = json;        
-                 $('#div_ComisionDetalleAsig').jqxWindow('close');
-                 fn_CargarBusquedaDetalle();
-           } else{
-                $.alert({
-                        theme: 'material',
-                        title: 'AVISO DEL SISTEMA',
-                        content: 'ESTE VEHICULO YA ESTA INGRESADO',
-                        animation: 'zoom',
-                        closeAnimation: 'zoom',
-                        type: 'red',
-                        typeAnimated: true
-                    });
-           }
-           
-        }else if (mode2 === 'U'){
-           json     = { 
-                        dependencia: $('#cbo_Dependencia').text().replaceAll('Seleccione', '').toUpperCase(),
-                        codigoDependencia: dependenciaG,
-                        vehiculo: $('#cbo_Vehiculo').text().replaceAll('Seleccione', '').toUpperCase(),
-                        codigoVehiculo: vehiculoG,
-                        combustible: $('#cbo_Combustible').text().replaceAll('Seleccione', '').toUpperCase(),
-                        codigoCombustible: tipoCombustibleG,
-                        cantidad: $('#div_Cantidad').val(),
-                        distancia: $('#div_Distancia').val()
-                    }
-            for(var i=0 ; i < dataLocalComision.length ; i++){
-                if(dataLocalComision[i].codigoVehiculo === vehiculoG){
-                   dataLocalComision[i]=json; 
+                json = {
+                    codigo: dataLocalComision.length + 1,
+                    dependencia: $('#cbo_Dependencia').text().replaceAll('Seleccione', '').toUpperCase(),
+                    codigoDependencia: $('#cbo_Dependencia').val(),
+                    vehiculo: placa[0] + '-' + placa[1],
+                    codigoVehiculo: $('#cbo_Vehiculo').val(),
+                    combustible: $('#cbo_Combustible').text().replaceAll('Seleccione', '').toUpperCase(),
+                    codigoCombustible: $('#cbo_Combustible').val(),
+                    cantidad: $('#div_Cantidad').val(),
+                    distancia: $('#div_Distancia').val()
                 }
-                dataLocalComision[i].codigo = i+1;
-            }        
+                dataLocalComision[dataLocalComision.length] = json;
+                $('#div_ComisionDetalleAsig').jqxWindow('close');
+                fn_CargarBusquedaDetalle();
+            } else {
+                $.alert({
+                    theme: 'material',
+                    title: 'AVISO DEL SISTEMA',
+                    content: 'ESTE VEHICULO YA ESTA INGRESADO',
+                    animation: 'zoom',
+                    closeAnimation: 'zoom',
+                    type: 'red',
+                    typeAnimated: true
+                });
+            }
+
+        } else if (mode2 === 'U') {
+            json = {
+                dependencia: $('#cbo_Dependencia').text().replaceAll('Seleccione', '').toUpperCase(),
+                codigoDependencia: dependenciaG,
+                vehiculo: $('#cbo_Vehiculo').text().replaceAll('Seleccione', '').toUpperCase(),
+                codigoVehiculo: vehiculoG,
+                combustible: $('#cbo_Combustible').text().replaceAll('Seleccione', '').toUpperCase(),
+                codigoCombustible: tipoCombustibleG,
+                cantidad: $('#div_Cantidad').val(),
+                distancia: $('#div_Distancia').val()
+            }
+            for (var i = 0; i < dataLocalComision.length; i++) {
+                if (dataLocalComision[i].codigoVehiculo === vehiculoG) {
+                    dataLocalComision[i] = json;
+                }
+                dataLocalComision[i].codigo = i + 1;
+            }
             $('#div_ComisionDetalleAsig').jqxWindow('close');
             fn_CargarBusquedaDetalle();
-        }else {
-            for(var i=0 ; i < dataLocalComision.length ; i++){
-                if(dataLocalComision[i].codigoVehiculo === vehiculoG){
-                   dataLocalComision.splice(i, 1);
-                   break;
+        } else {
+            for (var i = 0; i < dataLocalComision.length; i++) {
+                if (dataLocalComision[i].codigoVehiculo === vehiculoG) {
+                    dataLocalComision.splice(i, 1);
+                    break;
                 }
             }
-            
-            for(var i=0 ; i < dataLocalComision.length ; i++){
-                dataLocalComision[i].codigo = i+1;
+
+            for (var i = 0; i < dataLocalComision.length; i++) {
+                dataLocalComision[i].codigo = i + 1;
             }
             fn_CargarBusquedaDetalle();
         }
-        
+
     }
-   
+
 </script>
 <div id='div_Titulo' style="border: none;">
     <div class="jqx-hideborder">LISTADOS DE ASIGNACIÓN DE COMBUSTIBLE</div>
@@ -749,15 +748,6 @@
                                 </span>
                             </select>
                         </td>
-                        <td class="Titulo">Brigada : </td>
-                        <td>
-                            <select id="cbo_Brigada" name="cbo_Brigada">
-                                <option value="0">Seleccione</option>
-                                <span th:each="mes : ${session.objBrigadas}">
-                                    <option th:value="${mes.codigo}"><span th:text="${mes.descripcion}"> </span></option>
-                                </span>
-                            </select>
-                        </td>
                         <td class="Titulo">Mes : </td>
                         <td>
                             <select id="cbo_Mes" name="cbo_Mes">
@@ -767,13 +757,22 @@
                                 </span>
                             </select>
                         </td>
+                        <td class="Titulo">Brigada : </td>
+                        <td>
+                            <select id="cbo_Brigada" name="cbo_Brigada">
+                                <option value="0">Seleccione</option>
+                                <span th:each="brigada : ${session.objBrigadasAll}">
+                                    <option th:value="${brigada.codigo}"><span th:text="${brigada.descripcion}"> </span></option>
+                                </span>
+                            </select>
+                        </td>
                         <td class="Titulo">Tipo Asignación : </td>
                         <td>
                             <select id="cbo_TipoAsignacion" name="cbo_TipoAsignacion">
                                 <option value="0">Seleccione</option>
                             </select>
                         </td>
-                        
+
                         <td><a href="javascript: fn_CargarBusqueda();"><img src="images/Botones/refresh42.gif" alt="Buscar Datos" name="imgrefresh" width="30" height="28" border="0" id="imgrefresh"></a></td>
                         <td><a href="javascript: fn_MenuPrincipal();"><img src="images/Botones/exit42.gif" alt="Salir de pantalla" name="imgexit" width="30" height="28"  border="0" id="imgexit" /></a></td>
                     </tr>
@@ -827,7 +826,7 @@
                                     <option value="0">Seleccione</option>
                                 </select>
                             </td> 
-                            
+
                         </tr>
                         <tr>
                             <td class="inputlabel">TIPO COMBUSTIBLE : </td>

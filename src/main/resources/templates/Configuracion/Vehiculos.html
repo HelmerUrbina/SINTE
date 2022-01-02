@@ -44,10 +44,12 @@
                 var container = $("<div style='overflow: hidden; position: relative; margin: 1px;'></div>");
                 var ButtonNuevo = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='images/Botones/nuevo42.gif' th:src='@{images/Botones/nuevo42.gif' width=18 height=18 /><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
                 var ButtonExportar = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='images/Botones/pauf42.gif' th:src='@{images/Botones/pauf42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
+                var ButtonReporte = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='images/Botones/printer42.gif' th:src='@{images/Botones/printer42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
                 var ButtonRecargar = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='images/Botones/refresh42.gif' th:src='@{images/Botones/refresh42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
                 var ButtonSalir = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='images/Botones/exit42.gif' th:src='@{images/Botones/exit42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
                 container.append(ButtonNuevo);
                 container.append(ButtonExportar);
+                container.append(ButtonReporte);
                 container.append(ButtonRecargar);
                 container.append(ButtonSalir);
                 toolbar.append(container);
@@ -55,6 +57,8 @@
                 ButtonNuevo.jqxTooltip({position: 'bottom', content: "Nuevo Registro"});
                 ButtonExportar.jqxButton({width: 30, height: 22});
                 ButtonExportar.jqxTooltip({position: 'bottom', content: "Exportar Datos"});
+                ButtonReporte.jqxButton({width: 30, height: 22});
+                ButtonReporte.jqxTooltip({position: 'bottom', content: "Reporte"});
                 ButtonRecargar.jqxButton({width: 30, height: 22});
                 ButtonRecargar.jqxTooltip({position: 'bottom', content: "Recargar"});
                 ButtonSalir.jqxButton({width: 30, height: 22});
@@ -81,6 +85,27 @@
                 //ASIGNAMOS LAS FUNCIONES PARA EL BOTON EXPORTAR
                 ButtonExportar.click(function (event) {
                     $("#div_GrillaPrincipal").jqxGrid('exportdata', 'xlsx', 'Vehiculo');
+                });
+                //ASIGNAMOS LAS FUNCIONES PARA EL BOTON REPORTE
+                ButtonReporte.click(function (event) {
+                    if (codigo !== null) {
+                        var reporte = "PROG0003";
+                        var fecha = new Date();
+                        var url = "Reportes?reporte=" + reporte + "&periodo=" + fecha.getFullYear() + "&brigada=*&codigo=" + codigo;
+                        $('#div_ReporteViewer').attr('src', url + "&page=hsn#toolbar=1");
+                        $('#div_Reporte').jqxWindow({isModal: true, modalOpacity: 0.4});
+                        $('#div_Reporte').jqxWindow('open');
+                    } else {
+                        $.alert({
+                            theme: 'material',
+                            title: 'AVISO DEL SISTEMA',
+                            content: 'Debe Seleccionar un Registro',
+                            animation: 'zoom',
+                            closeAnimation: 'zoom',
+                            type: 'orange',
+                            typeAnimated: true
+                        });
+                    }
                 });
                 //ASIGNAMOS LAS FUNCIONES PARA EL BOTON RECARGAR
                 ButtonRecargar.click(function (event) {
@@ -245,11 +270,11 @@
                         });
                         $('#frm_Vehiculo').jqxValidator({
                             rules: [
-                                {input: '#txt_Placa', message: 'Ingrese la Placa del Vehículo!', action: 'keyup, blur', rule: 'required'},
-                                {input: '#txt_SerieChasis', message: 'Ingrese la Serie de Chasis del Vehículo!', action: 'keyup, blur', rule: 'required'},
-                                {input: '#txt_SerieMotor', message: 'Ingrese la Serie de Motor del Vehículo!', action: 'keyup, blur', rule: 'required'},
-                                {input: '#div_Fabricacion', message: 'Ingrese el Año Fabricacion del Vehículo!!', action: 'keyup, blur', rule: 'number'},
-                                {input: '#div_Puertas', message: 'Ingrese solo numeros!', action: 'keyup, blur', rule: 'number'}
+                                {input: '#txt_Placa', message: 'Ingrese la Placa del Vehículo!', action: 'keyup, blur', rule: 'required'}
+                                //{input: '#txt_SerieChasis', message: 'Ingrese la Serie de Chasis del Vehículo!', action: 'keyup, blur', rule: 'required'},
+                                //{input: '#txt_SerieMotor', message: 'Ingrese la Serie de Motor del Vehículo!', action: 'keyup, blur', rule: 'required'},
+                                //{input: '#div_Fabricacion', message: 'Ingrese el Año Fabricacion del Vehículo!!', action: 'keyup, blur', rule: 'number'},
+                                //{input: '#div_Puertas', message: 'Ingrese solo numeros!', action: 'keyup, blur', rule: 'number'}
                             ]
                         });
                         $('#frm_Vehiculo').jqxValidator({
@@ -498,7 +523,7 @@
             columns: [
                 {text: 'TIPO COMBUSTIBLE', datafield: 'vehiculo', width: '50%', align: 'center', cellsAlign: 'center', cellclassname: cellclass},
                 {text: 'CAPACIDAD', dataField: 'capacidad', width: '30%', align: 'center', cellsAlign: 'center', cellsFormat: 'f1', cellclassname: cellclass},
-                {text: 'ESTADO', datafield: 'estado',  width: '20%', align: 'center', cellsAlign: 'center'}
+                {text: 'ESTADO', datafield: 'estado', width: '20%', align: 'center', cellsAlign: 'center'}
             ]
         });
         $("#div_GrillaTipoCombustible").on('rowselect', function (event) {
@@ -690,6 +715,7 @@
     }
     //FUNCION PARA ACTUALIZAR DATOS DE LA GRILLA
     function fn_Refrescar() {
+        codigo = null;
         var source = {
             dataType: "json",
             datafields: [

@@ -27,13 +27,13 @@ import mil.sinte.DataService.Service.AsignacionCombustibleDetalleService;
 @Controller
 @Slf4j
 public class AsignacionCombustibleController {
-    
+
     @Autowired
     private AsignacionCombustibleService asignacionCombustibleService;
-    
+
     @Autowired
     private AsignacionCombustibleDetalleService asignacionCombustibleDService;
-    
+
     @RequestMapping(value = "/AsignacionCombustible")
     public String getAsignacionCombustible(String mode) {
         switch (mode) {
@@ -43,7 +43,7 @@ public class AsignacionCombustibleController {
                 return "redirect:/";
         }
     }
-    
+
     @RequestMapping(value = "/AsignacionCombustibleAprobacion")
     public String getAsignacionCombustibleAprobacion(String mode) {
         switch (mode) {
@@ -55,13 +55,13 @@ public class AsignacionCombustibleController {
                 return "redirect:/";
         }
     }
-    
+
     @RequestMapping(value = "/AsignacionCombustibleDetalle")
     @ResponseBody
     public String getAsignacionCombustibleDetalle(String mode, String periodo, String brigada, String mes, String tipoAsignacion) {
         switch (mode) {
             case "G":
-                return new Gson().toJson(asignacionCombustibleService.getAsignacionCombustibles(periodo,brigada,mes,tipoAsignacion));
+                return new Gson().toJson(asignacionCombustibleService.getAsignacionCombustibles(periodo, brigada, mes, tipoAsignacion));
             default:
                 return "ERROR";
         }
@@ -82,10 +82,9 @@ public class AsignacionCombustibleController {
         objAsignacionCombustible.setMes(mes);
         objAsignacionCombustible.setTipoAsignacion(tipoAsignacion);
         objAsignacionCombustible.setTipoCombustible(tipoCombustible);
-        
         return "" + asignacionCombustibleService.guardarAsignacionCombustible(objAsignacionCombustible, Utiles.getUsuario(), mode);
     }
-    
+
     @RequestMapping(value = "/IduAsignacionCombustibleAprobacion")
     @ResponseBody
     public String setAsignacionCombustibleAprobacion(
@@ -101,10 +100,10 @@ public class AsignacionCombustibleController {
         objAsignacionCombustible.setMes(mes);
         objAsignacionCombustible.setTipoAsignacion(tipoAsignacion);
         objAsignacionCombustible.setEstado(arrayDetalle);
-        
+
         return "" + asignacionCombustibleService.guardarAsignacionCombustibleAprobacion(objAsignacionCombustible, Utiles.getUsuario(), mode);
     }
-    
+
     @RequestMapping(value = "/IduAsignacionCombustibleAprobacion2")
     @ResponseBody
     public String setAsignacionCombustibleAprobacion2(
@@ -118,16 +117,16 @@ public class AsignacionCombustibleController {
         objAsignacionCombustible.setMes(mes);
         objAsignacionCombustible.setTipoAsignacion(tipoAsignacion);
         objAsignacionCombustible.setEstado(arrayDetalle);
-        
+
         return "" + asignacionCombustibleService.guardarAsignacionCombustibleAprobacion2(objAsignacionCombustible, Utiles.getUsuario(), mode);
     }
-    
+
     @RequestMapping(value = "/AsignacionCombustibleDDetalle")
     @ResponseBody
     public String getAsignacionCombustibleDDetalle(String mode, String periodo, String brigada, String mes, String tipoAsignacion, String tipoCombustible) {
         switch (mode) {
             case "G":
-                return new Gson().toJson(asignacionCombustibleDService.getAsignacionCombustibleDs(periodo,brigada,mes,tipoAsignacion,tipoCombustible));
+                return new Gson().toJson(asignacionCombustibleDService.getAsignacionCombustibleDs(periodo, brigada, mes, tipoAsignacion, tipoCombustible));
             default:
                 return "ERROR";
         }
@@ -146,7 +145,7 @@ public class AsignacionCombustibleController {
             @RequestParam("vehiculo") String vehiculo,
             @RequestParam("cantidad") Integer cantidad,
             @RequestParam("solicitado") Integer solicitado
-            ) {
+    ) {
         BeanAsignacionCombustibleDetalle objAsignacionCombustibleD = new BeanAsignacionCombustibleDetalle();
         objAsignacionCombustibleD.setPeriodo(periodo);
         objAsignacionCombustibleD.setBrigada(brigada);
@@ -157,21 +156,21 @@ public class AsignacionCombustibleController {
         objAsignacionCombustibleD.setVehiculo(vehiculo);
         objAsignacionCombustibleD.setCantidad(cantidad);
         objAsignacionCombustibleD.setSolicitado(solicitado);
-        
+
         return "" + asignacionCombustibleDService.guardarAsignacionCombustibleD(objAsignacionCombustibleD, Utiles.getUsuario(), mode);
     }
-    
+
     @RequestMapping(value = "/AsignacionCombustibleADetalle")
     @ResponseBody
     public String getAsignacionCombustibleADetalle(String mode, String periodo, String brigada, String mes, String tipoAsignacion, String tipoCombustible) {
         switch (mode) {
             case "G":
-                return new Gson().toJson(asignacionCombustibleDService.getAsignacionCombustibleA(periodo,brigada,mes,tipoAsignacion,tipoCombustible));
+                return new Gson().toJson(asignacionCombustibleDService.getAsignacionCombustibleA(periodo, brigada, mes, tipoAsignacion, tipoCombustible));
             default:
                 return "ERROR";
         }
     }
-    
+
     @RequestMapping(value = "/IduAsignacionCombustibleA")
     @ResponseBody
     public String setAsignacionCombustibleA(
@@ -182,7 +181,7 @@ public class AsignacionCombustibleController {
             @RequestParam("tipoAsignacion") String tipoAsignacion,
             @RequestParam("tipoCombustible") String tipoCombustible,
             @RequestParam("arrayDetalle") String arrayDetalle
-            ) {
+    ) {
         BeanAsignacionCombustibleDetalle objAsignacionCombustibleD = new BeanAsignacionCombustibleDetalle();
         objAsignacionCombustibleD.setPeriodo(periodo);
         objAsignacionCombustibleD.setBrigada(brigada);
@@ -190,11 +189,10 @@ public class AsignacionCombustibleController {
         objAsignacionCombustibleD.setTipoAsignacion(tipoAsignacion);
         objAsignacionCombustibleD.setTipoCombustible(tipoCombustible);
         objAsignacionCombustibleD.setVehiculo(arrayDetalle);
-        
-        
+
         return "" + asignacionCombustibleDService.guardarAsignacionCombustibleA(objAsignacionCombustibleD, Utiles.getUsuario(), mode);
     }
-    
+
     @RequestMapping(value = "/AsignacionCombustibleAIIDetalle")
     @ResponseBody
     public String getAsignacionCombustibleAIIDetalle(String mode, String periodo, String mes, String tipoAsignacion) {
@@ -202,11 +200,11 @@ public class AsignacionCombustibleController {
             case "G":
                 List<BeanMatrizAsignacion> list = asignacionCombustibleService.getMatrizAsignacion(periodo, mes, tipoAsignacion);
                 System.out.println("salio bueno :3" + list.size());
-               // System.out.println(new Gson().toJson(asignacionCombustibleService.getMatrizAsignacion(periodo, mes, tipoAsignacion))+"");
+                // System.out.println(new Gson().toJson(asignacionCombustibleService.getMatrizAsignacion(periodo, mes, tipoAsignacion))+"");
                 return new Gson().toJson(asignacionCombustibleService.getMatrizAsignacion(periodo, mes, tipoAsignacion));
             default:
                 return "ERROR";
         }
     }
-    
+
 }

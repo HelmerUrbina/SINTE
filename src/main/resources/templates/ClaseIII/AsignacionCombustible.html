@@ -1,4 +1,5 @@
 <script>
+    var autorizacion = validarBoolean('[[${session.objAutorizacion}]]');
     var codigo = null;
     var select1 = 0;
     var periodoG = null;
@@ -24,7 +25,7 @@
         $("#div_Titulo").jqxExpander({theme: theme, width: '100%'});
         $("#cbo_Periodo").jqxComboBox({theme: theme, autoOpen: true, promptText: "Seleccione", width: 150, dropDownWidth: 180, height: 25});
         $("#cbo_Mes").jqxComboBox({theme: theme, autoOpen: true, promptText: "Seleccione", width: 150, dropDownWidth: 180, height: 25});
-        $("#cbo_Brigada").jqxComboBox({theme: theme, autoOpen: true, promptText: "Seleccione", width: 150, dropDownWidth: 250, height: 25});
+        $("#cbo_Brigadas").jqxComboBox({theme: theme, autoOpen: true, promptText: "Seleccione", width: 150, dropDownWidth: 250, height: 25});
         $("#cbo_TipoAsignacion").jqxComboBox({theme: theme, autoOpen: true, promptText: "Seleccione", width: 150, dropDownWidth: 350, height: 25});
         var fecha = new Date();
         $("#cbo_TipoAsignacion").jqxDropDownList('clear');
@@ -40,9 +41,11 @@
         $('#cbo_TipoAsignacion').on('change', function () {
             fn_CargarBusqueda();
         });
-        $('#cbo_Brigada').on('change', function () {
+        $('#cbo_Brigadas').on('change', function () {
             fn_CargarBusqueda();
         });
+        if (autorizacion === true)
+            fn_cargarComboxCabecera("#cbo_Brigadas", {mode: 'brigadasTechosByPeriodo', codigo: $('#cbo_Periodo').val()});
         //DEFINIMOS LOS ESTILOS DE LAS GRILLAS
         var cellclass = function (row, datafield, value, rowdata) {
             if (datafield === "solicitado" || datafield === "totalDemandaGlobal") {
@@ -91,7 +94,7 @@
                     $("#cbo_Tipo_Combustible").jqxDropDownList('clear');
                     fn_cargarComboAjax("#cbo_Tipo_Combustible", {mode: 'tipoCombustibleByAsignacionCombustible',
                         codigo: $('#cbo_Periodo').val(),
-                        codigo2: $('#cbo_Brigada').val(),
+                        codigo2: $('#cbo_Brigadas').val(),
                         codigo3: $('#cbo_Mes').val(),
                         codigo4: $('#cbo_TipoAsignacion').val()});
                     $("#cbo_Tipo_Combustible").jqxDropDownList('setContent', 'Seleccione');
@@ -410,7 +413,7 @@
         $('#div_asignacionDetalleGrilla').jqxGrid('clear');
         fn_RefrescarAsignacionDetalle();
         $("#cbo_Dependencia").jqxDropDownList('clear');
-        fn_cargarComboAjax("#cbo_Dependencia", {mode: 'dependenciaByBrigada', codigo: brigadaG});
+        fn_cargarComboAjax("#cbo_Dependencia", {mode: 'dependenciaByPeriodoAndBrigadaAndTipoCombustible', codigo: $("#cbo_Periodo").val(), codigo2: brigadaG, codigo3: tipoCombustibleG});
         $('#div_VentanaAsignacionDetalle').jqxWindow({isModal: true});
         $('#div_VentanaAsignacionDetalle').jqxWindow('open');
     }
@@ -483,36 +486,50 @@
 
     //FUNCION PARA ACTUALIZAR DATOS DE LA GRILLA
     function fn_CargarBusqueda() {
-        var source = {
-            dataType: "json",
-            datafields: [
-                {name: 'periodo', type: "string"},
-                {name: 'brigada', type: "string"},
-                {name: 'mes', type: "string"},
-                {name: 'tipoAsignacion', type: "string"},
-                {name: 'tipoCombustible', type: "string"},
-                {name: 'cantidad', type: "number"},
-                {name: 'solicitado', type: "number"},
-                {name: 'estado', type: "string"},
-                {name: 'usuarioCreador', type: "string"},
-                {name: 'fechaCreador', type: "string"},
-                {name: 'usuarioCodigo', type: "string"},
-                {name: 'usuarioFecha', type: "string"}
-            ],
-            id: 'tipoCombustible',
-            url: "AsignacionCombustibleDetalle",
-            data: {mode: 'G', periodo: $('#cbo_Periodo').val(), brigada: $('#cbo_Brigada').val(), mes: $('#cbo_Mes').val(), tipoAsignacion: $('#cbo_TipoAsignacion').val()}
-        };
-        var dataAdapter = new $.jqx.dataAdapter(source);
-        $("#div_GrillaPrincipal").jqxGrid({source: dataAdapter});
-        $('#div_GrillaPrincipal').jqxGrid('clearselection');
-        select1 = 0;
+        msg = "";
+        msg += fn_validaCombos('#cbo_Brigadas', "Seleccione la Brigada");
+        msg += fn_validaCombos('#cbo_TipoAsignacion', "Seleccione el Tipo de Asignación");
+        if (msg === "") {
+            var source = {
+                dataType: "json",
+                datafields: [
+                    {name: 'periodo', type: "string"},
+                    {name: 'brigada', type: "string"},
+                    {name: 'mes', type: "string"},
+                    {name: 'tipoAsignacion', type: "string"},
+                    {name: 'tipoCombustible', type: "string"},
+                    {name: 'cantidad', type: "number"},
+                    {name: 'solicitado', type: "number"},
+                    {name: 'estado', type: "string"},
+                    {name: 'usuarioCreador', type: "string"},
+                    {name: 'fechaCreador', type: "string"},
+                    {name: 'usuarioCodigo', type: "string"},
+                    {name: 'usuarioFecha', type: "string"}
+                ],
+                id: 'tipoCombustible',
+                url: "AsignacionCombustibleDetalle",
+                data: {mode: 'G', periodo: $('#cbo_Periodo').val(), brigada: $('#cbo_Brigadas').val(), mes: $('#cbo_Mes').val(), tipoAsignacion: $('#cbo_TipoAsignacion').val()}
+            };
+            var dataAdapter = new $.jqx.dataAdapter(source);
+            $("#div_GrillaPrincipal").jqxGrid({source: dataAdapter});
+            $('#div_GrillaPrincipal').jqxGrid('clearselection');
+            select1 = 0;
+        } else {
+            $.alert({
+                theme: 'material',
+                title: 'AVISO DEL SISTEMA',
+                content: msg,
+                animation: 'zoom',
+                closeAnimation: 'zoom',
+                type: 'orange',
+                typeAnimated: true
+            });
+        }
     }
-
     //FUNCION PARA GRABAR LOS DATOS DE LA VENTANA PRINCIPAL
     function fn_GrabarDatos() {
         var periodo = $('#cbo_Periodo').val();
-        var brigada = $('#cbo_Brigada').val();
+        var brigada = $('#cbo_Brigadas').val();
         var mes = $('#cbo_Mes').val();
         var tipoAsignacion = $('#cbo_TipoAsignacion').val();
         var tipoCombustible = $('#cbo_Tipo_Combustible').val();
@@ -734,9 +751,8 @@
                         </td>
                         <td class="Titulo">Brigada : </td>
                         <td>
-                            <select id="cbo_Brigada" name="cbo_Brigada">
-                                <option value="0">Seleccione</option>
-                                <span th:each="brigada : ${session.objBrigadasAll}">
+                            <select id="cbo_Brigadas" name="cbo_Brigadas">
+                                <span th:each="brigada : ${session.objBrigadas}">
                                     <option th:value="${brigada.codigo}"><span th:text="${brigada.descripcion}"> </span></option>
                                 </span>
                             </select>
