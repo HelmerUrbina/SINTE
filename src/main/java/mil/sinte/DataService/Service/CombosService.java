@@ -86,4 +86,12 @@ public interface CombosService {
     public List<BeanCombos> getGrifo();
     
     public List<BeanCombos> getUsuariosByGrifos(Integer grifo, String periodo);
+    
+    public List<BeanCombos> getUsuariosByFirma();
+    
+    public List<BeanCombos> getGrados();
+    
+    public List<BeanCombos> getUsuarios();
+    
+    public List<BeanCombos> getReportes();
 }

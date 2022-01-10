@@ -387,5 +387,33 @@ public interface CombosDAO extends CrudRepository<BeanCombos, String> {
     List<BeanCombos> getUsuariosByGrifos(Integer grifo, String periodo);
     
     
+    @Query(nativeQuery = true, value =  "SELECT VUSUARIO_CODIGO||'/'||VUSUARIO_PATERNO||' '||VUSUARIO_MATERNO||', '||VUSUARIO_NOMBRES||'/'||VUSUARIO_CARGO CODIGO,\n" +
+                                        "       VUSUARIO_CODIGO DESCRIPCION\n" +
+                                        "  FROM SINTE_USUARIOS\n" +
+                                        " WHERE CESTADO_CODIGO = 'AC'\n" +
+                                        "   AND VUSUARIO_CODIGO NOT IN (SELECT VUSUARIO_CODIGO\n" +
+                                        "                                 FROM SINTE_USUARIO_FIRMAS\n" +
+                                        "                                WHERE CPERIODO_CODIGO = EXTRACT(YEAR FROM SYSDATE))")
+    List<BeanCombos> getUsuariosByFirma();
+    
+    @Query(nativeQuery = true, value =  "SELECT NGRADO_CODIGO CODIGO,\n" +
+                                        "       VGRADO_ABREVIATURA DESCRIPCION\n" +
+                                        "  FROM SINTE_GRADOS\n" +
+                                        " WHERE CESTADO_CODIGO = 'AC'")
+    List<BeanCombos> getGrados();
+    
+    @Query(nativeQuery = true, value =  "SELECT VUSUARIO_CODIGO CODIGO,\n" +
+                                        "        VUSUARIO_CODIGO DESCRIPCION\n" +
+                                        "   FROM SINTE_USUARIOS\n" +
+                                        "  WHERE CESTADO_CODIGO = 'AC'\n" +
+                                        "  ORDER BY VUSUARIO_CODIGO")
+    List<BeanCombos> getUsuarios();
+    
+    @Query(nativeQuery = true, value =  "SELECT CREPORTE_CODIGO CODIGO,\n" +
+                                        "       VREPORTE_NOMBRE DESCRIPCION\n" +
+                                        "  FROM SINTE_REPORTES\n" +
+                                        " WHERE CESTADO_CODIGO = 'AC'\n" +
+                                        "   AND CREPORTE_FIRMA = '1'")
+    List<BeanCombos> getReportes();
     
 }

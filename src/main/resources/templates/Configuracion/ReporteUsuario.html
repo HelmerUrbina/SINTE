@@ -1,0 +1,392 @@
+<script>
+    var codigo = null;
+    var periodoG = null;
+    var reporteG = null;
+    var usuarioG = null;
+    var mode = null;
+    var mode2 = null;
+    var select1 = 0;
+    var msg = "";
+    var nivelG = null;
+    
+    $(document).ready(function () {
+        var theme = getTheme();
+        
+        $("#div_Titulo").jqxExpander({theme: theme, width: '100%'});
+        $("#cbo_Periodo").jqxComboBox({theme: theme, autoOpen: true, promptText: "Seleccione", width: 150, dropDownWidth: 150, height: 20});
+        $("#cbo_Reporte").jqxComboBox({theme: theme, autoOpen: true, promptText: "Seleccione", width: 150, dropDownWidth: 150, height: 20});
+        var fecha = new Date();
+        $("#cbo_Periodo").jqxComboBox('selectItem', fecha.getFullYear());
+        $('#cbo_Periodo').on('change', function () {
+            fn_CargarBusqueda();
+        });
+        $('#cbo_Reporte').on('change', function () {
+            fn_CargarBusqueda();
+        });
+        $("#cbo_Reporte").jqxDropDownList('clear');
+        fn_cargarComboAjax("#cbo_Reporte", {mode: 'reportes'});
+        $("#cbo_Reporte").jqxDropDownList('setContent', 'Seleccione');
+        
+        //DEFINIMOS LOS CAMPOS Y DATOS DE LA GRILLA
+        $("#div_GrillaPrincipal").jqxGrid({
+            width: '99.8%',
+            height: ($(window).height() - 95),
+            autoheight: false,
+            autorowheight: false,
+            altrows: true,
+            sortable: true,
+            pageable: true,
+            filterable: true,
+            autoshowfiltericon: true,
+            columnsresize: true,
+            showfilterrow: true,
+            showtoolbar: true,
+            editable: false,
+            rendertoolbar: function (toolbar) {
+                // ADICIONAMOS BOTONES A LA BARRA DE ESTADOS
+                var container = $("<div style='overflow: hidden; position: relative; margin: 1px;'></div>");
+                var ButtonNuevo = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='images/Botones/nuevo42.gif' th:src='@{images/Botones/nuevo42.gif' width=18 height=18 /><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
+                var ButtonExportar = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='images/Botones/pauf42.gif' th:src='@{images/Botones/pauf42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
+                container.append(ButtonNuevo);
+                container.append(ButtonExportar);
+                toolbar.append(container);
+                ButtonNuevo.jqxButton({width: 30, height: 22});
+                ButtonNuevo.jqxTooltip({position: 'bottom', content: "Nuevo Registro"});
+                ButtonExportar.jqxButton({width: 30, height: 22});
+                ButtonExportar.jqxTooltip({position: 'bottom', content: "Exportar Datos"});
+                //ASIGNAMOS LAS FUNCIONES PARA EL BOTON NUEVO
+                ButtonNuevo.click(function (event) {
+                    mode = 'I';
+                    fn_cargarDetalle();
+                });
+                //ASIGNAMOS LAS FUNCIONES PARA EL BOTON EXPORTAR
+                ButtonExportar.click(function (event) {
+                    $("#div_GrillaPrincipal").jqxGrid('exportdata', 'xlsx', 'Firma por usuario');
+                });
+            },
+            columns: [
+                {text: 'USUARIO', dataField: 'usuario', width: '40%', align: 'center', cellsAlign: 'center'},
+                {text: 'NIVEL', dataField: 'nivel', width: '40%', align: 'center', cellsAlign: 'center'},
+                {text: 'ESTADO', dataField: 'estado', width: '20%', align: 'center', cellsAlign: 'center'}
+            ]
+        });
+        // DEFINIMOS EL MENU CONTEXTUAL
+        var contextMenu = $("#div_ContextMenu").jqxMenu({width: 200, height: 80, autoOpenPopup: false, mode: 'popup'});
+        $("#div_GrillaPrincipal").on('contextmenu', function () {
+            return false;
+        });
+        // HABILITAMOS LA OPCION DE CLICK DEL MENU CONTEXTUAL.
+        $("#div_GrillaPrincipal").on('rowclick', function (event) {
+            if (event.args.rightclick) {
+                $("#div_GrillaPrincipal").jqxGrid('selectrow', event.args.rowindex);
+                var scrollTop = $(window).scrollTop();
+                var scrollLeft = $(window).scrollLeft();
+                contextMenu.jqxMenu('open', parseInt(event.args.originalEvent.clientX) + 5 + scrollLeft, parseInt(event.args.originalEvent.clientY) + 5 + scrollTop);
+                return false;
+            }
+        });
+
+        //DEFINIMOS LOS EVENTOS SEGUN LA OPCION DEL MENU CONTEXTUAL
+        $("#div_ContextMenu").on('itemclick', function (event) {
+            var opcion = event.args;
+            if (select1 === 0) {
+                $.alert({
+                    theme: 'material',
+                    title: 'AVISO DEL SISTEMA',
+                    content: 'Debe Seleccionar un Registro',
+                    animation: 'zoom',
+                    closeAnimation: 'zoom',
+                    type: 'orange',
+                    typeAnimated: true
+                });
+            } else {
+                if ($.trim($(opcion).text()) === "Activar") {
+                    $.confirm({
+                        title: 'AVISO DEL SISTEMA',
+                        content: 'Desea Activar esta Firma de Usuario!',
+                        theme: 'material',
+                        animation: 'zoom',
+                        closeAnimation: 'zoom',
+                        type: 'blue',
+                        typeAnimated: true,
+                        buttons: {
+                            aceptar: {
+                                text: 'Aceptar',
+                                btnClass: 'btn-primary',
+                                keys: ['enter', 'shift'],
+                                action: function () {
+                                    mode = 'A';
+                                    fn_GrabarDatos();
+                                }
+                            },
+                            cancelar: function () {
+                                $('#div_GrillaPrincipal').jqxGrid('clearselection');
+                                select1 = 0;
+                            }
+                        }
+                    });
+                } else if ($.trim($(opcion).text()) === "Desactivar") {
+                    $.confirm({
+                        title: 'AVISO DEL SISTEMA',
+                        content: 'Desea Desactivar esta Firma de Usuario!',
+                        theme: 'material',
+                        animation: 'zoom',
+                        closeAnimation: 'zoom',
+                        type: 'red',
+                        typeAnimated: true,
+                        buttons: {
+                            aceptar: {
+                                text: 'Aceptar',
+                                btnClass: 'btn-primary',
+                                keys: ['enter', 'shift'],
+                                action: function () {
+                                    mode = 'D';
+                                    fn_GrabarDatos();
+                                }
+                            },
+                            cancelar: function () {
+                                $('#div_GrillaPrincipal').jqxGrid('clearselection');
+                                select1 = 0;
+                            }
+                        }
+                    });
+                } else if ($.trim($(opcion).text()) === "Editar") {
+                    mode='U';
+                    $('#div_VentanaPrincipal').jqxWindow({isModal: true, modalOpacity: 0.8});
+                    $('#div_VentanaPrincipal').jqxWindow('open');
+                }else {
+                    $.alert({
+                        theme: 'material',
+                        title: 'AVISO DEL SISTEMA',
+                        content: 'Opción NO VALIDA!!',
+                        animation: 'zoom',
+                        closeAnimation: 'zoom',
+                        type: 'red',
+                        typeAnimated: true
+                    });
+                }
+            }
+        });
+        //SELECCIONAMOS UN REGISTRO DE LA GRILLA
+        $("#div_GrillaPrincipal").on('rowselect', function (event) {
+            var args = event.args;
+            var row = $("#div_GrillaPrincipal").jqxGrid('getrowdata', args.rowindex);
+            select1 = 1;
+            usuarioG = row['usuario'];
+            nivelG = row['nivel'];
+            $("#cbo_Usuario").jqxDropDownList('setContent', row['usuario']);
+            $("#cbo_Usuario").jqxDropDownList({disabled: true});
+            $("#div_Niveles").val(row['nivel']);
+        });
+        //CREA LOS ELEMENTOS DE LAS VENTANAS
+        var customButtonsDemo = (function () {
+            function _createElements() {
+                //INICIA LOS VALORES DE LA VENTANA
+                var posicionX, posicionY;
+                var ancho = 400;
+                var alto = 125;
+                posicionX = ($(window).width() / 2) - (ancho / 2);
+                posicionY = ($(window).height() / 2) - (alto / 2);
+                $('#div_VentanaPrincipal').jqxWindow({
+                    position: {x: posicionX, y: posicionY},
+                    width: ancho, height: alto, resizable: false,
+                    cancelButton: $('#btn_Cancelar'),
+                    initContent: function () {
+                        $("#cbo_Usuario").jqxDropDownList({width: 300, height: 20, dropDownWidth: 300, promptText: "Seleccione"});
+                        $("#div_Niveles").jqxNumberInput({width: 50, height: 25, max: 4, digits: 1, decimalDigits: 0, spinButtons: true,inputMode: 'simple'});
+                        $('#btn_Cancelar').jqxButton({width: '65px', height: 30});
+                        $('#btn_Guardar').jqxButton({width: '65px', height: 30});
+                        $('#btn_Guardar').on('click', function () {
+                            fn_GrabarDatos();
+                        });
+                    }
+                });
+
+            }
+            return {init: function () {
+                    _createElements();
+                }
+            };
+        }());
+        $(document).ready(function () {
+            customButtonsDemo.init();
+//            $("#cbo_Grado").jqxDropDownList('clear');
+//            fn_cargarComboAjax("#cbo_Grado", {mode: 'grados'});
+        });
+    });
+
+    function fn_cargarDetalle() {
+        if(periodoG!==null && reporteG!==null){
+            $("#cbo_Usuario").jqxDropDownList('clear');
+            fn_cargarComboAjax("#cbo_Usuario", {mode: 'usuarios'});
+            $("#cbo_Usuario").jqxDropDownList('setContent', 'Seleccione');
+            $("#cbo_Usuario").jqxDropDownList({disabled: false});
+            $("#div_Niveles").val("");
+            
+            $('#div_VentanaPrincipal').jqxWindow({isModal: true, modalOpacity: 0.8});
+            $('#div_VentanaPrincipal').jqxWindow('open');
+        }else{
+            $.alert({
+                theme: 'material',
+                title: 'AVISO DEL SISTEMA',
+                content: 'DEBE REALIZAR UN BUSQUEDA PARA CREAR UN NUEVO REGISTRO',
+                animation: 'zoom',
+                closeAnimation: 'zoom',
+                type: 'orange',
+                typeAnimated: true
+            });
+        }
+    }
+
+
+
+    //FUNCION PARA ACTUALIZAR DATOS DE LA GRILLA
+    function fn_CargarBusqueda() {
+        if($('#cbo_Periodo').val()!=='0' && $('#cbo_Periodo').val()!=='' && $('#cbo_Periodo').val()!==null &&
+           $('#cbo_Reporte').val()!=='0' && $('#cbo_Reporte').val()!=='' && $('#cbo_Reporte').val()!==null){
+                var source = {
+                    dataType: "json",
+                    datafields: [
+                        {name: 'periodo', type: "String"},
+                        {name: 'codigoReporte', type: "String"},
+                        {name: 'reporte', type: "String"},
+                        {name: 'usuario', type: "String"},
+                        {name: 'nivel', type: "String"},
+                        {name: 'estado', type: "String"}
+                    ],
+                    id: 'usuario',
+                    url: "reportesUsuarios",
+                    data: {mode: 'G', periodo: $('#cbo_Periodo').val(), reporte: $('#cbo_Reporte').val()}
+                };
+                periodoG = $('#cbo_Periodo').val();
+                reporteG = $('#cbo_Reporte').val();
+                var dataAdapter = new $.jqx.dataAdapter(source);
+                $("#div_GrillaPrincipal").jqxGrid({source: dataAdapter});
+                $('#div_GrillaPrincipal').jqxGrid('clearselection');
+                select1 = 0;
+        }
+    }
+
+    //FUNCION PARA GRABAR LOS DATOS DE LA VENTANA PRINCIPAL
+    function fn_GrabarDatos() {
+        var usuario= null;
+        var nivel= null;
+        if(mode !== 'I'){
+            usuario = usuarioG;
+            nivel = nivelG;
+        }else{
+            usuario = $("#cbo_Usuario").val();
+            nivel = $("#div_Niveles").val();
+        }
+        
+//        var json = {mode: mode, periodo: periodoG, reporte: reporteG, usuario: usuario, nivel: nivel};
+//        console.log(json);
+        $.ajax({
+            type: "GET",
+            url: "IduReporte",
+            data: {mode: mode, periodo: periodoG, reporte: reporteG, usuario: usuario, nivel: $("#div_Niveles").val()},
+            success: function (data) {
+                msg = data;
+                if (msg === "GUARDO") {
+                    $.confirm({
+                        title: 'AVISO DEL SISTEMA',
+                        content: 'Datos procesados correctamente!!',
+                        type: 'green',
+                        typeAnimated: true,
+                        autoClose: 'cerrarAction|1000',
+                        buttons: {
+                            cerrarAction: {
+                                text: 'Cerrar',
+                                action: function () {
+                                    $('#div_VentanaPrincipal').jqxWindow('close');
+                                    fn_CargarBusqueda();
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    $.alert({
+                        theme: 'material',
+                        title: 'AVISO DEL SISTEMA',
+                        content: msg,
+                        animation: 'zoom',
+                        closeAnimation: 'zoom',
+                        type: 'red',
+                        typeAnimated: true
+                    });
+                }
+            }
+        });
+    }
+
+
+</script>
+<div id='div_Titulo' style="border: none;">
+    <div class="jqx-hideborder">LISTADOS DE REPORTE POR USUARIO</div>
+    <div>
+        <div id="div_Cabecera">
+            <table class="navy">
+                <tbody>
+                    <tr> 
+                        <td class="Titulo">Período : </td>
+                        <td>
+                            <select id="cbo_Periodo" name="cbo_Periodo">
+                                <option value="0">Seleccione</option>
+                                <span th:each="periodo : ${session.objPeriodos}">
+                                    <option th:value="${periodo.codigo}"><span th:text="${periodo.codigo}"> </span></option>
+                                </span>
+                            </select>
+                        </td>
+                        <td class="Titulo">Reporte : </td>
+                        <td>
+                            <select id="cbo_Reporte" name="cbo_Reporte">
+                                <option value="0">Seleccione</option>
+                            </select>
+                        </td>
+                        <td><a href="javascript: fn_CargarBusqueda();"><img src="images/Botones/refresh42.gif" alt="Buscar Datos" name="imgrefresh" width="30" height="28" border="0" id="imgrefresh"></a></td>
+                        <td><a href="javascript: fn_MenuPrincipal();"><img src="images/Botones/exit42.gif" alt="Salir de pantalla" name="imgexit" width="30" height="28"  border="0" id="imgexit" /></a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div id="div_GrillaPrincipal"></div>
+    </div>
+</div>
+<div id="div_VentanaPrincipal" style="display: none">
+    <div>
+        <span style="float: left">REGISTRO DE USUARIO - REPORTE</span>
+    </div>
+    <div style="overflow: hidden">
+        <form id="frm_usuario" name="frm_usuario" method="post" >
+            <table width="100%" border="0" cellspacing="0" cellpadding="0"> 
+                <tr>
+                    <td class="inputlabel">Usuario : </td>
+                    <td>
+                        <select id="cbo_Usuario" name="cbo_Usuario">
+                            <option value="0">Seleccione</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="inputlabel">Nivel : </td>
+                    <td><div id="div_Niveles"></div></td>
+                </tr>
+                <tr>
+                    <td class="Summit" colspan="4">
+                        <div>
+                            <input type="button" id="btn_Guardar"  value="Guardar" style="margin-right: 20px"/>
+                            <input type="button" id="btn_Cancelar" value="Cancelar" style="margin-right: 20px"/>
+                        </div>
+                    </td>
+                </tr>
+            </table>  
+        </form>
+    </div>
+</div>
+<div id='div_ContextMenu' style='display: none;'>
+    <ul>
+        <li style="font-weight: bold;">Editar</li>
+        <li style="color: blue; font-weight: bold;">Activar</li>
+        <li style="color: brown; font-weight: bold;">Desactivar</li>
+    </ul>
+</div>

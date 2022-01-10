@@ -96,6 +96,14 @@ public class CombosController {
                 return new Gson().toJson(combosService.getGrifo());        
             case "usuarioByGrifos":
                 return new Gson().toJson(combosService.getUsuariosByGrifos(Integer.parseInt(codigo), codigo2));            
+            case "usuarioByFirma":
+                return new Gson().toJson(combosService.getUsuariosByFirma());                    
+            case "grados":
+                return new Gson().toJson(combosService.getGrados());
+            case "usuarios":
+                return new Gson().toJson(combosService.getUsuarios());  
+            case "reportes":
+                return new Gson().toJson(combosService.getReportes());      
             default:
                 return "ERROR";
         }

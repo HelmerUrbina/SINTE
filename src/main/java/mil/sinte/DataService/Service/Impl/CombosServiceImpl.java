@@ -212,4 +212,24 @@ public class CombosServiceImpl implements CombosService {
         return combosDAO.getUsuariosByGrifos(grifo,periodo);
     }
 
+    @Override
+    public List<BeanCombos> getUsuariosByFirma() {
+        return combosDAO.getUsuariosByFirma();
+    }
+
+    @Override
+    public List<BeanCombos> getGrados() {
+        return combosDAO.getGrados();
+    }
+
+    @Override
+    public List<BeanCombos> getUsuarios() {
+        return combosDAO.getUsuarios();
+    }
+
+    @Override
+    public List<BeanCombos> getReportes() {
+        return combosDAO.getReportes();
+    }
+
 }
