@@ -1,11 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mil.sinte.DataService.DAO;
 
-import java.sql.Date;
 import java.util.List;
 import mil.sinte.BusinessServices.Beans.BeanUsuarioGrifo;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,26 +14,24 @@ import org.springframework.transaction.annotation.Transactional;
  * @author MERCANTIL GROUP SAC
  */
 @Repository
-public interface UsuarioGrifoDAO extends JpaRepository<BeanUsuarioGrifo, String>{
-    
-    @Query(nativeQuery = true, value =  "SELECT VUSUARIO_CODIGO USUARIO,\n" +
-                                        "       NGRIFO_CODIGO,\n" +
-                                        "       CPERIODO_CODIGO,\n" +
-                                        "       UTIL.FUN_ESTADO_DESCRIPCION(CESTADO_CODIGO) ESTADO\n" +
-                                        "  FROM SINTE_USUARIO_GRIFO\n" +
-                                        " WHERE NGRIFO_CODIGO = ?1\n" +
-                                        "   AND CPERIODO_CODIGO = ?2\n" +
-                                        " ORDER BY USUARIO")
-    List<BeanUsuarioGrifo> findAll(Integer grifo, String periodo);  
-    
+public interface UsuarioGrifoDAO extends JpaRepository<BeanUsuarioGrifo, String> {
+
+    @Query(nativeQuery = true, value = "SELECT "
+            + "VUSUARIO_CODIGO, UTIL.FUN_USUARIO(VUSUARIO_CODIGO) CPERIODO_CODIGO,"
+            + "NGRIFO_CODIGO, UTIL.FUN_ESTADO_DESCRIPCION(CESTADO_CODIGO) CESTADO_CODIGO "
+            + "FROM SINTE_USUARIOS_GRIFO WHERE "
+            + "CPERIODO_CODIGO=?1 AND "
+            + "NGRIFO_CODIGO=?2 "
+            + "ORDER BY VUSUARIO_CODIGO")
+    List<BeanUsuarioGrifo> findByPeriodoAndGrifo(String periodo, Integer grifo);
+
     @Transactional
     @Modifying
-    @Query(value = "{CALL SP_IDU_USUARIO_GRIFO(:codigoU, :grifo, :periodo, :usuario, :modo)}", nativeQuery = true)
-    void sp_usuario_grifo(
-            @Param("codigoU") String codigoU,
-            @Param("grifo") Integer grifo,
+    @Query(value = "{CALL SP_IDU_USUARIOS_GRIFO(:periodo, :codigo, :grifo, :usuario, :modo)}", nativeQuery = true)
+    void sp_usuarioGrifo(
             @Param("periodo") String periodo,
+            @Param("codigo") String codigo,
+            @Param("grifo") Integer grifo,
             @Param("usuario") String usuario,
             @Param("modo") String modo);
-    
 }

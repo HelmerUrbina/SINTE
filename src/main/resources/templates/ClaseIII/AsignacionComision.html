@@ -39,12 +39,11 @@
         $("#cbo_Brigada").jqxComboBox({theme: theme, autoOpen: true, promptText: "Seleccione", width: 150, dropDownWidth: 250, height: 25});
         $("#cbo_TipoAsignacion").jqxComboBox({theme: theme, autoOpen: true, promptText: "Seleccione", width: 150, dropDownWidth: 250, height: 25});
         var fecha = new Date();
-        $("#cbo_Mes").jqxComboBox('selectItem', fecha.getMonth() + 1);
         $("#cbo_Periodo").jqxComboBox('selectItem', fecha.getFullYear());
+        $("#cbo_Mes").jqxComboBox('selectItem', pad(fecha.getMonth() + 1, 2));
         $("#cbo_TipoAsignacion").jqxComboBox('clear');
         fn_cargarComboxCabecera("#cbo_TipoAsignacion", {mode: 'tipoAsignacionByPeriodo', codigo: $("#cbo_Periodo").val()});
         $("#cbo_TipoAsignacion").jqxComboBox('setContent', 'Seleccione');
-
         $('#cbo_Periodo').on('change', function () {
             $("#cbo_TipoAsignacion").jqxComboBox('clear');
             fn_cargarComboxCabecera("#cbo_TipoAsignacion", {mode: 'tipoAsignacionByPeriodo', codigo: $("#cbo_Periodo").val()});
@@ -59,7 +58,8 @@
         $('#cbo_TipoAsignacion').on('change', function () {
             fn_CargarBusqueda();
         });
-
+        if (autorizacion === true)
+            fn_cargarComboxCabecera("#cbo_Brigada", {mode: 'brigadas'});
         //DEFINIMOS LOS CAMPOS Y DATOS DE LA GRILLA
         $("#div_GrillaPrincipal").jqxGrid({
             width: '99.8%',
@@ -312,7 +312,7 @@
                 ButtonNuevoRegistro.click(function (event) {
                     mode2 = 'I';
                     select2 = 0;
-                    fn_cargarDetalleCuotaDetalle()
+                    fn_cargarDetalleCuotaDetalle();
                 });
                 // edit new row.
                 ButtonEditarRegistro.click(function (event) {
@@ -431,7 +431,7 @@
 
         $("#cbo_Dependencia").jqxDropDownList('clear');
         fn_cargarComboAjax("#cbo_Dependencia", {mode: 'dependenciaByComision',
-            codigo: periodoG, codigo2: brigadaG, codigo3: mesG, codigo4: tipoAsignacionG});
+            codigo: periodoG, codigo2: brigadaG, codigo3: $("#cbo_Mes").val(), codigo4: tipoAsignacionG});
         $("#cbo_Dependencia").jqxDropDownList('setContent', 'Seleccione');
         $("#cbo_Dependencia").jqxDropDownList({disabled: false});
 
@@ -722,7 +722,6 @@
                     break;
                 }
             }
-
             for (var i = 0; i < dataLocalComision.length; i++) {
                 dataLocalComision[i].codigo = i + 1;
             }
@@ -751,7 +750,6 @@
                         <td class="Titulo">Mes : </td>
                         <td>
                             <select id="cbo_Mes" name="cbo_Mes">
-                                <option value="0">Seleccione</option>
                                 <span th:each="mes : ${session.objMeses}">
                                     <option th:value="${mes.codigo}"><span th:text="${mes.descripcion}"> </span></option>
                                 </span>
@@ -761,7 +759,7 @@
                         <td>
                             <select id="cbo_Brigada" name="cbo_Brigada">
                                 <option value="0">Seleccione</option>
-                                <span th:each="brigada : ${session.objBrigadasAll}">
+                                <span th:each="brigada : ${session.objBrigadas}">
                                     <option th:value="${brigada.codigo}"><span th:text="${brigada.descripcion}"> </span></option>
                                 </span>
                             </select>
@@ -772,7 +770,6 @@
                                 <option value="0">Seleccione</option>
                             </select>
                         </td>
-
                         <td><a href="javascript: fn_CargarBusqueda();"><img src="images/Botones/refresh42.gif" alt="Buscar Datos" name="imgrefresh" width="30" height="28" border="0" id="imgrefresh"></a></td>
                         <td><a href="javascript: fn_MenuPrincipal();"><img src="images/Botones/exit42.gif" alt="Salir de pantalla" name="imgexit" width="30" height="28"  border="0" id="imgexit" /></a></td>
                     </tr>
@@ -825,8 +822,7 @@
                                 <select id="cbo_Vehiculo" name="cbo_Vehiculo">
                                     <option value="0">Seleccione</option>
                                 </select>
-                            </td> 
-
+                            </td>
                         </tr>
                         <tr>
                             <td class="inputlabel">TIPO COMBUSTIBLE : </td>
@@ -862,5 +858,3 @@
         <li style="font-weight: bold;">Anular</li>
     </ul>
 </div>
-
-

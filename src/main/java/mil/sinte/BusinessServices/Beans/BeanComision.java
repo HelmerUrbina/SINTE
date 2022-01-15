@@ -19,30 +19,30 @@ import lombok.Data;
 @Entity
 @Table(name = "SINTE_ASIGNACION_COMISION")
 @Data
-public class BeanComision implements Serializable{
-    
+public class BeanComision implements Serializable {
+
     private static final long serialVersionUID = 1L;
-    
+
     @Id
     @Column(name = "CODIGO", nullable = false)
     private String codigo;
-    
+
     @Column(name = "DESCRIPCION")
     private String descripcion;
-    
+
     @Column(name = "ESTADO")
     private String estado;
-    
+
     @Column(name = "CPERIODO_CODIGO")
     private String codigoPeriodo;
-    
+
     @Column(name = "NBRIGADA_CODIGO")
     private String codigoBrigada;
-    
+
     @Column(name = "CMES_CODIGO")
     private String codigoMes;
-    
+
     @Column(name = "NTIPO_ASIGNACION_CODIGO")
     private String codigoAsignacion;
-    
+
 }

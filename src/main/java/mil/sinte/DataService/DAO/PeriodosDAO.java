@@ -19,7 +19,7 @@ public interface PeriodosDAO extends JpaRepository<BeanPeriodos, String> {
     @Query(nativeQuery = true, value = "SELECT CPERIODO_CODIGO, "
             + "VPERIODO_DESCRIPCION, VPERIODO_ABREVIATURA, "
             + "UTIL.FUN_ESTADO_DESCRIPCION(CESTADO_CODIGO) CESTADO_CODIGO "
-            + "FROM SINTE_PERIODOS  "
+            + "FROM SINTE_PERIODOS "
             + "ORDER BY CPERIODO_CODIGO")
     @Override
     List<BeanPeriodos> findAll();

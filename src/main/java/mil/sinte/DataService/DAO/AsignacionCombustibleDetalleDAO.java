@@ -16,64 +16,42 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 public interface AsignacionCombustibleDetalleDAO extends JpaRepository<BeanAsignacionCombustibleDetalle, String> {
 
-    @Query(nativeQuery = true, value = "SELECT CPERIODO_CODIGO,\n"
-            + "       UTIL.FUN_BRIGADA_ABREVIATURA(NBRIGADA_CODIGO) NBRIGADA_CODIGO,\n"
-            + "       UTIL.FUN_MESES_ABREVIATURA(CMES_CODIGO) CMES_CODIGO,\n"
-            + "       UTIL.FUN_TIPO_ASIGNACION_ABREVIATUR(NTIPO_ASIGNACION_CODIGO) NTIPO_ASIGNACION_CODIGO,\n"
-            + "       UTIL.FUN_TIPO_COMBUSTIBLE_ABREVIATU(NTIPO_COMBUSTIBLE_CODIGO) NTIPO_COMBUSTIBLE_CODIGO,\n"
-            + "       UTIL.FUN_DEPENDENCIA_ABREVIATURA(NBRIGADA_CODIGO,NDEPENDENCIA_CODIGO) NDEPENDENCIA_CODIGO,\n"
-            + "       UTIL.FUN_VEHICULO(NVEHICULO_CODIGO) NVEHICULO_CODIGO,\n"
-            + "       NASIGNACION_DETALLE_CANTIDAD,\n"
-            + "       NASIGNACION_DETALLE_SOLICITADO,\n"
-            + "       NDEPENDENCIA_CODIGO VUSUARIO_CREADOR,\n"
-            + "       NVEHICULO_CODIGO DUSUARIO_CREADOR,\n"
-            + "       CASE WHEN (SELECT NASIGNACION_CANTIDAD \n"
-            + "                    FROM SINTE_ASIGNACION_COMBUSTIBLE \n"
-            + "                   WHERE CPERIODO_CODIGO = ?1\n"
-            + "                     AND NBRIGADA_CODIGO = ?2\n"
-            + "                     AND CMES_CODIGO =?3\n"
-            + "                     AND NTIPO_ASIGNACION_CODIGO =?4\n"
-            + "                     AND NTIPO_COMBUSTIBLE_CODIGO =?5) > 0 THEN 0 \n"
-            + "            WHEN (SELECT CESTADO_CODIGO \n"
-            + "                    FROM SINTE_ASIGNACION_COMBUSTIBLE \n"
-            + "                   WHERE CPERIODO_CODIGO = ?1\n"
-            + "                     AND NBRIGADA_CODIGO = ?2\n"
-            + "                     AND CMES_CODIGO =?3\n"
-            + "                     AND NTIPO_ASIGNACION_CODIGO =?4\n"
-            + "                     AND NTIPO_COMBUSTIBLE_CODIGO =?5) = 'CE' THEN 0\n"
-            + "            ELSE 1 END VUSUARIO_CODIGO\n"
-            + "  FROM SINTE_ASIGNACION_DETALLE \n"
-            + " WHERE CPERIODO_CODIGO = ?1\n"
-            + "   AND NBRIGADA_CODIGO = ?2\n"
-            + "   AND CMES_CODIGO =?3\n"
-            + "   AND NTIPO_ASIGNACION_CODIGO =?4\n"
-            + "   AND NTIPO_COMBUSTIBLE_CODIGO =?5")
+    @Query(nativeQuery = true, value = "SELECT "
+            + "NDEPENDENCIA_CODIGO CPERIODO_CODIGO, NVEHICULO_CODIGO NBRIGADA_CODIGO, NTIPO_ASIGNACION_CODIGO, "
+            + "NTIPO_COMBUSTIBLE_CODIGO, "
+            + "UTIL.FUN_DEPENDENCIA_ABREVIATURA(NBRIGADA_CODIGO, NDEPENDENCIA_CODIGO) NDEPENDENCIA_CODIGO,"
+            + "UTIL.FUN_VEHICULO(NVEHICULO_CODIGO) NVEHICULO_CODIGO, "
+            + "UTIL.FUN_TIPO_OPERACION_ABREVIATUR(NTIPO_OPERACION_CODIGO) NTIPO_OPERACION_CODIGO, "
+            + "NASIGNACION_DETALLE_CANTIDAD, NASIGNACION_DETALLE_SOLICITADO, CMES_CODIGO "
+            + "FROM SINTE_ASIGNACION_DETALLE WHERE "
+            + "CPERIODO_CODIGO=?1 AND "
+            + "NBRIGADA_CODIGO=?2 AND "
+            + "CMES_CODIGO=?3 AND "
+            + "NTIPO_ASIGNACION_CODIGO=?4 AND "
+            + "NTIPO_COMBUSTIBLE_CODIGO =?5 "
+            + "ORDER BY NDEPENDENCIA_CODIGO, NVEHICULO_CODIGO")
     List<BeanAsignacionCombustibleDetalle> findAll(String periodo, Integer brigada, String mes, Integer tipoAsignacion, Integer tipoCombustible);
 
-    @Query(nativeQuery = true, value = "SELECT CPERIODO_CODIGO,\n"
-            + "       '' NBRIGADA_CODIGO,\n"
-            + "       '' CMES_CODIGO,\n"
-            + "       '' NTIPO_ASIGNACION_CODIGO,\n"
-            + "       '' NTIPO_COMBUSTIBLE_CODIGO,\n"
-            + "       UTIL.FUN_DEPENDENCIA_ABREVIATURA(NBRIGADA_CODIGO,NDEPENDENCIA_CODIGO) NDEPENDENCIA_CODIGO,\n"
-            + "       UTIL.FUN_VEHICULO(NVEHICULO_CODIGO) NVEHICULO_CODIGO,\n"
-            + "       NASIGNACION_DETALLE_CANTIDAD,\n"
-            + "       NASIGNACION_DETALLE_SOLICITADO,\n"
-            + "       NDEPENDENCIA_CODIGO VUSUARIO_CREADOR,\n"
-            + "       NVEHICULO_CODIGO DUSUARIO_CREADOR,\n"
-            + "       '' VUSUARIO_CODIGO\n"
-            + "  FROM SINTE_ASIGNACION_DETALLE\n"
-            + " WHERE CPERIODO_CODIGO =?1\n"
-            + "   AND NBRIGADA_CODIGO =?2\n"
-            + "   AND CMES_CODIGO =?3\n"
-            + "   AND NTIPO_ASIGNACION_CODIGO =?4\n"
-            + "   AND NTIPO_COMBUSTIBLE_CODIGO =?5")
+    @Query(nativeQuery = true, value = "SELECT "
+            + "NDEPENDENCIA_CODIGO CPERIODO_CODIGO, NVEHICULO_CODIGO NBRIGADA_CODIGO, CMES_CODIGO, NTIPO_ASIGNACION_CODIGO, "
+            + "NTIPO_COMBUSTIBLE_CODIGO, "
+            + "UTIL.FUN_DEPENDENCIA_ABREVIATURA(NBRIGADA_CODIGO, NDEPENDENCIA_CODIGO) NDEPENDENCIA_CODIGO, "
+            + "UTIL.FUN_VEHICULO(NVEHICULO_CODIGO) NVEHICULO_CODIGO, "
+            + "UTIL.FUN_TIPO_OPERACION_ABREVIATUR(NTIPO_OPERACION_CODIGO) NTIPO_OPERACION_CODIGO, "
+            + "NASIGNACION_DETALLE_CANTIDAD, NASIGNACION_DETALLE_SOLICITADO "
+            + "FROM SINTE_ASIGNACION_DETALLE WHERE "
+            + "CPERIODO_CODIGO=?1 AND "
+            + "NBRIGADA_CODIGO=?2 AND "
+            + "CMES_CODIGO=?3 AND "
+            + "NTIPO_ASIGNACION_CODIGO=?4 AND "
+            + "NTIPO_COMBUSTIBLE_CODIGO=?5 "
+            + "ORDER BY NDEPENDENCIA_CODIGO, NVEHICULO_CODIGO")
     List<BeanAsignacionCombustibleDetalle> findAllAprobacion(String periodo, Integer brigada, String mes, Integer tipoAsignacion, Integer tipoCombustible);
 
     @Transactional
     @Modifying
-    @Query(value = "{CALL SP_IDU_ASIGNACION_DETALLE(:periodo, :brigada, :mes, :tipoAsignacion, :tipoCombustible, :dependencia, :vehiculo, :cantidad, :solicitud, :usuario, :modo)}", nativeQuery = true)
-    void sp_asignacion_combustible_d(
+    @Query(value = "{CALL SP_IDU_ASIGNACION_DETALLE(:periodo, :brigada, :mes, :tipoAsignacion, :tipoCombustible, :dependencia, :vehiculo, :tipoOperacion, :cantidad, :solicitud, :usuario, :modo)}", nativeQuery = true)
+    void sp_asignacionCombustibleDetalle(
             @Param("periodo") String codigo,
             @Param("brigada") Integer nombre,
             @Param("mes") String mes,
@@ -81,6 +59,7 @@ public interface AsignacionCombustibleDetalleDAO extends JpaRepository<BeanAsign
             @Param("tipoCombustible") Integer tipoCombustible,
             @Param("dependencia") Integer dependencia,
             @Param("vehiculo") Integer vehiculo,
+            @Param("tipoOperacion") Integer tipoOperacion,
             @Param("cantidad") Integer cantidad,
             @Param("solicitud") Integer solicitud,
             @Param("usuario") String usuario,
@@ -89,7 +68,7 @@ public interface AsignacionCombustibleDetalleDAO extends JpaRepository<BeanAsign
     @Transactional
     @Modifying
     @Query(value = "{CALL SP_IDU_ASIGNACION_APROBACION(:periodo, :brigada, :mes, :tipoAsignacion, :tipoCombustible, :arrayDetalle, :usuario, :modo)}", nativeQuery = true)
-    void sp_asignacion_combustible_a(
+    void sp_asignacionCombustibleDetalleAprobacion(
             @Param("periodo") String codigo,
             @Param("brigada") Integer nombre,
             @Param("mes") String mes,

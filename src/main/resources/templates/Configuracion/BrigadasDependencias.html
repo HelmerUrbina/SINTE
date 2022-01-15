@@ -125,7 +125,7 @@
                 } else if ($.trim($(opcion).text()) === "Activar") {
                     $.confirm({
                         title: 'AVISO DEL SISTEMA',
-                        content: 'Desea Activar esta Brigada!',
+                        content: 'Desea Activar esta GGUU!',
                         theme: 'material',
                         animation: 'zoom',
                         closeAnimation: 'zoom',
@@ -148,7 +148,7 @@
                 } else if ($.trim($(opcion).text()) === "Desactivar") {
                     $.confirm({
                         title: 'AVISO DEL SISTEMA',
-                        content: 'Desea Desactivar esta Brigada!',
+                        content: 'Desea Desactivar esta GGUU!',
                         theme: 'material',
                         animation: 'zoom',
                         closeAnimation: 'zoom',
@@ -168,7 +168,7 @@
                             }
                         }
                     });
-                } else if ($.trim($(opcion).text()) === "Dependencias") {
+                } else if ($.trim($(opcion).text()) === "Unidades") {
                     mode = "C";
                     fn_cargarDetalle();
                 } else {
@@ -595,7 +595,7 @@
     }
 </script>
 <div id='div_Titulo' style="border: none;">
-    <div class="jqx-hideborder">LISTADOS DE BRIGADAS</div>
+    <div class="jqx-hideborder">LISTADOS DE GGUU</div>
     <div>
         <div id="div_Detalle" class="maincen"></div>
     </div>
@@ -603,7 +603,7 @@
 <div id="div_GrillaPrincipal"></div>
 <div id="div_VentanaPrincipal" style="display: none">
     <div>
-        <span style="float: left">DATOS DE LA BRIGADA</span>
+        <span style="float: left">DATOS DE LA GGUU</span>
     </div>
     <div style="overflow: hidden">
         <form id="frm_Brigadas" name="frm_Brigadas" method="post" >
@@ -666,7 +666,7 @@
 </div>
 <div id="div_VentanaDetalle" style="display: none">
     <div>
-        <span style="float: left">LISTADO DE DEPENDENCIAS</span>
+        <span style="float: left">LISTADO DE UNIDADES</span>
     </div>
     <div style="overflow: hidden">
         <table width="100%" border="0" cellspacing="0" cellpadding="0">
@@ -687,7 +687,7 @@
         </table> 
         <div style="display: none" id="div_RegistroDetalle">
             <div>
-                <span style="float: left">REGISTRO DE DEPENDENCIAS</span>
+                <span style="float: left">REGISTRO DE UNIDADES</span>
             </div>
             <div style="overflow: hidden">
                 <form id="frm_Dependencia" name="frm_Dependencia" method="post" >
@@ -729,6 +729,6 @@
         <li style="color: blue; font-weight: bold;">Activar</li>
         <li style="color: brown; font-weight: bold;">Desactivar</li>
         <li type='separator'></li>
-        <li style="font-weight: bold;">Dependencias</li>
+        <li style="font-weight: bold;">Unidades</li>
     </ul>
 </div>

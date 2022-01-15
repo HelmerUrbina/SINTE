@@ -31,6 +31,9 @@ public class BeanGrifo implements Serializable {
     @Column(name = "VGRIFO_NOMBRE", nullable = false)
     private String grifoNombre;
 
+    @Column(name = "VGRIFO_DIRECCION", nullable = false)
+    private String grifoDireccion;
+
     @Column(name = "CESTADO_CODIGO")
     private String estado;
 

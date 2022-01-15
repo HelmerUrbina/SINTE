@@ -17,8 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 public interface ProgramacionEventoFinalDAO extends JpaRepository<BeanProgramacionEventoFinal, String> {
 
     @Query(nativeQuery = true, value = "SELECT "
-            + "CPERIODO_CODIGO, NTIPO_ASIGNACION_CODIGO, NBRIGADA_CODIGO, NTIPO_COMBUSTIBLE_CODIGO, "
+            + "NTIPO_OPERACION_CODIGO CPERIODO_CODIGO, NTIPO_ASIGNACION_CODIGO, NBRIGADA_CODIGO, NTIPO_COMBUSTIBLE_CODIGO, "
             + "VEVENTO_PRINCIPAL_CODIGO, NEVENTO_FINAL_CODIGO, VEVENTO_FINAL_NOMBRE, NEVENTO_FINAL_PRIORIDAD, "
+            + "UTIL.FUN_TIPO_OPERACION_ABREVIATUR(NTIPO_OPERACION_CODIGO) NTIPO_OPERACION_CODIGO, "
             + "UTIL.FUN_ESTADO_DESCRIPCION(CESTADO_CODIGO) CESTADO_CODIGO "
             + "FROM SINTE_PROG_EVENTO_FINAL WHERE "
             + "CPERIODO_CODIGO=?1 AND "
@@ -31,7 +32,8 @@ public interface ProgramacionEventoFinalDAO extends JpaRepository<BeanProgramaci
 
     @Transactional
     @Modifying
-    @Query(value = "{CALL SP_IDU_PROG_EVENTO_FINAL(:periodo, :tipoAsignacion, :brigada, :tipoCombustible, :eventoPrincipal, :eventoFinal, :eventoFinalNombre, :prioridad, :usuario, :modo)}", nativeQuery = true)
+    @Query(value = "{CALL SP_IDU_PROG_EVENTO_FINAL(:periodo, :tipoAsignacion, :brigada, :tipoCombustible, :eventoPrincipal, :eventoFinal, "
+            + ":eventoFinalNombre, :prioridad, :tipoOperacion, :usuario, :modo)}", nativeQuery = true)
     void sp_programacionEventoFinal(
             @Param("periodo") String periodo,
             @Param("tipoAsignacion") Integer tipoAsignacion,
@@ -41,6 +43,7 @@ public interface ProgramacionEventoFinalDAO extends JpaRepository<BeanProgramaci
             @Param("eventoFinal") Integer eventoFinal,
             @Param("eventoFinalNombre") String eventoFinalNombre,
             @Param("prioridad") Integer prioridad,
+            @Param("tipoOperacion") Integer tipoOperacion,
             @Param("usuario") String usuario,
             @Param("modo") String modo);
 }

@@ -38,17 +38,13 @@ public class VerificaUsuario {
                 usuario.setPassword(null);
                 session.setAttribute("usuario", usuario);
             }
-            session.setAttribute("objGrifosAll", combosService.getGrifo());
             session.setAttribute("objMeses", combosService.getMeses());
             session.setAttribute("objModulos", usuarioMenuService.getModuloUsuario(user.getUsername()));
             session.setAttribute("objMenus", usuarioMenuService.getMenuUsuario(user.getUsername()));
             session.setAttribute("objAutorizacion", usuario.getAutorizacion());
             session.setAttribute("objPeriodos", combosService.getPeriodos());
             session.setAttribute("objBrigadas", combosService.getBrigadasByUsuario(user.getUsername()));
-            
             log.info("usuario que hizo login : " + user);
-
-            log.info("Autorizacion : " + usuario.getAutorizacion());
             return "Login/Principal";
         } else {
             return "/login?logout";

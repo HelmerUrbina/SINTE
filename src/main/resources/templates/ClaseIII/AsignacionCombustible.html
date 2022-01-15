@@ -1,24 +1,13 @@
 <script>
     var autorizacion = validarBoolean('[[${session.objAutorizacion}]]');
-    var codigo = null;
-    var select1 = 0;
-    var periodoG = null;
-    var brigadaG = null;
-    var mesG = null;
-    var tipoAsignacionG = null;
     var tipoCombustibleG = null;
     var mode = null;
-
     var mode2 = null;
     var select2 = 0;
     var dependenciaG = null;
     var vehiculoG = null;
-    var flgEditable = null;
-    var tituloDetalleG = null;
-
     var estadoLinea = null;
     var cantidadLinea = null;
-
     var msg = "";
     $(document).ready(function () {
         var theme = getTheme();
@@ -28,10 +17,8 @@
         $("#cbo_Brigadas").jqxComboBox({theme: theme, autoOpen: true, promptText: "Seleccione", width: 150, dropDownWidth: 250, height: 25});
         $("#cbo_TipoAsignacion").jqxComboBox({theme: theme, autoOpen: true, promptText: "Seleccione", width: 150, dropDownWidth: 350, height: 25});
         var fecha = new Date();
-        $("#cbo_TipoAsignacion").jqxDropDownList('clear');
-        fn_cargarComboxCabecera("#cbo_TipoAsignacion", {mode: 'tipoAsignacionByPeriodo', codigo: fecha.getFullYear()});
-        $("#cbo_Mes").jqxComboBox('selectItem', fecha.getMonth() + 1);
         $("#cbo_Periodo").jqxComboBox('selectItem', fecha.getFullYear());
+        $("#cbo_Mes").jqxComboBox('selectItem', pad(fecha.getMonth() + 1, 2));
         $('#cbo_Periodo').on('change', function () {
             fn_cargarComboxCabecera("#cbo_TipoAsignacion", {mode: 'tipoAsignacionByPeriodo', codigo: $("#cbo_Periodo").val()});
         });
@@ -44,8 +31,9 @@
         $('#cbo_Brigadas').on('change', function () {
             fn_CargarBusqueda();
         });
+        fn_cargarComboxCabecera("#cbo_TipoAsignacion", {mode: 'tipoAsignacionByPeriodo', codigo: fecha.getFullYear()});
         if (autorizacion === true)
-            fn_cargarComboxCabecera("#cbo_Brigadas", {mode: 'brigadasTechosByPeriodo', codigo: $('#cbo_Periodo').val()});
+            fn_cargarComboxCabecera("#cbo_Brigadas", {mode: 'brigadas'});
         //DEFINIMOS LOS ESTILOS DE LAS GRILLAS
         var cellclass = function (row, datafield, value, rowdata) {
             if (datafield === "solicitado" || datafield === "totalDemandaGlobal") {
@@ -61,7 +49,7 @@
         //DEFINIMOS LOS CAMPOS Y DATOS DE LA GRILLA
         $("#div_GrillaPrincipal").jqxGrid({
             width: '99.8%',
-            height: ($(window).height() - 90),
+            height: ($(window).height() - 95),
             autoheight: false,
             autorowheight: false,
             altrows: true,
@@ -90,16 +78,30 @@
                 ButtonExportar.jqxTooltip({position: 'bottom', content: "Exportar Datos"});
                 //ASIGNAMOS LAS FUNCIONES PARA EL BOTON NUEVO
                 ButtonNuevo.click(function (event) {
-                    mode = 'I';
-                    $("#cbo_Tipo_Combustible").jqxDropDownList('clear');
-                    fn_cargarComboAjax("#cbo_Tipo_Combustible", {mode: 'tipoCombustibleByAsignacionCombustible',
-                        codigo: $('#cbo_Periodo').val(),
-                        codigo2: $('#cbo_Brigadas').val(),
-                        codigo3: $('#cbo_Mes').val(),
-                        codigo4: $('#cbo_TipoAsignacion').val()});
-                    $("#cbo_Tipo_Combustible").jqxDropDownList('setContent', 'Seleccione');
-                    $('#div_VentanaPrincipal').jqxWindow({isModal: true, modalOpacity: 0.8});
-                    $('#div_VentanaPrincipal').jqxWindow('open');
+                    msg = "";
+                    msg += fn_validaCombos('#cbo_Brigadas', "Seleccione la Gran Unidad");
+                    msg += fn_validaCombos('#cbo_TipoAsignacion', "Seleccione el Tipo de Asignación");
+                    if (msg === "") {
+                        mode = 'I';
+                        fn_cargarComboAjax("#cbo_TipoCombustible", {mode: 'tipoCombustibleByAsignacionCombustible',
+                            codigo: $('#cbo_Periodo').val(),
+                            codigo2: $('#cbo_Brigadas').val(),
+                            codigo3: $('#cbo_Mes').val(),
+                            codigo4: $('#cbo_TipoAsignacion').val()});
+                        $("#cbo_TipoCombustible").jqxDropDownList('setContent', 'Seleccione');
+                        $('#div_VentanaPrincipal').jqxWindow({isModal: true, modalOpacity: 0.8});
+                        $('#div_VentanaPrincipal').jqxWindow('open');
+                    } else {
+                        $.alert({
+                            theme: 'material',
+                            title: 'AVISO DEL SISTEMA',
+                            content: msg,
+                            animation: 'zoom',
+                            closeAnimation: 'zoom',
+                            type: 'orange',
+                            typeAnimated: true
+                        });
+                    }
                 });
                 //ASIGNAMOS LAS FUNCIONES PARA EL BOTON EXPORTAR
                 ButtonExportar.click(function (event) {
@@ -107,7 +109,7 @@
                 });
             },
             columns: [
-                {text: 'TIPO COMBUSTIBLE', dataField: 'tipoCombustible', width: '34%', align: 'center', cellsAlign: 'center', aggregates: [{'<b>Totales : </b>':
+                {text: 'TIPO COMBUSTIBLE', dataField: 'periodo', width: '34%', align: 'center', cellsAlign: 'center', aggregates: [{'<b>Totales : </b>':
                                     function () {
                                         return "";
                                     }}]},
@@ -130,7 +132,7 @@
                 return false;
             }
         });
-        $("#div_asignacionDetalleGrilla").jqxGrid({
+        $("#div_GrillaDetalle").jqxGrid({
             width: '100%',
             height: 480,
             pageable: true,
@@ -172,7 +174,6 @@
                         mode2 = 'I';
                         vehiculoG = 0;
                         select2 = 0;
-                        $("#cbo_Vehiculo").jqxDropDownList('clear');
                         $("#cbo_Dependencia").jqxDropDownList('setContent', 'Seleccione');
                         $("#cbo_Vehiculo").jqxDropDownList('setContent', 'Seleccione');
                         $("#txt_CantidadSolicitadaD").val('');
@@ -184,13 +185,7 @@
                 });
                 // edit new row.
                 ButtonEditarRegistro.click(function (event) {
-                    mode2 = 'U';
-                    if (select2 !== 0 && flgEditable === '1') {
-                        $("#cbo_Dependencia").jqxDropDownList({disabled: true});
-                        $("#cbo_Vehiculo").jqxDropDownList({disabled: true});
-                        $('#div_AsignacionDetalle').jqxWindow({isModal: true});
-                        $('#div_AsignacionDetalle').jqxWindow('open');
-                    } else if (flgEditable !== '1') {
+                    if (estadoLinea === 'CE' || cantidadLinea > 0) {
                         $.alert({
                             theme: 'material',
                             title: 'AVISO DEL SISTEMA',
@@ -201,38 +196,47 @@
                             typeAnimated: true
                         });
                     } else {
-                        $.alert({
-                            theme: 'material',
-                            title: 'AVISO DEL SISTEMA',
-                            content: 'DEBE SELECCIONAR UN REGISTRO',
-                            animation: 'zoom',
-                            closeAnimation: 'zoom',
-                            type: 'orange',
-                            typeAnimated: true
-                        });
+                        mode2 = 'U';
+                        if (select2 !== 0) {
+                            $("#cbo_Dependencia").jqxDropDownList({disabled: true});
+                            $("#cbo_Vehiculo").jqxDropDownList({disabled: true});
+                            $('#div_AsignacionDetalle').jqxWindow({isModal: true});
+                            $('#div_AsignacionDetalle').jqxWindow('open');
+                        } else {
+                            $.alert({
+                                theme: 'material',
+                                title: 'AVISO DEL SISTEMA',
+                                content: 'DEBE SELECCIONAR UN REGISTRO',
+                                animation: 'zoom',
+                                closeAnimation: 'zoom',
+                                type: 'orange',
+                                typeAnimated: true
+                            });
+                        }
                     }
                 });
             },
             columns: [
-                {text: 'DEPENDENCIA', datafield: 'dependencia', width: '34%', align: 'center', cellsAlign: 'center'},
-                {text: 'VEHICULO', datafield: 'vehiculo', width: '33%', align: 'center', cellsAlign: 'center'},
-                {text: 'CANT. SOLICITADA', datafield: 'solicitado', width: '33%', align: 'center', cellsAlign: 'right', cellsFormat: 'f2', cellclassname: cellclass, aggregates: ['sum']}
+                {text: 'UNIDAD', datafield: 'dependencia', width: '30%', align: 'center', cellsAlign: 'center'},
+                {text: 'VEHICULO', datafield: 'vehiculo', width: '30%', align: 'center', cellsAlign: 'center'},
+                {text: 'TIPO', datafield: 'tipoOperacion', width: '25%', align: 'center', cellsAlign: 'center', aggregates: [{'<b>Totales : </b>':
+                                    function () {
+                                        return "";
+                                    }}]},
+                {text: 'CANT. SOLICITADA', datafield: 'solicitado', width: '15%', align: 'center', cellsAlign: 'right', cellsFormat: 'f2', cellclassname: cellclass, aggregates: ['sum']}
             ]
         });
-
-        $("#div_asignacionDetalleGrilla").on('rowselect', function (event) {
+        $("#div_GrillaDetalle").on('rowselect', function (event) {
             select2 = 1;
             var args = event.args;
-            var rowDet = $("#div_asignacionDetalleGrilla").jqxGrid('getrowdata', args.rowindex);
-            dependenciaG = rowDet['usuarioCreador'];
-            vehiculoG = rowDet['fechaCreador'];
-            flgEditable = rowDet['usuarioCodigo'];
+            var rowDet = $("#div_GrillaDetalle").jqxGrid('getrowdata', args.rowindex);
+            dependenciaG = rowDet['periodo'];
+            vehiculoG = rowDet['brigada'];
             $("#cbo_Dependencia").jqxDropDownList('setContent', rowDet['dependencia']);
             $("#cbo_Vehiculo").jqxDropDownList('setContent', rowDet['vehiculo']);
             $('#txt_CantidadSolicitadaD').val(rowDet['solicitado']);
         });
-
-        $("#div_asignacionAprobacionGrilla").jqxGrid({
+        $("#div_GrillaAsignacionAprobacion").jqxGrid({
             width: '100%',
             height: 450,
             pageable: true,
@@ -248,7 +252,7 @@
             sortable: true,
             filterable: true,
             columns: [
-                {text: 'DEPENDENCIA', datafield: 'dependencia', editable: false, width: '25%', align: 'center', cellsAlign: 'center'},
+                {text: 'UNIDAD', datafield: 'dependencia', editable: false, width: '25%', align: 'center', cellsAlign: 'center'},
                 {text: 'VEHICULO', datafield: 'vehiculo', editable: false, width: '25%', align: 'center', cellsAlign: 'center'},
                 {text: 'CANT. SOLICITADA', datafield: 'solicitado', editable: false, width: '25%', align: 'center', cellsAlign: 'right', cellsFormat: 'f2', cellclassname: cellclass, aggregates: ['sum']},
                 {text: 'CANT. APROBADA', dataField: 'cantidad', editable: true, width: '25%', align: 'center', cellsAlign: 'right', cellsFormat: 'f2', cellclassname: cellclass, aggregates: ['sum'], columntype: 'numberinput',
@@ -267,7 +271,7 @@
         //DEFINIMOS LOS EVENTOS SEGUN LA OPCION DEL MENU CONTEXTUAL
         $("#div_ContextMenu").on('itemclick', function (event) {
             var opcion = event.args;
-            if (select1 === 0) {
+            if (tipoCombustibleG === null) {
                 $.alert({
                     theme: 'material',
                     title: 'AVISO DEL SISTEMA',
@@ -280,10 +284,8 @@
             } else {
                 if ($.trim($(opcion).text()) === "Ingresar Pedido") {
                     fn_cargarAsignacionDetalle();
-//                    $('#div_asignacionDetalleGrilla').jqxGrid('clearselection');
                 } else if ($.trim($(opcion).text()) === "Detalle Aprobación") {
                     fn_cargarAsignacionAprobacion();
-//                    $('#div_asignacionAprobacionGrilla').jqxGrid('clearselection');
                 } else {
                     $.alert({
                         theme: 'material',
@@ -301,18 +303,11 @@
         $("#div_GrillaPrincipal").on('rowselect', function (event) {
             var args = event.args;
             var row = $("#div_GrillaPrincipal").jqxGrid('getrowdata', args.rowindex);
-            select1 = 1;
-            periodoG = row['periodo'];
-            brigadaG = row['usuarioCreador'];
-            mesG = row['fechaCreador'];
-            tipoAsignacionG = row['usuarioCodigo'];
-            tipoCombustibleG = row['usuarioFecha'];
-            tituloDetalleG = row['periodo'] + ' / ' + row['brigada'] + ' / ' + row['mes'] + ' / ' +
-                    row['tipoAsignacion'] + ' / ' + row['tipoCombustible'];
+            tipoCombustibleG = row['tipoCombustible'];
             estadoLinea = row['estado'];
-            cantidadLinea = row['cantidad']
-            $("#txt_VentanaAsignacionDetalle").val(tituloDetalleG);
-            $("#txt_VentanaAsignacionAprobacion").val(tituloDetalleG);
+            cantidadLinea = row['cantidad'];
+            $("#txt_VentanaAsignacionDetalle").val(row['periodo']);
+            $("#txt_VentanaAsignacionAprobacion").val(row['periodo']);
             $("#txt_CantidadAprobada").val(row['cantidad']);
         });
         //CREA LOS ELEMENTOS DE LAS VENTANAS
@@ -329,7 +324,7 @@
                     width: ancho, height: alto, resizable: false,
                     cancelButton: $('#btn_Cancelar'),
                     initContent: function () {
-                        $("#cbo_Tipo_Combustible").jqxDropDownList({width: 300, height: 25, dropDownWidth: 300, promptText: "Seleccione"});
+                        $("#cbo_TipoCombustible").jqxDropDownList({width: 300, height: 25, dropDownWidth: 300, promptText: "Seleccione"});
                         $('#btn_Cancelar').jqxButton({width: '65px', height: 30});
                         $('#btn_Guardar').jqxButton({width: '65px', height: 30});
                         $('#btn_Guardar').on('click', function () {
@@ -341,17 +336,17 @@
                 alto = 600;
                 posicionX = ($(window).width() / 2) - (ancho / 2);
                 posicionY = ($(window).height() / 2) - (alto / 2);
-                $('#div_VentanaAsignacionDetalle').jqxWindow({
+                $('#div_VentanaDetalle').jqxWindow({
                     position: {x: posicionX, y: posicionY},
                     width: ancho, height: alto, resizable: false,
                     cancelButton: $('#btn_Cerrar'),
                     initContent: function () {
-                        $("#txt_VentanaAsignacionDetalle").jqxInput({placeHolder: 'ASIGNACIÓN  DETALLE', width: 600, height: 25, disabled: true});
+                        $("#txt_VentanaAsignacionDetalle").jqxInput({placeHolder: 'ASIGNACIÓN  DETALLE', width: 500, height: 25, disabled: true});
                         $('#btn_Cerrar').jqxButton({width: '65px', height: 30});
                     }
                 });
                 ancho = 500;
-                alto = 165;
+                alto = 190;
                 posicionX = ($(window).width() / 2) - (ancho / 2);
                 posicionY = ($(window).height() / 2) - (alto / 2);
                 $('#div_AsignacionDetalle').jqxWindow({
@@ -363,14 +358,15 @@
                         $('#cbo_Dependencia').on('select', function (event) {
                             $("#cbo_Vehiculo").jqxDropDownList('clear');
                             fn_cargarComboAjax("#cbo_Vehiculo", {mode: 'vehiculosByAsignacionCombustible',
-                                codigo: periodoG,
-                                codigo2: brigadaG,
-                                codigo3: mesG,
-                                codigo4: tipoAsignacionG,
+                                codigo: $("#cbo_Periodo").val(),
+                                codigo2: $("#cbo_Brigadas").val(),
+                                codigo3: $("#cbo_Mes").val(),
+                                codigo4: $("#cbo_TipoAsignacion").val(),
                                 codigo5: tipoCombustibleG,
                                 codigo6: $('#cbo_Dependencia').val()});
                         });
                         $("#cbo_Vehiculo").jqxDropDownList({width: 300, height: 25, dropDownWidth: 300, promptText: "Seleccione"});
+                        $("#cbo_TipoOperacion").jqxDropDownList({width: 300, height: 25, dropDownWidth: 300, promptText: "Seleccione"});
                         $("#txt_CantidadSolicitadaD").jqxNumberInput({width: 120, height: 25, max: 999999999, digits: 9, decimalDigits: 0});
                         $('#btn_CancelarAsignacionDetalle').jqxButton({width: '65px', height: 30});
                         $('#btn_GuardarAsignacionDetalle').jqxButton({width: '65px', height: 30});
@@ -383,16 +379,16 @@
                 alto = 600;
                 posicionX = ($(window).width() / 2) - (ancho / 2);
                 posicionY = ($(window).height() / 2) - (alto / 2);
-                $('#div_VentanaAsignacionAprobacion').jqxWindow({
+                $('#div_VentanaDetalleAprobacion').jqxWindow({
                     position: {x: posicionX, y: posicionY},
                     width: ancho, height: alto, resizable: false,
-                    cancelButton: $('#btn_Cerrar_Apro'),
+                    cancelButton: $('#btn_CerrarAprobar'),
                     initContent: function () {
-                        $("#txt_VentanaAsignacionAprobacion").jqxInput({placeHolder: 'ASIGNACIÓN  DETALLE', width: 600, height: 25, disabled: true});
+                        $("#txt_VentanaAsignacionAprobacion").jqxInput({placeHolder: 'ASIGNACIÓN  DETALLE', width: 500, height: 25, disabled: true});
                         $("#txt_CantidadAprobada").jqxNumberInput({width: 120, height: 25, max: 999999999, digits: 9, decimalDigits: 2, disabled: true});
-                        $('#btn_Guardar_Apro').jqxButton({width: '65px', height: 30});
-                        $('#btn_Cerrar_Apro').jqxButton({width: '65px', height: 30});
-                        $('#btn_Guardar_Apro').on('click', function () {
+                        $('#btn_GuardarAprobar').jqxButton({width: '65px', height: 30});
+                        $('#btn_CerrarAprobar').jqxButton({width: '65px', height: 30});
+                        $('#btn_GuardarAprobar').on('click', function () {
                             fn_GrabarAprobacion();
                         });
                     }
@@ -407,22 +403,21 @@
             customButtonsDemo.init();
         });
     });
-
     function fn_cargarAsignacionDetalle() {
         select2 = 0;
-        $('#div_asignacionDetalleGrilla').jqxGrid('clear');
+        $('#div_GrillaDetalle').jqxGrid('clear');
         fn_RefrescarAsignacionDetalle();
         $("#cbo_Dependencia").jqxDropDownList('clear');
-        fn_cargarComboAjax("#cbo_Dependencia", {mode: 'dependenciaByPeriodoAndBrigadaAndTipoCombustible', codigo: $("#cbo_Periodo").val(), codigo2: brigadaG, codigo3: tipoCombustibleG});
-        $('#div_VentanaAsignacionDetalle').jqxWindow({isModal: true});
-        $('#div_VentanaAsignacionDetalle').jqxWindow('open');
+        fn_cargarComboAjax("#cbo_Dependencia", {mode: 'dependenciaByPeriodoAndBrigadaAndTipoCombustible', codigo: $("#cbo_Periodo").val(), codigo2: $("#cbo_Brigadas").val(), codigo3: tipoCombustibleG});
+        fn_cargarComboAjax("#cbo_TipoOperacion", {mode: 'tipoOperacion'});
+        $('#div_VentanaDetalle').jqxWindow({isModal: true});
+        $('#div_VentanaDetalle').jqxWindow('open');
     }
-
     function fn_cargarAsignacionAprobacion() {
-        $('#div_asignacionAprobacionGrilla').jqxGrid('clear');
+        $('#div_GrillaAsignacionAprobacion').jqxGrid('clear');
         fn_RefrescarAsignacionAprobacion();
-        $('#div_VentanaAsignacionAprobacion').jqxWindow({isModal: true});
-        $('#div_VentanaAsignacionAprobacion').jqxWindow('open');
+        $('#div_VentanaDetalleAprobacion').jqxWindow({isModal: true});
+        $('#div_VentanaDetalleAprobacion').jqxWindow('open');
     }
     function fn_RefrescarAsignacionDetalle() {
         var sourceDetalle = {
@@ -432,25 +427,22 @@
                 {name: 'brigada', type: "string"},
                 {name: 'mes', type: "string"},
                 {name: 'tipoAsignacion', type: "string"},
+                {name: 'tipoOperacion', type: "string"},
                 {name: 'tipoCombustible', type: "string"},
                 {name: 'dependencia', type: "string"},
                 {name: 'vehiculo', type: "string"},
                 {name: 'cantidad', type: "string"},
-                {name: 'solicitado', type: "string"},
-                {name: 'usuarioCreador', type: "string"},
-                {name: 'fechaCreador', type: "string"},
-                {name: 'usuarioCodigo', type: "string"}
+                {name: 'solicitado', type: "string"}
             ],
             id: 'vehiculo',
-            url: "AsignacionCombustibleDDetalle",
-            data: {mode: 'G', periodo: periodoG, brigada: brigadaG,
-                mes: mesG, tipoAsignacion: tipoAsignacionG,
+            url: "AsignacionDetalle",
+            data: {mode: 'G', periodo: $("#cbo_Periodo").val(), brigada: $("#cbo_Brigadas").val(),
+                mes: $("#cbo_Mes").val(), tipoAsignacion: $("#cbo_TipoAsignacion").val(),
                 tipoCombustible: tipoCombustibleG}
         };
         var dataDetalle = new $.jqx.dataAdapter(sourceDetalle);
-        $("#div_asignacionDetalleGrilla").jqxGrid({source: dataDetalle});
+        $("#div_GrillaDetalle").jqxGrid({source: dataDetalle});
     }
-
     function fn_RefrescarAsignacionAprobacion() {
         var sourceDetalle = {
             dataType: "json",
@@ -460,13 +452,11 @@
                 {name: 'mes', type: "string"},
                 {name: 'tipoAsignacion', type: "string"},
                 {name: 'tipoCombustible', type: "string"},
+                {name: 'tipoOperacion', type: "string"},
                 {name: 'dependencia', type: "string"},
                 {name: 'vehiculo', type: "string"},
                 {name: 'cantidad', type: "number"},
-                {name: 'solicitado', type: "number"},
-                {name: 'usuarioCreador', type: "string"},
-                {name: 'fechaCreador', type: "string"},
-                {name: 'usuarioCodigo', type: "string"}
+                {name: 'solicitado', type: "number"}
             ],
             addrow: function (rowid, rowdata, position, commit) {
                 commit(true);
@@ -475,36 +465,27 @@
                 commit(true);
             },
             url: "AsignacionCombustibleADetalle",
-            data: {mode: 'G', periodo: periodoG, brigada: brigadaG,
-                mes: mesG, tipoAsignacion: tipoAsignacionG,
+            data: {mode: 'G', periodo: $("#cbo_Periodo").val(), brigada: $("#cbo_Brigadas").val(),
+                mes: $("#cbo_Mes").val(), tipoAsignacion: $("#cbo_TipoAsignacion").val(),
                 tipoCombustible: tipoCombustibleG}
         };
         var dataDetalle = new $.jqx.dataAdapter(sourceDetalle);
-        $("#div_asignacionAprobacionGrilla").jqxGrid({source: dataDetalle});
-
+        $("#div_GrillaAsignacionAprobacion").jqxGrid({source: dataDetalle});
     }
-
     //FUNCION PARA ACTUALIZAR DATOS DE LA GRILLA
     function fn_CargarBusqueda() {
         msg = "";
-        msg += fn_validaCombos('#cbo_Brigadas', "Seleccione la Brigada");
+        msg += fn_validaCombos('#cbo_Brigadas', "Seleccione la Gran Unidad");
         msg += fn_validaCombos('#cbo_TipoAsignacion', "Seleccione el Tipo de Asignación");
         if (msg === "") {
             var source = {
                 dataType: "json",
                 datafields: [
                     {name: 'periodo', type: "string"},
-                    {name: 'brigada', type: "string"},
-                    {name: 'mes', type: "string"},
-                    {name: 'tipoAsignacion', type: "string"},
                     {name: 'tipoCombustible', type: "string"},
                     {name: 'cantidad', type: "number"},
                     {name: 'solicitado', type: "number"},
-                    {name: 'estado', type: "string"},
-                    {name: 'usuarioCreador', type: "string"},
-                    {name: 'fechaCreador', type: "string"},
-                    {name: 'usuarioCodigo', type: "string"},
-                    {name: 'usuarioFecha', type: "string"}
+                    {name: 'estado', type: "string"}
                 ],
                 id: 'tipoCombustible',
                 url: "AsignacionCombustibleDetalle",
@@ -513,7 +494,6 @@
             var dataAdapter = new $.jqx.dataAdapter(source);
             $("#div_GrillaPrincipal").jqxGrid({source: dataAdapter});
             $('#div_GrillaPrincipal').jqxGrid('clearselection');
-            select1 = 0;
         } else {
             $.alert({
                 theme: 'material',
@@ -532,11 +512,7 @@
         var brigada = $('#cbo_Brigadas').val();
         var mes = $('#cbo_Mes').val();
         var tipoAsignacion = $('#cbo_TipoAsignacion').val();
-        var tipoCombustible = $('#cbo_Tipo_Combustible').val();
-
-        var json = {mode: mode, periodo: periodo, brigada: brigada, mes: mes,
-            tipoAsignacion: tipoAsignacion, tipoCombustible: tipoCombustible};
-        console.log(json);
+        var tipoCombustible = $('#cbo_TipoCombustible').val();
         $.ajax({
             type: "GET",
             url: "IduAsignacionCombustible",
@@ -575,29 +551,21 @@
             }
         });
     }
-
     function fn_GrabarDatosAsignacionDetalle() {
-
-        var dependenciavar = $('#cbo_Dependencia').val();
-        var vehiculovar = $('#cbo_Vehiculo').val();
-        var solicitadovar = $('#txt_CantidadSolicitadaD').val();
-
+        var dependencia = $('#cbo_Dependencia').val();
+        var vehiculo = $('#cbo_Vehiculo').val();
+        var tipoOperacion = $('#cbo_TipoOperacion').val();
+        var solicitado = $('#txt_CantidadSolicitadaD').val();
         if (mode2 === 'U') {
-            dependenciavar = dependenciaG;
-            vehiculovar = vehiculoG;
+            dependencia = dependenciaG;
+            vehiculo = vehiculoG;
         }
-
-        var json = {mode: mode2, periodo: periodoG, brigada: brigadaG, mes: mesG,
-            tipoAsignacion: tipoAsignacionG, tipoCombustible: tipoCombustibleG, dependencia: dependenciavar,
-            vehiculo: vehiculovar, cantidad: 0, solicitado: solicitadovar};
-        console.log(json);
-
         $.ajax({
             type: "GET",
             url: "IduAsignacionCombustibleD",
-            data: {mode: mode2, periodo: periodoG, brigada: brigadaG, mes: mesG,
-                tipoAsignacion: tipoAsignacionG, tipoCombustible: tipoCombustibleG, dependencia: dependenciavar,
-                vehiculo: vehiculovar, cantidad: 0, solicitado: solicitadovar},
+            data: {mode: mode2, periodo: $("#cbo_Periodo").val(), brigada: $("#cbo_Brigadas").val(), mes: $("#cbo_Mes").val(),
+                tipoAsignacion: $("#cbo_TipoAsignacion").val(), tipoCombustible: tipoCombustibleG, dependencia: dependencia,
+                vehiculo: vehiculo, cantidad: 0, solicitado: solicitado, tipoOperacion: tipoOperacion},
             success: function (data) {
                 msg = data;
                 if (msg === "GUARDO") {
@@ -612,7 +580,7 @@
                                 text: 'Cerrar',
                                 action: function () {
                                     $('#div_AsignacionDetalle').jqxWindow('close');
-                                    $('#div_asignacionDetalleGrilla').jqxGrid('clearselection');
+                                    $('#div_GrillaDetalle').jqxGrid('clearselection');
                                     fn_RefrescarAsignacionDetalle();
                                     fn_CargarBusqueda();
                                 }
@@ -634,16 +602,15 @@
         });
     }
     function fn_GrabarAprobacion() {
-        var rows = $('#div_asignacionAprobacionGrilla').jqxGrid('getrows');
+        var rows = $('#div_GrillaAsignacionAprobacion').jqxGrid('getrows');
         var lista = [];
         var total = 0;
         for (var i = 0; i < rows.length; i++) {
             var row = rows[i];
             total = total + row.cantidad;
-            var result = row.usuarioCreador + "-" + row.fechaCreador + "-" + row.cantidad;
+            var result = row.periodo + "-" + row.brigada + "-" + row.cantidad;
             lista.push(result);
         }
-
         if (estadoLinea === 'CE') {
             $.alert({
                 theme: 'material',
@@ -678,15 +645,11 @@
             });
             return;
         } else {
-            var json = {mode: 'U', periodo: periodoG, brigada: brigadaG, mes: mesG,
-                tipoAsignacion: tipoAsignacionG, tipoCombustible: tipoCombustibleG,
-                arrayDetalle: JSON.stringify(lista).replaceAll('"', '').replaceAll('[', '').replaceAll(']', '')};
-            console.log(json);
             $.ajax({
                 type: "GET",
                 url: "IduAsignacionCombustibleA",
-                data: {mode: 'U', periodo: periodoG, brigada: brigadaG, mes: mesG,
-                    tipoAsignacion: tipoAsignacionG, tipoCombustible: tipoCombustibleG,
+                data: {mode: 'U', periodo: $("#cbo_Periodo").val(), brigada: $("#cbo_Brigadas").val(), mes: $("#cbo_Mes").val(),
+                    tipoAsignacion: $("#cbo_TipoAsignacion").val(), tipoCombustible: tipoCombustibleG,
                     arrayDetalle: JSON.stringify(lista).replaceAll('"', '').replaceAll('[', '').replaceAll(']', '')},
                 success: function (data) {
                     msg = data;
@@ -701,7 +664,7 @@
                                 cerrarAction: {
                                     text: 'Cerrar',
                                     action: function () {
-                                        $('#div_VentanaAsignacionAprobacion').jqxWindow('close');
+                                        $('#div_VentanaDetalleAprobacion').jqxWindow('close');
                                         fn_CargarBusqueda();
                                     }
                                 }
@@ -734,7 +697,6 @@
                         <td class="Titulo">Período : </td>
                         <td>
                             <select id="cbo_Periodo" name="cbo_Periodo">
-                                <option value="0">Seleccione</option>
                                 <span th:each="periodo : ${session.objPeriodos}">
                                     <option th:value="${periodo.codigo}"><span th:text="${periodo.codigo}"> </span></option>
                                 </span>
@@ -743,13 +705,12 @@
                         <td class="Titulo">Mes : </td>
                         <td>
                             <select id="cbo_Mes" name="cbo_Mes">
-                                <option value="0">Seleccione</option>
                                 <span th:each="mes : ${session.objMeses}">
                                     <option th:value="${mes.codigo}"><span th:text="${mes.descripcion}"> </span></option>
                                 </span>
                             </select>
                         </td>
-                        <td class="Titulo">Brigada : </td>
+                        <td class="Titulo">GGUU : </td>
                         <td>
                             <select id="cbo_Brigadas" name="cbo_Brigadas">
                                 <span th:each="brigada : ${session.objBrigadas}">
@@ -777,40 +738,40 @@
         <span style="float: left">REGISTRO DE ASIGNACIÓN DE COMBUSTIBLE</span>
     </div>
     <div style="overflow: hidden">
-        <form id="frm_vehiculos_brigada" name="frm_vehiculos_brigada" method="post" >
+        <form id="frm_vehiculosBrigada" name="frm_vehiculosBrigada" method="post">
             <table width="100%" border="0" cellspacing="0" cellpadding="0"> 
                 <tr>
                     <td class="inputlabel">Tipo Combustible : </td>
                     <td>
-                        <select id="cbo_Tipo_Combustible" name="cbo_Tipo_Combustible">
+                        <select id="cbo_TipoCombustible" name="cbo_TipoCombustible">
                             <option value="0">Seleccione</option>
                         </select>
                     </td>
                 </tr>
                 <tr>
-                    <td class="Summit" colspan="4">
+                    <td class="Summit" colspan="2">
                         <div>
                             <input type="button" id="btn_Guardar"  value="Guardar" style="margin-right: 20px"/>
                             <input type="button" id="btn_Cancelar" value="Cancelar" style="margin-right: 20px"/>
                         </div>
                     </td>
                 </tr>
-            </table>  
+            </table>
         </form>
     </div>
 </div>
-<div id="div_VentanaAsignacionDetalle" style="display: none">
+<div id="div_VentanaDetalle" style="display: none">
     <div>
         <span style="float: left">DETALLE DE ASIGNACIÓN DE COMBUSTIBLE</span>
     </div>
     <div style="overflow: hidden">
         <table width="100%" border="0" cellspacing="0" cellpadding="0">
             <tr>
-                <td class="inputlabel">Asignación : </td>
+                <td class="inputlabel">Tipo Combustible : </td>
                 <td><input type="text" id="txt_VentanaAsignacionDetalle" name="txt_VentanaAsignacionDetalle" style="text-transform: uppercase;"/></td>
             </tr>
             <tr>
-                <td colspan="2"><div id="div_asignacionDetalleGrilla"> </div></td>
+                <td colspan="2"><div id="div_GrillaDetalle"></div></td>
             </tr>
             <tr>
                 <td class="Summit" colspan="2">
@@ -828,7 +789,7 @@
                 <form id="frm_AsignacionDetalle" name="frm_AsignacionDetalle" method="post" >
                     <table width="100%" border="0" cellspacing="0" cellpadding="0">
                         <tr>
-                            <td class="inputlabel">Dependencia : </td>
+                            <td class="inputlabel">Unidad : </td>
                             <td>
                                 <select id="cbo_Dependencia" name="cbo_Dependencia">
                                     <option value="0">Seleccione</option>
@@ -844,11 +805,19 @@
                             </td> 
                         </tr>
                         <tr>
-                            <td class="inputlabel">Cantidad Solicitada : </td>
+                            <td class="inputlabel">Tipo Operación : </td>
+                            <td>
+                                <select id="cbo_TipoOperacion" name="cbo_TipoOperacion">
+                                    <option value="0">Seleccione</option>
+                                </select>
+                            </td> 
+                        </tr>
+                        <tr>
+                            <td class="inputlabel">Cant. Solicitada : </td>
                             <td><div id="txt_CantidadSolicitadaD"></div></td>
                         </tr>
                         <tr>
-                            <td class="Summit" colspan="4">
+                            <td class="Summit" colspan="2">
                                 <div>
                                     <input type="button" id="btn_GuardarAsignacionDetalle" value="Guardar" style="margin-right: 20px" />
                                     <input type="button" id="btn_CancelarAsignacionDetalle"  value="Cancelar" style="margin-right: 20px"/>
@@ -861,14 +830,14 @@
         </div>
     </div>
 </div>
-<div id="div_VentanaAsignacionAprobacion" style="display: none">
+<div id="div_VentanaDetalleAprobacion" style="display: none">
     <div>
         <span style="float: left">DETALLE DE APROBACIÓN DE ASIGNACIÓN DE COMBUSTIBLE</span>
     </div>
     <div style="overflow: hidden">
         <table width="100%" border="0" cellspacing="0" cellpadding="0">
             <tr>
-                <td class="inputlabel">Asignación : </td>
+                <td class="inputlabel">Tipo Combustible : </td>
                 <td><input type="text" id="txt_VentanaAsignacionAprobacion" name="txt_VentanaAsignacionAprobacion" style="text-transform: uppercase;"/></td>
             </tr>
             <tr>
@@ -876,13 +845,13 @@
                 <td><div id="txt_CantidadAprobada"></div></td>
             </tr>
             <tr>
-                <td colspan="2"><div id="div_asignacionAprobacionGrilla"> </div></td>
+                <td colspan="2"><div id="div_GrillaAsignacionAprobacion"> </div></td>
             </tr>
             <tr>
                 <td class="Summit" colspan="2">
                     <div>
-                        <input type="button" id="btn_Guardar_Apro" value="Guardar" style="margin-right: 20px"/>
-                        <input type="button" id="btn_Cerrar_Apro" value="Cerrar" style="margin-right: 20px"/>
+                        <input type="button" id="btn_GuardarAprobar" value="Guardar" style="margin-right: 20px"/>
+                        <input type="button" id="btn_CerrarAprobar" value="Cerrar" style="margin-right: 20px"/>
                     </div>
                 </td>
             </tr>

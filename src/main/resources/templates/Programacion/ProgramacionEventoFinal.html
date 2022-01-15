@@ -47,6 +47,7 @@
                     modeFinal = 'I';
                     eventoFinal = 0;
                     $('#txt_EventoFinal').val('');
+                    $("#cbo_TipoOperacion").jqxDropDownList('setContent', "Seleccione");
                     $('#txt_EventoFinal').jqxInput('focus');
                     $('#div_VentanaEventoFinal').jqxWindow({isModal: true, modalOpacity: 0.8});
                     $('#div_VentanaEventoFinal').jqxWindow('open');
@@ -62,8 +63,8 @@
                 //reporte
                 ButtonReporte.click(function (event) {
                     var reporte = "PROG0002";
-                    var url = "Reportes?reporte=" + reporte + "&periodo=" + periodo + "&tipoAsignacion=" + tipoAsignacion + "&brigada=" + brigada +
-                            "&tipoCombustible=" + tipoCombustible + "&eventoPrincipal=" + eventoPrincipal + "&codigo=*" ;
+                    var url = "Reporte?reporte=" + reporte + "&periodo=" + periodo + "&tipoAsignacion=" + tipoAsignacion + "&brigada=" + brigada +
+                            "&tipoCombustible=" + tipoCombustible + "&eventoPrincipal=" + eventoPrincipal + "&codigo=*";
                     $('#div_ReporteViewer').attr('src', url + "&page=hsn#toolbar=1");
                     $('#div_Reporte').jqxWindow({isModal: true, modalOpacity: 0.9});
                     $('#div_Reporte').jqxWindow('open');
@@ -78,7 +79,8 @@
                     }
                 },
                 {text: 'PRIORIDAD', dataField: 'prioridad', columngroup: 'Titulo', width: '7%', align: 'center', cellsAlign: 'center'},
-                {text: 'EVENTO FINAL', dataField: 'eventoFinalNombre', columngroup: 'Titulo', width: '70%', align: 'center', cellsAlign: 'left'},
+                {text: 'EVENTO FINAL', dataField: 'eventoFinalNombre', columngroup: 'Titulo', width: '50%', align: 'center', cellsAlign: 'left'},
+                {text: 'T. OPERAC.', dataField: 'tipoOperacion', filtertype: 'checkedlist', columngroup: 'Titulo', width: '20%', align: 'center', cellsAlign: 'center'},
                 {text: 'ESTADO', dataField: 'estado', columngroup: 'Titulo', filtertype: 'checkedlist', width: '20%', align: 'center', cellsAlign: 'center'}
             ],
             columngroups: [
@@ -163,6 +165,7 @@
             eventoFinal = row['eventoFinal'];
             $("#txt_EventoFinal").val(row['eventoFinalNombre']);
             $("#div_Prioridad").val(row['prioridad']);
+            $("#cbo_TipoOperacion").jqxDropDownList('selectItem', row['periodo']);
         });
         //CREA LOS ELEMENTOS DE LAS VENTANAS
         var customButtonsDemo = (function () {
@@ -170,7 +173,7 @@
                 //INICIA LOS VALORES DE LA VENTANA
                 var posicionX, posicionY;
                 var ancho = 550;
-                var alto = 140;
+                var alto = 165;
                 posicionX = ($(window).width() / 2) - (ancho / 2);
                 posicionY = ($(window).height() / 2) - (alto / 2);
                 $('#div_VentanaEventoFinal').jqxWindow({
@@ -178,8 +181,9 @@
                     width: ancho, height: alto, resizable: false,
                     cancelButton: $('#btn_CancelarFinal'),
                     initContent: function () {
-                        $("#div_Prioridad").jqxNumberInput({width: 100, height: 25, max: 99, digits: 2, decimalDigits: 0, inputMode: 'simple', spinButtons: true});
-                        $("#txt_EventoFinal").jqxInput({placeHolder: 'INGRESE NOMBRE DEL EVENTO FINAL', width: 450, height: 25});
+                        $("#div_Prioridad").jqxNumberInput({width: 100, height: 25, max: 99, min:0, digits: 2, decimalDigits: 0, inputMode: 'simple', spinButtons: true});
+                        $("#txt_EventoFinal").jqxInput({placeHolder: 'INGRESE NOMBRE DEL EVENTO FINAL', width: 400, height: 25});
+                        $("#cbo_TipoOperacion").jqxDropDownList({animationType: 'fade', width: 300, dropDownWidth: 350, height: 25});
                         $('#btn_CancelarFinal').jqxButton({width: '65px', height: 30});
                         $('#btn_GuardarFinal').jqxButton({width: '65px', height: 30});
                         $('#btn_GuardarFinal').on('click', function (event) {
@@ -206,14 +210,17 @@
         $(document).ready(function () {
             customButtonsDemo.init();
             fn_RefrescarFinal();
+            fn_cargarComboAjax("#cbo_TipoOperacion", {mode: 'tipoOperacion'});
         });
         //FUNCION PARA REFRESCAR LA PANTALLA
         function fn_RefrescarFinal() {
             var source = {
                 dataType: "json",
                 datafields: [
+                    {name: 'periodo', type: "string"},
                     {name: 'eventoFinal', type: "string"},
                     {name: 'eventoFinalNombre', type: "string"},
+                    {name: 'tipoOperacion', type: "string"},
                     {name: 'prioridad', type: "number"},
                     {name: 'estado', type: "string"}
                 ],
@@ -233,12 +240,13 @@
         function fn_GrabarDatosFinal() {
             var prioridad = $("#div_Prioridad").val();
             var eventoFinalNombre = $("#txt_EventoFinal").val();
+            var tipoOperacion = $("#cbo_TipoOperacion").val();
             $.ajax({
                 type: "GET",
                 url: "IduProgramacionEventoFinal",
                 data: {mode: modeFinal, periodo: periodo, tipoAsignacion: tipoAsignacion, brigada: brigada, tipoCombustible: tipoCombustible,
                     eventoPrincipal: eventoPrincipal, eventoFinal: eventoFinal, eventoFinalNombre: eventoFinalNombre,
-                    prioridad: prioridad},
+                    prioridad: prioridad, tipoOperacion: tipoOperacion},
                 success: function (data) {
                     msg = data;
                     if (msg === "GUARDO") {
@@ -330,6 +338,13 @@
                     <tr>
                         <td class="inputlabel">Evento Final : </td>
                         <td><input type="text" id="txt_EventoFinal" name="txt_EventoFinal" style="text-transform: uppercase;"/></td>
+                    </tr>
+                    <tr>
+                        <td class="inputlabel">Tipo Operación : </td>
+                        <td><select id="cbo_TipoOperacion" name="cbo_TipoOperacion">
+                                <option value="0">Seleccione</option>
+                            </select>
+                        </td>
                     </tr>
                     <tr>
                         <td class="Summit" colspan="2">

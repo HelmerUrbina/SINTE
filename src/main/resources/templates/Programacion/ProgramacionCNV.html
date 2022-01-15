@@ -83,7 +83,7 @@
                 //reporte
                 ButtonReporte.click(function (event) {
                     var reporte = "PROG0002";
-                    var url = "Reportes?reporte=" + reporte + "&periodo=" + periodo + "&tipoAsignacion=" + tipoAsignacion + "&brigada=" + brigada +
+                    var url = "Reporte?reporte=" + reporte + "&periodo=" + periodo + "&tipoAsignacion=" + tipoAsignacion + "&brigada=" + brigada +
                             "&tipoCombustible=" + tipoCombustible + "&eventoPrincipal=" + eventoPrincipal + "&codigo=" + eventoFinal;
                     $('#div_ReporteViewer').attr('src', url + "&page=hsn#toolbar=1");
                     $('#div_Reporte').jqxWindow({isModal: true, modalOpacity: 0.9});

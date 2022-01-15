@@ -31,10 +31,10 @@ public class CombosController {
                 return new Gson().toJson(combosService.getPeriodos());
             case "tipoCombustible":
                 return new Gson().toJson(combosService.getTipoCombustible());
+            case "tipoOperacion":
+                return new Gson().toJson(combosService.getTipoOperacion());
             case "brigadas":
                 return new Gson().toJson(combosService.getBrigadas());
-            case "tipoCombustibleByAsignacionCombustible":
-                return new Gson().toJson(combosService.getTipoCombustibleByAsignacionCombustible(codigo, Utiles.checkNum(codigo2), String.valueOf(codigo3), Utiles.checkNum(codigo4)));
             case "divisionEjercito":
                 return new Gson().toJson(combosService.getDivisionEjercito());
             case "departamentos":
@@ -45,6 +45,8 @@ public class CombosController {
                 return new Gson().toJson(combosService.getUbigeo(codigo, codigo2));
             case "tipoDependencia":
                 return new Gson().toJson(combosService.getTipoDependencia());
+            case "fuenteFinanciamiento":
+                return new Gson().toJson(combosService.getFuenteFinanciamiento());
             case "periodoTipoAsignacionPendientes":
                 return new Gson().toJson(combosService.getPeriodoTipoAsignacionPendiente(codigo));
             case "tipoAsignacionByPeriodo":
@@ -89,6 +91,8 @@ public class CombosController {
                 return new Gson().toJson(combosService.getTipoCombustibleByVehiculo(codigo3));
             case "meses":
                 return new Gson().toJson(combosService.getMeses());
+            case "tipoCombustibleByAsignacionCombustible":
+                return new Gson().toJson(combosService.getTipoCombustibleByAsignacionCombustible(codigo, Utiles.checkNum(codigo2), String.valueOf(codigo3), Utiles.checkNum(codigo4)));
             case "vehiculosByAsignacionCombustible":
                 return new Gson().toJson(combosService.getVehiculoByAsignacionCombustible(codigo, Utiles.checkNum(codigo2), String.valueOf(codigo3), Utiles.checkNum(codigo4), Utiles.checkNum(codigo5), Utiles.checkNum(codigo6)));
             case "combsutibleByVariacion":
@@ -102,8 +106,11 @@ public class CombosController {
             case "vehiculoByComision":
                 return new Gson().toJson(combosService.getVehiculoByComision(codigo, Utiles.checkNum(codigo2), String.valueOf(codigo3), Utiles.checkNum(codigo4), Utiles.checkNum(codigo5)));
             case "combustibleByComision":
-
                 return new Gson().toJson(combosService.getCombustibleByComision(codigo, Utiles.checkNum(codigo2), String.valueOf(codigo3), Utiles.checkNum(codigo4), Utiles.checkNum(codigo5), Utiles.checkNum(codigo6)));
+            case "grifos":
+                return new Gson().toJson(combosService.getGrifos());
+            case "usuarioByPeriodoAndGrifoPendiente":
+                return new Gson().toJson(combosService.getUsuariosByPeriodoAndGrifoPendientes(codigo, Utiles.checkNum(codigo2)));
             default:
                 return "ERROR";
         }
@@ -117,13 +124,6 @@ public class CombosController {
                 return new Gson().toJson(textoService.getPrecioTechosByPeriodoAndBrigadaAndTipoAsignacionAndTipoCombustible(codigo, Utiles.checkNum(codigo2), Utiles.checkNum(codigo3), Utiles.checkNum(codigo4)));
             case "saldoTechosByPeriodoAndBrigadaAndTipoAsignacionAndTipoCombustible":
                 return new Gson().toJson(textoService.getSaldoTechosByPeriodoAndBrigadaAndTipoAsignacionAndTipoCombustible(codigo, Utiles.checkNum(codigo2), Utiles.checkNum(codigo3), Utiles.checkNum(codigo4)));
-
-                return new Gson().toJson(combosService.getCombustibleByComision(codigo, Integer.parseInt(codigo2), String.valueOf(codigo3), Integer.parseInt(codigo4),Integer.parseInt(codigo5),Integer.parseInt(codigo6)));        
-            case "grifos":
-                return new Gson().toJson(combosService.getGrifo());        
-            case "usuarioByGrifos":
-                return new Gson().toJson(combosService.getUsuariosByGrifos(Integer.parseInt(codigo), codigo2));            
-
             default:
                 return "ERROR";
         }

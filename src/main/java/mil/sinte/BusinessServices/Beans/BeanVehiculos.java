@@ -54,6 +54,9 @@ public class BeanVehiculos implements Serializable {
 
     @Column(name = "COLOR")
     private String color;
+    
+    @Column(name = "BRIGADA")
+    private String brigada;
 
     @Column(name = "CESTADO_CODIGO")
     private String estado;

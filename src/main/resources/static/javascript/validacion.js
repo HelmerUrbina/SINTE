@@ -23,15 +23,17 @@ function fn_CargarMenu(servlet, mode) {
     $("#div_GrillaPrincipal").remove();
     $("#div_VentanaPrincipal").remove();
     $("#div_VentanaDetalle").remove();
+    $("#div_VentanaDetalleAprobacion").remove();
     $("#div_RegistroDetalle").remove();
     $("#div_ContextMenu").remove();
     $("#div_VentanaTipoCombustible").remove();
     $("#div_VentanaSoat").remove();
-    //$("#div_ContextMenu").remove();
-    /*/
-     
-     $("#div_ContextMenu").remove();
-     $("#div_Reporte").remove();*/
+    /*
+     * $("#div_ContextMenu").remove();
+     * $("#div_ContextMenu").remove();
+     * $("#div_ContextMenu").remove();
+     * $("#div_Reporte").remove();
+     * */
     var $contenidoAjax = $('#div_Contenido').html('<div style="text-align: center"><img src="images/Fondos/cargando.gif" th:src="@{images/Fondos/cargando.gif}"/></div>');
     $.ajax({
         type: "GET",
@@ -134,4 +136,9 @@ function validarBoolean(valor) {
         return true;
     }
     return false;
+}
+//FUNCION PAD
+function pad(str, max) {
+    str = str.toString();
+    return str.length < max ? pad("0" + str, max) : str;
 }

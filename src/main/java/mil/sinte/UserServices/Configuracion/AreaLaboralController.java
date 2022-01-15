@@ -47,7 +47,7 @@ public class AreaLaboralController {
 
     @RequestMapping(value = "/IduAreaLaboral")
     @ResponseBody
-    public String setAreaLaboral(
+    public String iduAreaLaboral(
             @RequestParam("mode") String mode,
             @RequestParam("codigo") Integer codigo,
             @RequestParam("abreviatura") String abreviatura,

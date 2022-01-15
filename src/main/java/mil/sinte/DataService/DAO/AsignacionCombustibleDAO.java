@@ -16,23 +16,16 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 public interface AsignacionCombustibleDAO extends JpaRepository<BeanAsignacionCombustible, String> {
 
-    @Query(nativeQuery = true, value = "SELECT CPERIODO_CODIGO,\n"
-            + "       UTIL.FUN_BRIGADA_ABREVIATURA(NBRIGADA_CODIGO) NBRIGADA_CODIGO,\n"
-            + "       UTIL.FUN_MESES_ABREVIATURA(CMES_CODIGO) CMES_CODIGO,\n"
-            + "       UTIL.FUN_TIPO_ASIGNACION_ABREVIATUR(NTIPO_ASIGNACION_CODIGO) NTIPO_ASIGNACION_CODIGO,\n"
-            + "       UTIL.FUN_TIPO_COMBUSTIBLE_ABREVIATU(NTIPO_COMBUSTIBLE_CODIGO) NTIPO_COMBUSTIBLE_CODIGO,\n"
-            + "       NASIGNACION_CANTIDAD,\n"
-            + "       NASIGNACION_SOLICITADO,\n"
-            + "       CESTADO_CODIGO,\n"
-            + "       NBRIGADA_CODIGO VUSUARIO_CREADOR,\n"
-            + "       CMES_CODIGO DUSUARIO_CREADOR,\n"
-            + "       NTIPO_ASIGNACION_CODIGO VUSUARIO_CODIGO,\n"
-            + "       NTIPO_COMBUSTIBLE_CODIGO DUSUARIO_FECHA\n"
-            + "  FROM SINTE_ASIGNACION_COMBUSTIBLE\n"
-            + " WHERE CPERIODO_CODIGO =?1\n"
-            + "   AND NBRIGADA_CODIGO =?2\n"
-            + "   AND CMES_CODIGO =?3\n"
-            + "   AND NTIPO_ASIGNACION_CODIGO =?4")
+    @Query(nativeQuery = true, value = "SELECT "
+            + "NBRIGADA_CODIGO, CMES_CODIGO, NTIPO_ASIGNACION_CODIGO, "
+            + "UTIL.FUN_TIPO_COMBUSTIBLE_ABREVIATU(NTIPO_COMBUSTIBLE_CODIGO) CPERIODO_CODIGO, "
+            + "NASIGNACION_CANTIDAD, NASIGNACION_SOLICITADO, CESTADO_CODIGO, NTIPO_COMBUSTIBLE_CODIGO "
+            + "FROM SINTE_ASIGNACION_COMBUSTIBLE WHERE "
+            + "CPERIODO_CODIGO=?1 AND "
+            + "NBRIGADA_CODIGO=?2 AND "
+            + "CMES_CODIGO=?3 AND "
+            + "NTIPO_ASIGNACION_CODIGO=?4 "
+            + "ORDER BY NTIPO_COMBUSTIBLE_CODIGO")
     List<BeanAsignacionCombustible> findAll(String periodo, Integer brigada, String mes, Integer tipoAsignacion);
 
     @Transactional

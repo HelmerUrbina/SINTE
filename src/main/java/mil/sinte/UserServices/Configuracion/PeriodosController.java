@@ -23,7 +23,7 @@ public class PeriodosController {
     private PeriodosService periodosService;
 
     @RequestMapping(value = "/Periodos")
-    public String getAreaLaboral(String mode) {
+    public String getPeriodos(String mode) {
         switch (mode) {
             case "periodo":
                 return "Configuracion/Periodos";
@@ -34,7 +34,7 @@ public class PeriodosController {
 
     @RequestMapping(value = "/PeriodosDetalle")
     @ResponseBody
-    public String getAreaLaboralDetalle(String mode, String codigo) {
+    public String getPeriodosDetalle(String mode, String codigo) {
         switch (mode) {
             case "G":
                 return new Gson().toJson(periodosService.getPeriodos());
@@ -47,7 +47,7 @@ public class PeriodosController {
 
     @RequestMapping(value = "/IduPeriodos")
     @ResponseBody
-    public String setAreaLaboral(
+    public String iduPeriodos(
             @RequestParam("mode") String mode,
             @RequestParam("codigo") String codigo,
             @RequestParam("abreviatura") String abreviatura,

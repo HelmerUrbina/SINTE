@@ -89,9 +89,8 @@
                 //ASIGNAMOS LAS FUNCIONES PARA EL BOTON REPORTE
                 ButtonReporte.click(function (event) {
                     if (codigo !== null) {
-                        var reporte = "PROG0003";
                         var fecha = new Date();
-                        var url = "Reportes?reporte=" + reporte + "&periodo=" + fecha.getFullYear() + "&brigada=*&codigo=" + codigo;
+                        var url = "Reporte?reporte=PROG0003&periodo=" + fecha.getFullYear() + "&brigada=*&codigo=" + codigo;
                         $('#div_ReporteViewer').attr('src', url + "&page=hsn#toolbar=1");
                         $('#div_Reporte').jqxWindow({isModal: true, modalOpacity: 0.4});
                         $('#div_Reporte').jqxWindow('open');
@@ -117,9 +116,10 @@
                 });
             },
             columns: [
-                {text: 'PLACA', dataField: 'placa', width: '9%', align: 'center', cellsAlign: 'center', cellclassname: cellclass},
-                {text: 'SERIE CHASIS', dataField: 'serieChasis', width: '13%', align: 'center', cellsAlign: 'center'},
-                {text: 'SERIE MOTOR', dataField: 'serieMotor', width: '13%', align: 'center', cellsAlign: 'center'},
+                {text: 'PLACA', dataField: 'placa', width: '8%', align: 'center', cellsAlign: 'center', cellclassname: cellclass},
+                {text: 'GGUU', dataField: 'brigada', filtertype: 'checkedlist', width: '12%', align: 'center', cellsAlign: 'center'},
+                {text: 'SERIE CHASIS', dataField: 'serieChasis', width: '10%', align: 'center', cellsAlign: 'center'},
+                {text: 'SERIE MOTOR', dataField: 'serieMotor', width: '10%', align: 'center', cellsAlign: 'center'},
                 {text: 'TIPO', dataField: 'tipo', filtertype: 'checkedlist', width: '10%', align: 'center', cellsAlign: 'center', cellclassname: cellclass},
                 {text: 'CLASE', dataField: 'clase', filtertype: 'checkedlist', width: '10%', align: 'center', cellsAlign: 'center', cellclassname: cellclass},
                 {text: 'MARCA', dataField: 'marca', filtertype: 'checkedlist', width: '10%', align: 'center', cellsAlign: 'center', cellclassname: cellclass},
@@ -721,6 +721,7 @@
             datafields: [
                 {name: 'codigo', type: "string"},
                 {name: 'placa', type: "string"},
+                {name: 'brigada', type: "string"},
                 {name: 'serieChasis', type: "string"},
                 {name: 'serieMotor', type: "string"},
                 {name: 'tipo', type: "string"},

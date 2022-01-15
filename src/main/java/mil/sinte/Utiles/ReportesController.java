@@ -32,7 +32,7 @@ public class ReportesController {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    @GetMapping("/Reportes")
+    @GetMapping("/Reporte")
     public void generateReport(HttpServletResponse response, String reporte, String periodo, String tipoAsignacion, String brigada, String tipoCombustible, String eventoPrincipal, String codigo) throws IOException, JRException {
         try {
             Connection objConnection = jdbcTemplate.getDataSource().getConnection();
@@ -58,12 +58,12 @@ public class ReportesController {
             parameters.put("REPORT_LOCALE", new Locale("en", "US"));
             parameters.put("PERIODO", periodo);
             parameters.put("TIPO_ASIGNACION", tipoAsignacion);
-            parameters.put("BRIGADA", brigada.replace("*", "%"));
+            parameters.put("BRIGADA", Utiles.checkStr(brigada).replace("*", "%"));
             parameters.put("TIPO_COMBUSTIBLE", tipoCombustible);
             parameters.put("EVENTO_PRINCIPAL", eventoPrincipal);
-            parameters.put("CODIGO", codigo.replace("*", "%"));
+            parameters.put("CODIGO", Utiles.checkStr(codigo).replace("*", "%"));
             parameters.put("USUARIO", Utiles.getUsuario());
-            parameters.put("SUBREPORT_DIR",  getClass().getResource("/static/").getFile());
+            parameters.put("SUBREPORT_DIR", getClass().getResource("/static/").getFile());
             response.setHeader("Cache-Control", "no-cache");
             response.setHeader("Pragma", "no-cache");
             response.setDateHeader("Expires", 0);

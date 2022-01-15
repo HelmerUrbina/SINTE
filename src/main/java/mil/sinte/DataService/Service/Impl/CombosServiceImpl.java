@@ -35,6 +35,11 @@ public class CombosServiceImpl implements CombosService {
     }
 
     @Override
+    public List<BeanCombos> getTipoOperacion() {
+        return combosDAO.getTipoOperacion();
+    }
+
+    @Override
     public List<BeanCombos> getBrigadas() {
         return combosDAO.getBrigadas();
     }
@@ -67,6 +72,11 @@ public class CombosServiceImpl implements CombosService {
     @Override
     public List<BeanCombos> getTipoCombustibleByVehiculo(Integer vehiculo) {
         return combosDAO.getTipoCombustibleByVehiculo(vehiculo);
+    }
+
+    @Override
+    public List<BeanCombos> getFuenteFinanciamiento() {
+        return combosDAO.getFuenteFinanciamiento();
     }
 
     /*MODULO PROGRAMACION*/
@@ -222,13 +232,13 @@ public class CombosServiceImpl implements CombosService {
     }
 
     @Override
-    public List<BeanCombos> getGrifo() {
-        return combosDAO.getGrifoAll();
+    public List<BeanCombos> getGrifos() {
+        return combosDAO.getGrifos();
     }
 
     @Override
-    public List<BeanCombos> getUsuariosByGrifos(Integer grifo, String periodo) {
-        return combosDAO.getUsuariosByGrifos(grifo,periodo);
+    public List<BeanCombos> getUsuariosByPeriodoAndGrifoPendientes(String periodo, Integer grifo) {
+        return combosDAO.getUsuariosByPeriodoAndGrifoPendientes(periodo, grifo);
     }
 
 }

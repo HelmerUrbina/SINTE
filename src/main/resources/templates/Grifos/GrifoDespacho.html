@@ -1,0 +1,229 @@
+<script>
+    var codigo = null;
+    var mode = null;
+    var msg = "";
+    $(document).ready(function () {
+        var theme = getTheme();
+        $("#div_Titulo").jqxExpander({theme: theme, width: '100%'});
+        $("#txt_Placa").jqxInput({placeHolder: 'NRO PLACA', width: 350, height: 30});
+        //DEFINIMOS LOS ESTILOS DE LAS GRILLAS
+        var cellclass = function (row, datafield, value, rowdata) {
+            if (datafield === "total" || datafield === "totalDemandaGlobal") {
+                return "RowBold";
+            }
+            if (datafield === "precio") {
+                return "RowBlue";
+            }
+            if (datafield === "cantidad") {
+                return "RowBrown";
+            }
+            if (datafield === "demandaGlobal") {
+                return "RowPurple";
+            }
+        };
+        //DEFINIMOS LOS CAMPOS Y DATOS DE LA GRILLA
+        $("#div_GrillaPrincipal").jqxGrid({
+            width: '99.8%',
+            height: ($(window).height() - 95),
+            autoheight: false,
+            autorowheight: false,
+            altrows: true,
+            sortable: true,
+            pageable: true,
+            filterable: true,
+            autoshowfiltericon: true,
+            columnsresize: true,
+            showfilterrow: true,
+            showtoolbar: true,
+            editable: false,
+            rendertoolbar: function (toolbar) {
+                // ADICIONAMOS BOTONES A LA BARRA DE ESTADOS
+                var container = $("<div style='overflow: hidden; position: relative; margin: 1px;'></div>");
+                var ButtonExportar = $("<div style='float: left; margin-left: 5px;'><img style='position: relative; margin-top: 2px;' src='images/Botones/pauf42.gif' th:src='@{images/Botones/pauf42.gif' width=18 height=18/><span style='margin-left: 4px; position: relative; top: -3px;'> </span></div>");
+                container.append(ButtonExportar);
+                toolbar.append(container);
+                ButtonExportar.jqxButton({width: 30, height: 22});
+                ButtonExportar.jqxTooltip({position: 'bottom', content: "Exportar Datos"});
+                //ASIGNAMOS LAS FUNCIONES PARA EL BOTON EXPORTAR
+                ButtonExportar.click(function (event) {
+                    $("#div_GrillaPrincipal").jqxGrid('exportdata', 'xlsx', 'ConsultaDespachoVehiculos');
+                });
+            },
+            columns: [
+                {text: 'PERIODO', dataField: 'periodo', filtertype: 'list', width: '8%', align: 'center', cellsAlign: 'center'},
+                {text: 'MES', dataField: 'mes', filtertype: 'list', width: '7%', align: 'center', cellsAlign: 'center'},
+                {text: 'TIPO ASIGNACIÓN', dataField: 'tipoAsignacion', filtertype: 'list', width: '10%', align: 'center', cellsAlign: 'left'},
+                {text: 'DIVISIÓN', dataField: 'division', filtertype: 'list', width: '10%', align: 'center', cellsAlign: 'center'},
+                {text: 'GGUU', dataField: 'brigada', filtertype: 'list', width: '10%', align: 'center', cellsAlign: 'center'},
+                {text: 'UNIDAD', dataField: 'unidad', filtertype: 'list', width: '10%', align: 'center', cellsAlign: 'center'},
+                {text: 'TIPO COMBUSTIBLE', dataField: 'tipoCombustible', filtertype: 'list', width: '10%', align: 'center', cellsAlign: 'center'},
+                {text: 'CANTIDAD', dataField: 'cantidad', width: '15%', align: 'center', cellsAlign: 'right', cellsFormat: 'f2', cellclassname: cellclass},
+                {text: 'GRIFO', dataField: 'grifo', filtertype: 'list', width: '10%', align: 'center', cellsAlign: 'center'},
+                {text: 'FECHA', dataField: 'fecha', filtertype: 'list', width: '10%', align: 'center', cellsAlign: 'left'}
+            ]
+        });
+        //SELECCIONAMOS UN REGISTRO DE LA GRILLA
+        $("#div_GrillaPrincipal").on('rowselect', function (event) {
+            var args = event.args;
+            var row = $("#div_GrillaPrincipal").jqxGrid('getrowdata', args.rowindex);
+            codigo = row['tipoAsignacion'];
+        });
+        //CREA LOS ELEMENTOS DE LAS VENTANAS
+        var customButtonsDemo = (function () {
+            function _createElements() {
+                //INICIA LOS VALORES DE LA VENTANA
+                var posicionX, posicionY;
+                var ancho = 600;
+                var alto = 115;
+                posicionX = ($(window).width() / 2) - (ancho / 2);
+                posicionY = ($(window).height() / 2) - (alto / 2);
+                $('#div_VentanaPrincipal').jqxWindow({
+                    position: {x: posicionX, y: posicionY},
+                    width: ancho, height: alto, resizable: false,
+                    cancelButton: $('#btn_Cancelar'),
+                    initContent: function () {
+                        $("#cbo_TipoAsignacion").jqxDropDownList({width: 430, height: 25, dropDownWidth: 550, promptText: "Seleccione"});
+                        $('#btn_Cancelar').jqxButton({width: '65px', height: 30});
+                        $('#btn_Guardar').jqxButton({width: '65px', height: 30});
+                        $('#btn_Guardar').on('click', function () {
+                            fn_GrabarDatos();
+                        });
+                    }
+                });
+            }
+            return {init: function () {
+                    _createElements();
+                }
+            };
+        }());
+        $(document).ready(function () {
+            customButtonsDemo.init();
+            fn_CargarBusqueda();
+        });
+    });
+    //FUNCION PARA ACTUALIZAR DATOS DE LA GRILLA
+    function fn_CargarBusqueda() {
+        var placa = $('#txt_Placa').val();
+        if (placa === "" || placa !== null) {
+            var source = {
+                dataType: "json",
+                datafields: [
+                    {name: 'periodo', type: "string"},
+                    {name: 'mes', type: "string"},
+                    {name: 'tipoAsignacion', type: "string"},
+                    {name: 'brigada', type: "string"},
+                    {name: 'division', type: "string"},
+                    {name: 'unidad', type: "string"},
+                    {name: 'tipoCombustible', type: "string"},
+                    {name: 'cantidad', type: "number"},
+                    {name: 'grifo', type: "string"},
+                    {name: 'fecha', type: "string"}
+                ],
+                id: 'codigo',
+                url: "GrifoDespachoDetalle",
+                data: {mode: 'G', placa: $('#txt_Placa').val()}
+            };
+            var dataAdapter = new $.jqx.dataAdapter(source);
+            $("#div_GrillaPrincipal").jqxGrid({source: dataAdapter});
+        } else {
+            $.alert({
+                theme: 'material',
+                title: 'AVISO DEL SISTEMA',
+                content: "Ingrese unaPlaca valida",
+                animation: 'zoom',
+                closeAnimation: 'zoom',
+                type: 'red',
+                typeAnimated: true
+            });
+        }
+    }
+    //FUNCION PARA GRABAR LOS DATOS DE LA VENTANA PRINCIPAL
+    function fn_GrabarDatos() {
+        var periodo = $("#cbo_Periodo").val();
+        if (mode === 'I')
+            codigo = $("#cbo_TipoAsignacion").val();
+        $.ajax({
+            type: "GET",
+            url: "IduPeriodoTipoAsignacion",
+            data: {mode: mode, periodo: periodo, tipoAsignacion: codigo},
+            success: function (data) {
+                msg = data;
+                if (msg === "GUARDO") {
+                    $.confirm({
+                        title: 'AVISO DEL SISTEMA',
+                        content: 'Datos procesados correctamente!!',
+                        type: 'green',
+                        typeAnimated: true,
+                        autoClose: 'cerrarAction|1000',
+                        buttons: {
+                            cerrarAction: {
+                                text: 'Cerrar',
+                                action: function () {
+                                    $('#div_VentanaPrincipal').jqxWindow('close');
+                                    fn_CargarBusqueda();
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    $.alert({
+                        theme: 'material',
+                        title: 'AVISO DEL SISTEMA',
+                        content: msg,
+                        animation: 'zoom',
+                        closeAnimation: 'zoom',
+                        type: 'red',
+                        typeAnimated: true
+                    });
+                }
+            }
+        });
+    }
+</script>
+<div id='div_Titulo' style="border: none;">
+    <div class="jqx-hideborder">LISTADOS DE TIPOS DE ASIGNACIONES POR PERIODOS</div>
+    <div>
+        <div id="div_Cabecera">
+            <table class="navy">
+                <tbody>
+                    <tr> 
+                        <td class="Titulo">Placa : </td>
+                        <td>
+                            <input type="text" class="text-input" id="txt_Placa" name="txt_Placa" style="text-transform: uppercase;"/>
+                        </td>
+                        <td><a href="javascript: fn_CargarBusqueda();"><img src="images/Botones/refresh42.gif" alt="Buscar Datos" name="imgrefresh" width="30" height="28" border="0" id="imgrefresh"></a></td>
+                        <td><a href="javascript: fn_MenuPrincipal();"><img src="images/Botones/exit42.gif" alt="Salir de pantalla" name="imgexit" width="30" height="28"  border="0" id="imgexit" /></a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div id="div_GrillaPrincipal"></div>
+    </div>
+</div>
+<div id="div_VentanaPrincipal" style="display: none">
+    <div>
+        <span style="float: left">REGISTRO DE TIPO DE ASIGNACIÓN POR PERÍODO</span>
+    </div>
+    <div style="overflow: hidden">
+        <form id="frm_TipoAsignacion" name="frm_TipoAsignacion" method="post" >
+            <table width="100%" border="0" cellspacing="0" cellpadding="0"> 
+                <tr>
+                    <td class="inputlabel">Tipo de Asignación : </td>
+                    <td>
+                        <select id="cbo_TipoAsignacion" name="cbo_TipoAsignacion">
+                            <option value="0">Seleccione</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="Summit" colspan="4">
+                        <div>
+                            <input type="button" id="btn_Guardar"  value="Guardar" style="margin-right: 20px"/>
+                            <input type="button" id="btn_Cancelar" value="Cancelar" style="margin-right: 20px"/>
+                        </div>
+                    </td>
+                </tr>
+            </table>  
+        </form>
+    </div>
+</div>

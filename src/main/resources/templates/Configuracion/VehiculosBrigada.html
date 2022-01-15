@@ -97,9 +97,9 @@
                     var reporte = "PROG0003";
                     var url = "";
                     if (codigo === null)
-                        url = "Reportes?reporte=" + reporte + "&periodo=" + $('#cbo_Periodo').val() + "&brigada=" + $('#cbo_Brigadas').val() + "&codigo=*";
+                        url = "Reporte?reporte=" + reporte + "&periodo=" + $('#cbo_Periodo').val() + "&brigada=" + $('#cbo_Brigadas').val() + "&codigo=*";
                     else
-                        url = "Reportes?reporte=" + reporte + "&periodo=" + $('#cbo_Periodo').val() + "&brigada=" + $('#cbo_Brigadas').val() + "&codigo=" + codigo;
+                        url = "Reporte?reporte=" + reporte + "&periodo=" + $('#cbo_Periodo').val() + "&brigada=" + $('#cbo_Brigadas').val() + "&codigo=" + codigo;
                     $('#div_ReporteViewer').attr('src', url + "&page=hsn#toolbar=1");
                     $('#div_Reporte').jqxWindow({isModal: true, modalOpacity: 0.4});
                     $('#div_Reporte').jqxWindow('open');
@@ -107,7 +107,7 @@
             },
             columns: [
                 {text: 'VEHÍCULO', dataField: 'periodo', width: '15%', align: 'center', cellsAlign: 'center', cellclassname: cellclass},
-                {text: 'DEPENDENCIA', dataField: 'brigada', filtertype: 'checkedlist', width: '25%', align: 'center', cellsAlign: 'center', cellclassname: cellclass},
+                {text: 'UNIDAD', dataField: 'brigada', filtertype: 'checkedlist', width: '25%', align: 'center', cellsAlign: 'center', cellclassname: cellclass},
                 {text: 'TIPO', dataField: 'tipo', filtertype: 'checkedlist', width: '20%', align: 'center', cellsAlign: 'center', cellclassname: cellclass},
                 {text: 'CLASE', dataField: 'clase', filtertype: 'checkedlist', width: '15%', align: 'center', cellsAlign: 'center', cellclassname: cellclass},
                 {text: 'FECH. INICIO', datafield: 'fecha', filtertype: 'checkedlist', width: '15%', align: 'center', cellsAlign: 'center'},
@@ -336,7 +336,7 @@
     }
 </script>
 <div id='div_Titulo' style="border: none;">
-    <div class="jqx-hideborder">LISTADOS DE VEHÍCULOS POR BRIGADA</div>
+    <div class="jqx-hideborder">LISTADOS DE VEHÍCULOS POR GGUU</div>
     <div>
         <div id="div_Cabecera">
             <table class="navy">
@@ -351,7 +351,7 @@
                                 </span>
                             </select>
                         </td>
-                        <td class="Titulo">Brigada : </td>
+                        <td class="Titulo">GGUU : </td>
                         <td>
                             <select id="cbo_Brigadas" name="cbo_Brigadas">
                                 <option value="0">Seleccione</option>
@@ -371,10 +371,10 @@
 </div>
 <div id="div_VentanaPrincipal" style="display: none">
     <div>
-        <span style="float: left">REGISTRO DE VEHÍCULOS POR BRIGADA</span>
+        <span style="float: left">REGISTRO DE VEHÍCULOS POR GGUU</span>
     </div>
     <div style="overflow: hidden">
-        <form id="frm_vehiculos_brigada" name="frm_vehiculos_brigada" method="post" >
+        <form id="frm_vehiculosBrigada" name="frm_vehiculosBrigada" method="post" >
             <table width="100%" border="0" cellspacing="0" cellpadding="0"> 
                 <tr>
                     <td class="inputlabel">Vehículo : </td>
@@ -385,7 +385,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td class="inputlabel">Dependencia : </td>
+                    <td class="inputlabel">Unidad : </td>
                     <td>
                         <select id="cbo_Dependencia" name="cbo_Dependencia">
                             <option value="0">Seleccione</option>

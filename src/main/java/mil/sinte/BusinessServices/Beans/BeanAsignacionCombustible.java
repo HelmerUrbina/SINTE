@@ -43,16 +43,4 @@ public class BeanAsignacionCombustible implements Serializable {
     @Column(name = "CESTADO_CODIGO")
     private String estado;
 
-    @Column(name = "VUSUARIO_CREADOR")
-    private String usuarioCreador;
-
-    @Column(name = "DUSUARIO_CREADOR")
-    private String fechaCreador;
-
-    @Column(name = "VUSUARIO_CODIGO")
-    private String usuarioCodigo;
-
-    @Column(name = "DUSUARIO_FECHA")
-    private String usuarioFecha;
-
 }

@@ -28,7 +28,7 @@ public class VehiculosController {
     private VehiculoService vehiculoService;
 
     @RequestMapping(value = "/Vehiculos")
-    public String getVehiculo(String mode) {
+    public String getVehiculos(String mode) {
         switch (mode) {
             case "vehiculos":
                 return "Configuracion/Vehiculos";
@@ -52,7 +52,7 @@ public class VehiculosController {
 
     @RequestMapping(value = "/IduVehiculo")
     @ResponseBody
-    public String setVehiculo(
+    public String iduVehiculo(
             @RequestParam("mode") String mode,
             @RequestParam("codigo") Integer codigo,
             @RequestParam("placa") String placa,
@@ -122,7 +122,7 @@ public class VehiculosController {
 
     @RequestMapping(value = "/IduVehiculoSoat")
     @ResponseBody
-    public String setVehiculoSoat(
+    public String iduVehiculoSoat(
             @RequestParam("mode") String mode,
             @RequestParam("codigo") Integer codigo,
             @RequestParam("vehiculo") Integer vehiculo,

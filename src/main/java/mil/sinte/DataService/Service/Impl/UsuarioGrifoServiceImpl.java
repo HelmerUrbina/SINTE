@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mil.sinte.DataService.Service.Impl;
 
 import java.util.List;
@@ -18,24 +13,24 @@ import org.springframework.stereotype.Service;
  * @author MERCANTIL GROUP SAC
  */
 @Service
-public class UsuarioGrifoServiceImpl implements UsuarioGrifoService{
-   
+public class UsuarioGrifoServiceImpl implements UsuarioGrifoService {
+
     @Autowired
     private UsuarioGrifoDAO usuarioGrifoDAO;
 
     @Override
-    public List<BeanUsuarioGrifo> getUsuario(Integer grifo, String periodo) {
-        return usuarioGrifoDAO.findAll(grifo, periodo);
+    public List<BeanUsuarioGrifo> getUsuariosGrifo(String periodo, Integer grifo) {
+        return usuarioGrifoDAO.findByPeriodoAndGrifo(periodo, grifo);
     }
 
     @Override
-    public String guardarUsuarioGrifo(BeanUsuarioGrifo obj, String usuario, String modo) {
+    public String guardarUsuariosGrifo(BeanUsuarioGrifo objBnUsuarioGrifo, String usuario, String modo) {
         String result = "GUARDO";
         try {
-            usuarioGrifoDAO.sp_usuario_grifo(
-                    obj.getUsuario(),
-                    Integer.parseInt(obj.getGrifo()),
-                    obj.getPeriodo(),
+            usuarioGrifoDAO.sp_usuarioGrifo(
+                    objBnUsuarioGrifo.getPeriodo(),
+                    objBnUsuarioGrifo.getUsuario(),
+                    Utiles.checkNum(objBnUsuarioGrifo.getGrifo()),
                     usuario,
                     modo
             );
@@ -44,5 +39,5 @@ public class UsuarioGrifoServiceImpl implements UsuarioGrifoService{
         }
         return result;
     }
-    
+
 }

@@ -93,6 +93,7 @@ public class ProgramacionEventoPrincipalController {
             @RequestParam("eventoPrincipal") String eventoPrincipal,
             @RequestParam("eventoFinal") Integer eventoFinal,
             @RequestParam("eventoFinalNombre") String eventoFinalNombre,
+            @RequestParam("tipoOperacion") String tipoOperacion,
             @RequestParam("prioridad") Integer prioridad) {
         BeanProgramacionEventoFinal objBeanProgramacionEventoFinal = new BeanProgramacionEventoFinal();
         objBeanProgramacionEventoFinal.setPeriodo(periodo);
@@ -103,6 +104,7 @@ public class ProgramacionEventoPrincipalController {
         objBeanProgramacionEventoFinal.setEventoFinal(eventoFinal);
         objBeanProgramacionEventoFinal.setEventoFinalNombre(eventoFinalNombre);
         objBeanProgramacionEventoFinal.setPrioridad(prioridad);
+        objBeanProgramacionEventoFinal.setTipoOperacion(tipoOperacion);
         return "" + programacionEventoFinalService.guardarProgramacionEventoFinal(objBeanProgramacionEventoFinal, Utiles.getUsuario(), mode);
     }
 

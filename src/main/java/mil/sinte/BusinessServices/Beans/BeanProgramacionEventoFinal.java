@@ -39,6 +39,9 @@ public class BeanProgramacionEventoFinal implements Serializable {
 
     @Column(name = "VEVENTO_FINAL_NOMBRE")
     private String eventoFinalNombre;
+    
+    @Column(name = "NTIPO_OPERACION_CODIGO")
+    private String tipoOperacion;
 
     @Column(name = "NEVENTO_FINAL_PRIORIDAD")
     private Integer prioridad;

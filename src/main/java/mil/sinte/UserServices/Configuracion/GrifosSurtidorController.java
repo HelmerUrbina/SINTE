@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import mil.sinte.BusinessServices.Beans.BeanGrifo;
 import mil.sinte.BusinessServices.Beans.BeanGrifoSurtidor;
-import mil.sinte.BusinessServices.Beans.BeanUsuarioGrifo;
 import mil.sinte.Utiles.Utiles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import mil.sinte.DataService.Service.GrifoService;
 import mil.sinte.DataService.Service.GrifoSurtidorService;
-import mil.sinte.DataService.Service.UsuarioGrifoService;
 
 /**
  *
@@ -28,25 +26,12 @@ public class GrifosSurtidorController {
 
     @Autowired
     private GrifoSurtidorService grifoSurtidorService;
-    
-    @Autowired
-    private UsuarioGrifoService usuarioGrifoService;
 
     @RequestMapping(value = "/GrifosSurtidos")
     public String getGrifos(String mode) {
         switch (mode) {
             case "grifoSurtidor":
                 return "Configuracion/GrifosSurtidor";
-            default:
-                return "redirect:/";
-        }
-    }
-    
-    @RequestMapping(value = "/GrifoUsuario")
-    public String getGrifosUsuario(String mode) {
-        switch (mode) {
-            case "grifoUsuario":
-                return "Configuracion/GrifoUsuario";
             default:
                 return "redirect:/";
         }
@@ -85,12 +70,14 @@ public class GrifosSurtidorController {
             @RequestParam("codigo") Integer codigo,
             @RequestParam("brigada") Integer brigada,
             @RequestParam("grifoNombre") String grifoNombre,
-            @RequestParam("ubigeo") String ubigeo) {
+            @RequestParam("ubigeo") String ubigeo,
+            @RequestParam("grifoDireccion") String grifoDireccion) {
         BeanGrifo objBeanGrifo = new BeanGrifo();
         objBeanGrifo.setCodigo(codigo);
         objBeanGrifo.setBrigada(brigada);
         objBeanGrifo.setGrifoNombre(grifoNombre);
         objBeanGrifo.setUbigeo(ubigeo);
+        objBeanGrifo.setGrifoDireccion(grifoDireccion);
         return "" + grifoService.guardarGrifo(objBeanGrifo, Utiles.getUsuario(), mode);
     }
 
@@ -111,29 +98,5 @@ public class GrifosSurtidorController {
         objBeanGrifoSurtidor.setCapacidad(capacidad);
         return "" + grifoSurtidorService.guardarGrifoSurtidor(objBeanGrifoSurtidor, Utiles.getUsuario(), mode);
     }
-    
-    @RequestMapping(value = "/usuarioGrifoDetalle")
-    @ResponseBody
-    public String getUsuarioGrifoDetalle(String mode, String periodo,Integer grifo ) {
-        switch (mode) {
-            case "G":
-                return new Gson().toJson(usuarioGrifoService.getUsuario(grifo, periodo));
-            default:
-                return "ERROR";
-        }
-    }
-    
-    @RequestMapping(value = "/IduUsuarioGrifo")
-    @ResponseBody
-    public String setUsuarioGrifo(
-            @RequestParam("mode") String mode,
-            @RequestParam("periodo") String periodo,
-            @RequestParam("grifo") String grifo,
-            @RequestParam("usuario") String usuario) {
-        BeanUsuarioGrifo obj = new BeanUsuarioGrifo();
-        obj.setUsuario(usuario);
-        obj.setGrifo(grifo);
-        obj.setPeriodo(periodo);
-        return "" + usuarioGrifoService.guardarUsuarioGrifo(obj, Utiles.getUsuario(), mode);
-    }
+
 }

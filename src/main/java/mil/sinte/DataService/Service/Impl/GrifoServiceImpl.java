@@ -37,6 +37,7 @@ public class GrifoServiceImpl implements GrifoService {
                     objBnGrifo.getBrigada(),
                     objBnGrifo.getGrifoNombre(),
                     objBnGrifo.getUbigeo(),
+                    objBnGrifo.getGrifoDireccion(),
                     usuario,
                     modo
             );

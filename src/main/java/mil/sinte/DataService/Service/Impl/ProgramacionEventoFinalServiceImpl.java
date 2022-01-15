@@ -36,6 +36,7 @@ public class ProgramacionEventoFinalServiceImpl implements ProgramacionEventoFin
                     objBnProgramacionEventoFinal.getEventoFinal(),
                     objBnProgramacionEventoFinal.getEventoFinalNombre(),
                     objBnProgramacionEventoFinal.getPrioridad(),
+                    Utiles.checkNum(objBnProgramacionEventoFinal.getTipoOperacion()),
                     usuario,
                     modo
             );

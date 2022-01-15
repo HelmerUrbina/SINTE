@@ -106,7 +106,7 @@
                     var reporte = "PROG0001";
                     var periodo = $("#cbo_Periodo").val();
                     var tipoAsignacion = $("#cbo_TipoAsignacion").val();
-                    var url = "Reportes?reporte=" + reporte + "&periodo=" + periodo + "&codigo=" + tipoAsignacion;
+                    var url = "Reporte?reporte=" + reporte + "&periodo=" + periodo + "&codigo=" + tipoAsignacion;
                     $('#div_ReporteViewer').attr('src', url + "&page=hsn#toolbar=1");
                     $('#div_Reporte').jqxWindow({isModal: true, modalOpacity: 0.4});
                     $('#div_Reporte').jqxWindow('open');

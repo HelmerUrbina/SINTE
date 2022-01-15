@@ -35,6 +35,13 @@ public interface CombosDAO extends CrudRepository<BeanCombos, String> {
     List<BeanCombos> getTipoCombustible();
 
     @Query(nativeQuery = true, value = "SELECT "
+            + "NTIPO_OPERACION_CODIGO AS CODIGO, VTIPO_OPERACION_ABREVIATURA AS DESCRIPCION "
+            + "FROM SINTE_TIPO_OPERACION WHERE "
+            + "CESTADO_CODIGO='AC' "
+            + "ORDER BY CODIGO")
+    List<BeanCombos> getTipoOperacion();
+
+    @Query(nativeQuery = true, value = "SELECT "
             + "CDEPARTAMENTO_CODIGO AS CODIGO, VDEPARTAMENTO_NOMBRE AS DESCRIPCION "
             + "FROM SINTE_DEPARTAMENTO WHERE "
             + "CESTADO_CODIGO='AC' "
@@ -281,27 +288,27 @@ public interface CombosDAO extends CrudRepository<BeanCombos, String> {
             + "CMES_CODIGO=?3 AND "
             + "NTIPO_ASIGNACION_CODIGO=?4) "
             + "ORDER BY CODIGO")
-    List<BeanCombos> getTipoCombustibleByAsignacionCombustible(String anio, Integer brigada, String mes, Integer tipoAsignacion);
+    List<BeanCombos> getTipoCombustibleByAsignacionCombustible(String periodo, Integer brigada, String mes, Integer tipoAsignacion);
 
-    @Query(nativeQuery = true, value = "SELECT NVEHICULO_CODIGO CODIGO,\n"
-            + "       UTIL.FUN_VEHICULO(NVEHICULO_CODIGO) DESCRIPCION\n"
-            + "  FROM SINTE_VEHICULOS_BRIGADAS\n"
-            + " WHERE CPERIODO_CODIGO =?1\n"
-            + "   AND NBRIGADA_CODIGO =?2\n "
-            + "   AND NDEPENDENCIA_CODIGO =?6\n "
-            + "   AND NVEHICULO_CODIGO NOT IN (SELECT NVEHICULO_CODIGO\n"
-            + "           FROM SINTE_ASIGNACION_DETALLE \n"
-            + "         WHERE CPERIODO_CODIGO =?1\n"
-            + "      AND NBRIGADA_CODIGO =?2\n"
-            + "     AND CMES_CODIGO =?3\n"
-            + "          AND NTIPO_ASIGNACION_CODIGO =?4\n"
-            + "         AND NTIPO_COMBUSTIBLE_CODIGO =?5\n"
-            + "         AND NDEPENDENCIA_CODIGO =?6)\n"
-            + "   AND NVEHICULO_CODIGO IN (SELECT NVEHICULO_CODIGO  \n"
-            + "       FROM SINTE_VEHICULOS_TIPO_COMBUSTIB\n"
-            + "         WHERE NTIPO_COMBUSTIBLE_CODIGO =?5)"
-            + "  ORDER BY CODIGO")
-    List<BeanCombos> getVehiculoByAsignacionCombustible(String anio, Integer brigada, String mes, Integer tipoAsignacion, Integer tipoCombustible, Integer dependencia);
+    @Query(nativeQuery = true, value = "SELECT "
+            + "NVEHICULO_CODIGO CODIGO, UTIL.FUN_VEHICULO(NVEHICULO_CODIGO) DESCRIPCION "
+            + "FROM SINTE_VEHICULOS_BRIGADAS WHERE "
+            + "CPERIODO_CODIGO=?1 AND "
+            + "NBRIGADA_CODIGO=?2 AND "
+            + "NDEPENDENCIA_CODIGO=?6 AND "
+            + "NVEHICULO_CODIGO NOT IN (SELECT NVEHICULO_CODIGO "
+            + "FROM SINTE_ASIGNACION_DETALLE WHERE "
+            + "CPERIODO_CODIGO=?1 AND "
+            + "NBRIGADA_CODIGO=?2 AND "
+            + "CMES_CODIGO=?3 AND "
+            + "NTIPO_ASIGNACION_CODIGO=?4 AND "
+            + "NTIPO_COMBUSTIBLE_CODIGO=?5 AND "
+            + "NDEPENDENCIA_CODIGO =?6) AND "
+            + "NVEHICULO_CODIGO IN (SELECT NVEHICULO_CODIGO "
+            + "FROM SINTE_VEHICULOS_TIPO_COMBUSTIB WHERE "
+            + "NTIPO_COMBUSTIBLE_CODIGO=?5) "
+            + "ORDER BY CODIGO")
+    List<BeanCombos> getVehiculoByAsignacionCombustible(String periodo, Integer brigada, String mes, Integer tipoAsignacion, Integer tipoCombustible, Integer dependencia);
 
     @Query(nativeQuery = true, value = "SELECT "
             + "NTIPO_COMBUSTIBLE_CODIGO CODIGO, VTIPO_COMBUSTIBLE_DESCRIPCION DESCRIPCION "
@@ -353,18 +360,18 @@ public interface CombosDAO extends CrudRepository<BeanCombos, String> {
             + "ORDER BY CODIGO")
     List<BeanCombos> getDependenciaByVariacion(String periodo, Integer brigada, String mes, Integer tipoAsignacion, Integer tipoCombustible);
 
-    @Query(nativeQuery = true, value = "SELECT NDEPENDENCIA_CODIGO CODIGO,\n"
-            + "     VDEPENDENCIA_ABREVIATURA DESCRIPCION\n"
-            + "FROM SINTE_DEPENDENCIAS\n"
-            + "WHERE NBRIGADA_CODIGO = ?2\n"
-            + " AND CESTADO_CODIGO = 'AC'\n"
-            + " AND NDEPENDENCIA_CODIGO IN (SELECT NDEPENDENCIA_CODIGO\n"
-            + "         FROM SINTE_ASIGNACION_DETALLE AD\n"
-            + "      WHERE CPERIODO_CODIGO = ?1\n"
-            + "     AND NBRIGADA_CODIGO = ?2\n"
-            + "        AND CMES_CODIGO = ?3\n"
-            + "         AND NTIPO_ASIGNACION_CODIGO = ?4\n"
-            + "            AND NASIGNACION_DETALLE_CANTIDAD > 0)\n"
+    @Query(nativeQuery = true, value = "SELECT "
+            + "NDEPENDENCIA_CODIGO CODIGO, VDEPENDENCIA_ABREVIATURA DESCRIPCION "
+            + "FROM SINTE_DEPENDENCIAS WHERE "
+            + "NBRIGADA_CODIGO=?2 AND "
+            + "CESTADO_CODIGO = 'AC' AND "
+            + "NDEPENDENCIA_CODIGO IN (SELECT NDEPENDENCIA_CODIGO "
+            + "FROM SINTE_ASIGNACION_DETALLE AD WHERE "
+            + "CPERIODO_CODIGO=?1 AND "
+            + "NBRIGADA_CODIGO=?2 AND "
+            + "TO_NUMBER(CMES_CODIGO)=TO_NUMBER(?3) AND "
+            + "NTIPO_ASIGNACION_CODIGO=?4 AND "
+            + "NASIGNACION_DETALLE_CANTIDAD>0) "
             + "ORDER BY CODIGO")
     List<BeanCombos> getDependenciaByComision(String periodo, Integer brigada, String mes, Integer tipoAsignacion);
 
@@ -384,7 +391,7 @@ public interface CombosDAO extends CrudRepository<BeanCombos, String> {
             + "          FROM SINTE_ASIGNACION_DETALLE AD\n"
             + "         WHERE AD.CPERIODO_CODIGO = ?1\n"
             + "           AND AD.NBRIGADA_CODIGO = ?2\n"
-            + "           AND AD.CMES_CODIGO = ?3\n"
+            + "           AND TO_NUMBER(AD.CMES_CODIGO) = TO_NUMBER(?3) "
             + "           AND AD.NTIPO_ASIGNACION_CODIGO = ?4\n"
             + "           AND AD.NDEPENDENCIA_CODIGO = ?5\n"
             + "           AND AD.NASIGNACION_DETALLE_CANTIDAD > 0) TA\n"
@@ -400,7 +407,7 @@ public interface CombosDAO extends CrudRepository<BeanCombos, String> {
             + "                              FROM SINTE_ASIGNACION_DETALLE AD\n"
             + "                             WHERE AD.CPERIODO_CODIGO = ?1 \n"
             + "                               AND AD.NBRIGADA_CODIGO = ?2 \n"
-            + "                               AND AD.CMES_CODIGO = ?3\n"
+            + "                               AND TO_NUMBER(AD.CMES_CODIGO) = TO_NUMBER(?3) "
             + "                               AND AD.NTIPO_ASIGNACION_CODIGO = ?4\n"
             + "                               AND AD.NDEPENDENCIA_CODIGO = ?5\n"
             + "                               AND AD.NVEHICULO_CODIGO = ?6\n"
@@ -408,27 +415,30 @@ public interface CombosDAO extends CrudRepository<BeanCombos, String> {
             + "ORDER BY NTIPO_COMBUSTIBLE_CODIGO")
     List<BeanCombos> getCombustibleByComision(String periodo, Integer brigada, String mes, Integer tipoAsignacion, Integer dependencia, Integer vehiculo);
 
-    
-    @Query(nativeQuery = true, value =  "SELECT NGRIFO_CODIGO CODIGO,\n" +
-                                        "       VGRIFO_NOMBRE DESCRIPCION\n" +
-                                        "  FROM SINTE_GRIFO\n" +
-                                        " WHERE CESTADO_CODIGO = 'AC'\n" +
-                                        " ORDER BY CODIGO")
-    List<BeanCombos> getGrifoAll();
-    
-    
-    @Query(nativeQuery = true, value =  "SELECT VUSUARIO_CODIGO CODIGO,\n" +
-                                        "       VUSUARIO_CODIGO DESCRIPCION\n" +
-                                        "  FROM SINTE_USUARIOS\n" +
-                                        " WHERE CESTADO_CODIGO = 'AC'\n" +
-                                        "   AND NBRIGADA_CODIGO IN (SELECT NBRIGADA_CODIGO\n" +
-                                        "                             FROM SINTE_GRIFO\n" +
-                                        "                            WHERE NGRIFO_CODIGO = ?1)\n" +
-                                        "   AND VUSUARIO_CODIGO NOT IN (SELECT VUSUARIO_CODIGO\n" +
-                                        "                                 FROM SINTE_USUARIO_GRIFO\n" +
-                                        "                                WHERE CPERIODO_CODIGO = ?2)")
-    List<BeanCombos> getUsuariosByGrifos(Integer grifo, String periodo);
-    
-    
+    @Query(nativeQuery = true, value = "SELECT "
+            + "NGRIFO_CODIGO CODIGO, VGRIFO_NOMBRE DESCRIPCION "
+            + "FROM SINTE_GRIFO WHERE "
+            + "CESTADO_CODIGO='AC' "
+            + "ORDER BY CODIGO")
+    List<BeanCombos> getGrifos();
+
+    @Query(nativeQuery = true, value = "SELECT "
+            + "VUSUARIO_CODIGO CODIGO, VUSUARIO_PATERNO||' '||VUSUARIO_MATERNO||', '||VUSUARIO_NOMBRES DESCRIPCION "
+            + "FROM SINTE_USUARIOS WHERE "
+            + "CESTADO_CODIGO='AC' AND "
+            + "VUSUARIO_CODIGO NOT IN (SELECT "
+            + "VUSUARIO_CODIGO "
+            + "FROM SINTE_USUARIOS_GRIFO WHERE "
+            + "CPERIODO_CODIGO=?1) AND "
+            + "NBRIGADA_CODIGO IN (SELECT NBRIGADA_CODIGO "
+            + "FROM SINTE_GRIFO WHERE "
+            + "NGRIFO_CODIGO=?2) ")
+    List<BeanCombos> getUsuariosByPeriodoAndGrifoPendientes(String periodo, Integer grifo);
+
+    @Query(nativeQuery = true, value = "SELECT "
+            + "CODIGO, DESCRIPCION "
+            + "FROM OPREDB.V_FUENTE_FINANCIAMIENTO@DBLINK_OPRE "
+            + "ORDER BY CODIGO")
+    List<BeanCombos> getFuenteFinanciamiento();
 
 }

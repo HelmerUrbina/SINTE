@@ -64,6 +64,7 @@
                     $("#cbo_Departamento").jqxDropDownList('setContent', 'Seleccione');
                     $("#cbo_Provincia").jqxDropDownList('setContent', 'Seleccione');
                     $("#cbo_Ubigeo").jqxDropDownList('setContent', 'Seleccione');
+                    $("#txt_GrifoDireccion").val('');
                     $('#div_VentanaPrincipal').jqxWindow({isModal: true, modalOpacity: 0.8});
                     $('#div_VentanaPrincipal').jqxWindow('open');
                 });
@@ -81,11 +82,12 @@
                 });
             },
             columns: [
-                {text: 'GRIFO', dataField: 'grifoNombre', width: '37%', align: 'center', cellsAlign: 'left'},
-                {text: 'BRIGADA', dataField: 'brigadaNombre', width: '25%', align: 'center', cellsAlign: 'center', cellclassname: cellclass},
+                {text: 'GRIFO', dataField: 'grifoNombre', width: '22%', align: 'center', cellsAlign: 'left'},
+                {text: 'BRIGADA', dataField: 'brigadaNombre', width: '15%', align: 'center', cellsAlign: 'center', cellclassname: cellclass},
                 {text: 'DISTRITO', dataField: "ubigeo", filtertype: 'checkedlist', width: '10%', align: 'center', cellsAlign: 'center'},
                 {text: 'PROVINCIA', dataField: 'provincia', filtertype: 'checkedlist', width: '10%', align: 'center', cellsAlign: 'center'},
                 {text: 'DEPARTAMENTO', dataField: 'departamento', filtertype: 'checkedlist', width: '10%', align: 'center', cellsAlign: 'center'},
+                {text: 'DIRECCIÓN', dataField: 'grifoDireccion', width: '25%', align: 'center', cellsAlign: 'center'},
                 {text: 'ESTADO', dataField: 'estado', filtertype: 'checkedlist', width: '8%', align: 'center', cellsAlign: 'center'}
             ]
         });
@@ -305,7 +307,7 @@
                 //INICIA LOS VALORES DE LA VENTANA
                 var posicionX, posicionY;
                 var ancho = 600;
-                var alto = 215;
+                var alto = 240;
                 posicionX = ($(window).width() / 2) - (ancho / 2);
                 posicionY = ($(window).height() / 2) - (alto / 2);
                 $('#div_VentanaPrincipal').jqxWindow({
@@ -327,6 +329,7 @@
                             fn_cargarComboAjax("#cbo_Ubigeo", {mode: 'ubigeo', codigo: $("#cbo_Departamento").val(), codigo2: $("#cbo_Provincia").val()});
                         });
                         $("#cbo_Ubigeo").jqxDropDownList({width: 300, height: 25, dropDownWidth: 350, promptText: "Seleccione"});
+                        $("#txt_GrifoDireccion").jqxInput({placeHolder: 'DIRECCIÓN DEL GRIFO', width: 480, height: 25, minLength: 2, maxLength: 500});
                         $('#btn_Cancelar').jqxButton({width: '65px', height: 30});
                         $('#btn_Guardar').jqxButton({width: '65px', height: 30});
                         $('#btn_Guardar').on('click', function () {
@@ -334,7 +337,8 @@
                         });
                         $('#frm_Grifos').jqxValidator({
                             rules: [
-                                {input: '#txt_GrifoNombre', message: 'Ingrese el Nombre del Grifo!', action: 'keyup, blur', rule: 'required'}
+                                {input: '#txt_GrifoNombre', message: 'Ingrese el Nombre del Grifo!', action: 'keyup, blur', rule: 'required'},
+                                {input: '#txt_GrifoDireccion', message: 'Ingrese la Dirección del Grifo!', action: 'keyup, blur', rule: 'required'}
                             ]
                         });
                         $('#frm_Grifos').jqxValidator({
@@ -394,6 +398,7 @@
     });
     //FUNCION PARA ACTUALIZAR DATOS DE LA GRILLA
     function fn_Refrescar() {
+        codigo = null;
         var source = {
             dataType: "json",
             datafields: [
@@ -403,6 +408,7 @@
                 {name: 'departamento', type: "string"},
                 {name: 'provincia', type: "string"},
                 {name: 'ubigeo', type: "string"},
+                {name: 'grifoDireccion', type: "string"},
                 {name: 'estado', type: "string"}
             ],
             id: 'codigo',
@@ -424,6 +430,7 @@
                 $("#cbo_Brigadas").jqxDropDownList('selectItem', dato.brigada);
                 $("#txt_GrifoNombre").val(dato.grifoNombre);
                 $("#cbo_Departamento").jqxDropDownList('selectItem', dato.departamento);
+                $("#txt_GrifoDireccion").val(dato.grifoDireccion);
                 $.confirm({
                     title: 'AVISO DEL SISTEMA',
                     content: 'Cargando Datos de Provincia',
@@ -464,10 +471,11 @@
         var brigada = $("#cbo_Brigadas").val();
         var grifoNombre = $("#txt_GrifoNombre").val();
         var ubigeo = $("#cbo_Ubigeo").val();
+        var grifoDireccion = $("#txt_GrifoDireccion").val();
         $.ajax({
             type: "GET",
             url: "IduGrifo",
-            data: {mode: mode, codigo: codigo, brigada: brigada, grifoNombre: grifoNombre, ubigeo: ubigeo},
+            data: {mode: mode, codigo: codigo, brigada: brigada, grifoNombre: grifoNombre, ubigeo: ubigeo, grifoDireccion: grifoDireccion},
             success: function (data) {
                 msg = data;
                 if (msg === "GUARDO") {
@@ -624,6 +632,10 @@
                     </td> 
                 </tr>
                 <tr>
+                    <td class="inputlabel">Dirección : </td>
+                    <td><input type="text" class="text-input" id="txt_GrifoDireccion" name="txt_GrifoDireccion" style='text-transform:uppercase;'/></td>
+                </tr>
+                <tr>
                     <td class="Summit" colspan="2">
                         <div>
                             <input type="button" id="btn_Guardar"  value="Guardar" style="margin-right: 20px"/>
@@ -675,7 +687,7 @@
                         <td><input type="text" id="txt_Surtidor" name="txt_Surtidor" style='text-transform:uppercase;'/></td>
                     </tr>
                     <tr>
-                        <td class="inputlabel">Capacidad (Gal) : </td>
+                        <td class="inputlabel">Capacidad (Glns) : </td>
                         <td><div id="div_Capacidad"></div></td>
                     </tr>
                     <tr>

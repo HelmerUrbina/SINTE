@@ -40,19 +40,13 @@ public class BeanAsignacionCombustibleDetalle implements Serializable {
     @Column(name = "NVEHICULO_CODIGO")
     private String vehiculo;
 
+    @Column(name = "NTIPO_OPERACION_CODIGO")
+    private String tipoOperacion;
+
     @Column(name = "NASIGNACION_DETALLE_CANTIDAD")
     private Integer cantidad;
 
     @Column(name = "NASIGNACION_DETALLE_SOLICITADO")
     private Integer solicitado;
-
-    @Column(name = "VUSUARIO_CREADOR")
-    private String usuarioCreador;
-
-    @Column(name = "DUSUARIO_CREADOR")
-    private String fechaCreador;
-
-    @Column(name = "VUSUARIO_CODIGO")
-    private String usuarioCodigo;
 
 }
